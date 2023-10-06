@@ -1,4 +1,4 @@
-package com.team_swe_project.examples;
+package com.team_swe_project.examples.controllers;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
