@@ -1,37 +1,17 @@
-import React, { useState, useEffect } from 'react';
-import logo from './logo.svg';
-import './App.css';
+import React from 'react';
+import { BrowserRouter, Route, Routes } from 'react-router-dom';
+import Home from './pages/Home';
 
 const App = () => {
+  return (
 
-  const [users, setUsers] = useState([]);
+    <BrowserRouter>
+      <Routes>
+        <Route path="/" exact element={<Home />} />
+      </Routes>
+    </BrowserRouter>
 
-  useEffect(() => {
-    async function componentDidMount() {
-      const response = await fetch('/user/all');
-      const body = await response.json();
-      setUsers(body);
-    }
-
-    componentDidMount();
-  }, [])
-  
-    return (
-      <div className="App">
-        <header className="App-header">
-          <img src={logo} className="App-logo" alt="logo" />
-          <div className="App-intro">
-              <h2>Users</h2>
-              {users.map(user =>
-                  <div key={user.id}>
-                    {user.firstName} {user.lastName} ({user.email})
-                  </div>
-              )}
-            </div>
-        </header>
-      </div>
-    );
-
+  );
 }
 
 export default App;
