@@ -1,22 +1,17 @@
-import React from 'react'
-import { BrowserRouter, Route, Routes } from "react-router-dom";
-import HomeContainer from './containers/homeContainer';
-import MainContainer from './containers/mainContainer';
+import React from 'react';
+import { BrowserRouter, Route, Routes } from 'react-router-dom';
+import Home from './pages/Home';
 
 const App = () => {
   return (
-    <BrowserRouter basename='/'>
-      
-      <Routes>
-        <Route path='/home' Component={HomeContainer}/>
-        <Route path='/' Component={MainContainer}/>
 
-      
+    <BrowserRouter>
+      <Routes>
+        <Route path="/" exact element={<Home />} />
       </Routes>
     </BrowserRouter>
 
-    
-  )
+  );
 }
 
-export default App
+export default App;
