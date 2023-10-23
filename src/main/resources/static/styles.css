@@ -1,0 +1,76 @@
+/* Reset some default styles */
+body {
+  font-family: Arial, sans-serif;
+  padding: 20px;
+  margin: 0;
+}
+
+/* Style for the movie schedule container */
+.movie-schedule {
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+/* Style for each movie card */
+.movie-card {
+  border: 1px solid #ccc;
+  padding: 20px;
+  margin-bottom: 20px;
+}
+
+/* Style for movie card titles */
+.movie-card h2 {
+  font-size: 24px;
+  margin-bottom: 10px;
+}
+
+/* Style for the showtime list */
+.movie-card ul {
+  list-style-type: none;
+  padding: 0;
+}
+
+/* Style for individual showtimes */
+.movie-card ul li {
+  margin-bottom: 5px;
+}
+
+/* Style for the payment form label */
+.movie-card form label {
+  display: block;
+  font-weight: bold;
+  margin-top: 10px;
+}
+
+/* Style for the select element */
+.movie-card form select {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  margin-bottom: 10px;
+}
+
+/* Style for the credit card input field */
+.movie-card form input[type="text"] {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  margin-bottom: 20px;
+}
+
+/* Style for the payment button */
+.movie-card form button {
+  background-color: #007BFF;
+  color: white;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+/* Hover effect for the payment button */
+.movie-card form button:hover {
+  background-color: #0056b3;
+}
