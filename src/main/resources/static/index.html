@@ -1,10 +1,55 @@
-<!DOCTYPE HTML>
-<html>
-<head> 
-    <title>Getting Started: Serving Web Content</title> 
-    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="styles.css">
+  <title>Movie Schedule</title>
 </head>
 <body>
-    <p>Get your greeting <a href="/greeting">here</a></p>
+  <div class="movie-schedule">
+    <h1>Movie Schedule</h1>
+    <div class="movie-card">
+      <h2>Movie Title 1</h2>
+      <p>Showtimes:</p>
+      <ul>
+        <li>Monday - 3:00 PM</li>
+        <li>Tuesday - 5:00 PM</li>
+        <li>Wednesday - 7:00 PM</li>
+      </ul>
+      <form action="process_payment.php" method="post">
+        <label for="showtime">Select Showtime:</label>
+        <select id="showtime" name="showtime">
+          <option value="Monday-3PM">Monday - 3:00 PM</option>
+          <option value="Tuesday-5PM">Tuesday - 5:00 PM</option>
+          <option value="Wednesday-7PM">Wednesday - 7:00 PM</option>
+        </select>
+        <label for="credit-card">Credit Card Number:</label>
+        <input type="text" id="credit-card" name="credit-card" placeholder="Enter your credit card number" required>
+        <button type="submit">Pay Now</button>
+      </form>
+    </div>
+
+    <div class="movie-card">
+      <h2>Movie Title 2</h2>
+      <p>Showtimes:</p>
+      <ul>
+        <li>Thursday - 2:00 PM</li>
+        <li>Friday - 4:00 PM</li>
+        <li>Saturday - 6:00 PM</li>
+      </ul>
+      <form action="process_payment.php" method="post">
+        <label for="showtime">Select Showtime:</label>
+        <select id="showtime" name="showtime">
+          <option value="Thursday-2PM">Thursday - 2:00 PM</option>
+          <option value="Friday-4PM">Friday - 4:00 PM</option>
+          <option value="Saturday-6PM">Saturday - 6:00 PM</option>
+        </select>
+        <label for="credit-card">Credit Card Number:</label>
+        <input type="text" id="credit-card" name="credit-card" placeholder="Enter your credit card number" required>
+        <button type="submit">Pay Now</button>
+      </form>
+    </div>
+  </div>
 </body>
 </html>
