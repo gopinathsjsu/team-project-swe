@@ -13,6 +13,8 @@ const RegForm = () => {
     <label for="lastname">Last Name:</label>
     <input type="text" id="lastname" name="lastname" required /><br />
     <label for="password">Password:</label>
+    <input type="text" id="email" name="email" required /><br />
+    <label for="text">Email:</label>
     <input type="password" id="password" name="password" required /><br />
     <label for="confirmPassword">Confirm Password:</label>
     <input type="password" id="confirmPassword" name="confirmPassword" required /><br />
