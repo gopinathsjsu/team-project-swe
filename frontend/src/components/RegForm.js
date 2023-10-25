@@ -8,16 +8,22 @@ const RegForm = () => {
     <br />
     <label for="username">Username:</label>
     <input type="text" id="username" name="username" required /><br />
+
     <label for="fullname">Full Name:</label>
     <input type="text" id="fullname" name="fullname" required /><br />
+
     <label for="lastname">Last Name:</label>
     <input type="text" id="lastname" name="lastname" required /><br />
-    <label for="password">Password:</label>
-    <input type="text" id="email" name="email" required /><br />
-    <label for="text">Email:</label>
-    <input type="password" id="password" name="password" required /><br />
+
+    <label for="email">Email:</label>
+    <input type="text" id="email" name="email "required /><br />
+
+    <label for="password">Password:(8 characters minimum):</label>
+    <input type="password" id="password" name="password" minlength="8" required /><br />
+
     <label for="confirmPassword">Confirm Password:</label>
-    <input type="password" id="confirmPassword" name="confirmPassword" required /><br />
+    <input type="password" id="confirmPassword" name="confirmPassword" minlength="8" required /><br />
+
     <label for="dob">Date of Birth:</label>
     <input type="date" id="dob" name="dob" required /><br />
     <label for="phone">Phone Number:</label>
