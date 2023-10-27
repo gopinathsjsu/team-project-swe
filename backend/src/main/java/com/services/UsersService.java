@@ -23,7 +23,7 @@ public class UsersService {
     }
 
     // get user by its id
-    public Users getUserById(Long id) {
+    public Users findUserById(Long id) {
         return userRepository.findById(id).orElse(null);
     }
 
@@ -32,10 +32,6 @@ public class UsersService {
         Users user = new Users(username, password, role);
 
         return userRepository.save(user);
-    }
-
-    public Users createUser(Users user) {
-        return new Users();
     }
     
 }

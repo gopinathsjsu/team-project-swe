@@ -29,6 +29,7 @@ public class Membership {
     public Long getMembershipId() { return this.membershipId; }
 
     public Users getUser() { return this.user; }
+    public Long getUserId() { return this.user.getUserId(); }
 
     public LocalDate getExpirationDate() { return this.expirationDate; }
     public void setExpirationDate(LocalDate expirationDate) { this.expirationDate = expirationDate; }

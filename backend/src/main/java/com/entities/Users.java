@@ -22,7 +22,7 @@ public class Users {
         this.role = role;
     }
 
-    public Users() { }
+    public Users() {}
 
     public Long getUserId() { return this.userId; }
 

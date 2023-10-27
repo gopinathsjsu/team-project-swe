@@ -1,5 +1,7 @@
 package com.controllers;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -23,13 +25,20 @@ public class UserController {
         this.usersService = usersService;
     }
 
+    @GetMapping("/getUsers")
+    public ResponseEntity<List<Users>> getAllUsers() {
+        List<Users> users = usersService.getAllUsers();
+
+        return ResponseEntity.ok(users);
+    }
+
     @GetMapping("/getUser")
     public ResponseEntity<Users> getUserById(@RequestParam Long id) { 
         
         Users user;
 
         try {
-            user = usersService.getUserById(id);
+            user = usersService.findUserById(id);
         } catch (Exception e) {
             return ResponseEntity.badRequest().build();
         }
@@ -46,7 +55,7 @@ public class UserController {
 
         Users createdUser;
         try {
-            createdUser = usersService.createUser(user);
+            createdUser = usersService.createUser(user.getUsername(), user.getPassword(), user.getRole());
         } catch (Exception e) {
             return ResponseEntity.badRequest().build();
         }
