@@ -24,7 +24,7 @@ public class UserController {
         System.out.println("firstName:" + firstName);
         UserEntity user = new UserEntity();
         user.setFirstName(firstName);
-        user.setLastName(firstName);
+        user.setLastName(lastName);
         user.setEmail(email);
         userRepository.save(user);
         return "User Created";
