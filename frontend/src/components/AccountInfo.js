@@ -15,4 +15,4 @@ const AccountInfo = () => {
   )
 }
 
-export default AccountInfo
+export default AccountInfo;

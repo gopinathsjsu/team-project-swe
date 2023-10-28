@@ -6,4 +6,4 @@ const MovieTicketsPurchased = () => {
   )
 }
 
-export default MovieTicketsPurchased
+export default MovieTicketsPurchased;
