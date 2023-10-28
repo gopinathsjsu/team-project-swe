@@ -6,4 +6,4 @@ const TotalRewardPoints = () => {
   )
 }
 
-export default TotalRewardPoints
+export default TotalRewardPoints;
