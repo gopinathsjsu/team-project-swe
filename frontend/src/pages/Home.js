@@ -1,8 +1,12 @@
 import React from 'react';
+import NavBar from '../components/NavBar';
 
 const Home = () => {
   return (
-    <div className='underline text-red-950 text-center text-2xl'>HomeContainer</div>
+   <div>
+    <NavBar/>
+    <h1 className='text-center underline text-2xl'>HomeContainer</h1>
+   </div>
   );
 }
 
