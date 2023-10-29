@@ -1,11 +1,12 @@
 import React from 'react';
 import NavBar from '../components/NavBar';
+import UpcomingMovies from '../components/UpcomingMovies';
 
 const Home = () => {
   return (
    <div>
     <NavBar/>
-    <h1 className='text-center underline text-2xl'>HomeContainer</h1>
+    <UpcomingMovies/>
    </div>
   );
 }
