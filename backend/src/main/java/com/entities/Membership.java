@@ -2,6 +2,9 @@ package com.entities;
 
 import java.time.LocalDate;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+
 import jakarta.persistence.*;
 
 @Entity(name="membership")
@@ -14,8 +17,9 @@ public class Membership {
     @Enumerated(EnumType.STRING)
     private MembershipType type;
 
-    @ManyToOne
+    @OneToOne
     @JoinColumn(name = "user_id")
+    @JsonBackReference
     private Users user;
 
     public Membership(LocalDate expirationDate, MembershipType membershipType, Users user) {
@@ -28,7 +32,10 @@ public class Membership {
 
     public Long getMembershipId() { return this.membershipId; }
 
+    @JsonManagedReference
     public Users getUser() { return this.user; }
+    public void setUser(Users user) { this.user = user; }
+     
     public Long getUserId() { return this.user.getUserId(); }
 
     public LocalDate getExpirationDate() { return this.expirationDate; }

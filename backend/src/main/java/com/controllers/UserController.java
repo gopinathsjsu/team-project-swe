@@ -3,7 +3,9 @@ package com.controllers;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -54,18 +56,30 @@ public class UserController {
     public ResponseEntity<Users> createUser(@RequestBody Users user) {
 
         Users createdUser;
-        try {
-            createdUser = usersService.createUser(user.getUsername(), user.getPassword(), user.getRole());
-        } catch (Exception e) {
-            return ResponseEntity.badRequest().build();
-        }
+        
+        createdUser = usersService.createUser(user.getFirstName(), user.getLastName(), 
+            user.getEmail(), user.getPhone(), user.getDateOfBirth(), user.getUsername(), 
+            user.getPassword(), user.getRole());
 
+        
         if (createdUser != null) {
             return ResponseEntity.ok(createdUser);
         } else {
-            return ResponseEntity.notFound().build();
+            return ResponseEntity.badRequest().build();
         }
 
+    }
+
+    @DeleteMapping("/delete")
+    public ResponseEntity<String> deleteUser(Long userId) {
+       
+        try {
+            usersService.deleteUser(userId);
+            return ResponseEntity.ok("User and associate membership deleted successfully.");
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("User not found or could not be deleted.");
+        }
+        
     }
 
     // .. add more API endpoints as needed
