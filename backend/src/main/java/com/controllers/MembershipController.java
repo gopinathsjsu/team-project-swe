@@ -6,6 +6,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -26,12 +27,32 @@ public class MembershipController {
         this.membershipService = membershipService;
     }
 
+    // get via membershipId
+    @GetMapping("/getMembership")
+    public ResponseEntity<Membership> getMembershipById(@RequestParam Long membershipId) { 
+        
+        Membership membership;
+
+        membership = membershipService.getMembershipById(membershipId);
+        
+        if (membership != null) {
+            return ResponseEntity.ok(membership);
+        } else {
+            return ResponseEntity.notFound().build();
+        }
+    }
+
+    // get via userId
     @GetMapping("/getMembership/user")
     public ResponseEntity<Membership> getMembershipByUserId(@RequestParam Long userId) { 
         
         Membership membership;
 
-        membership = membershipService.findByUserId(userId);
+        try {
+            membership = membershipService.findByUserId(userId);
+        } catch (Exception e) {
+            return ResponseEntity.internalServerError().build();
+        }
         
         if (membership != null) {
             return ResponseEntity.ok(membership);
@@ -59,34 +80,28 @@ public class MembershipController {
 
     }
 
-    @GetMapping("/getMembership")
-    public ResponseEntity<Membership> getMembershipById(@RequestParam Long id) { 
-        
-        Membership membership;
-
-        membership = membershipService.getMembershipById(id);
-        
-        if (membership != null) {
-            return ResponseEntity.ok(membership);
-        } else {
-            return ResponseEntity.notFound().build();
+    @DeleteMapping("/deleteMembership")
+    public ResponseEntity<String> deleteById(@RequestParam Long membershipId) {
+        try {
+            membershipService.deleteMembership(membershipId);
+            return ResponseEntity.ok("Membership deleted successfully.");
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Membership not found or could not be deleted.");
         }
     }
 
-    @DeleteMapping("/delete")
-    public ResponseEntity<String> deleteMembership(@RequestParam Long userId) {
+    @PutMapping("/update")
+    public ResponseEntity<Membership> updateMembership(@RequestParam Long userId, @RequestBody MembershipCreationRequest membershipCreationRequest) {
 
-        boolean deleted = false;
-        if (userId != null) {
-            deleted = membershipService.deleteMembershipById(userId);
-        }
+        
+        Membership updatedMembership = membershipService.updateMembership(userId, membershipCreationRequest);
 
-        if (deleted) {
-            return ResponseEntity.ok("Membership deleted successfully.");
+        if (updatedMembership != null) {
+            return ResponseEntity.ok(updatedMembership);
         } else {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Membership not found or could not be deleted.");
+            return ResponseEntity.notFound().build();
         }
-
+        
     }
     
 
