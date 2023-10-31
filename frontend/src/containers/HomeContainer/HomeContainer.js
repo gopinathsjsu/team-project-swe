@@ -25,7 +25,7 @@ const HomeContainer = () => {
   return (
     <div>
         <NavBar/>
-        <CarouselComponent/>
+        {/* <CarouselComponent/> */}
         <NewReleases moviesData={moviesData}/>
         <UpcomingMovies moviesData={moviesData}/>
     </div>
