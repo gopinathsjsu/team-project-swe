@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import NavBar from '../../components/NavBar'
-import CarouselComponent from '../../components/CarouselComponent'
+// import CarouselComponent from '../../components/CarouselComponent'
 import UpcomingMovies from '../../components/UpcomingMovies'
 import NewReleases from '../../components/NewReleases';
 
