@@ -1,15 +1,11 @@
 import React from 'react';
-import NavBar from '../components/NavBar';
-import UpcomingMovies from '../components/UpcomingMovies';
-import CarouselComponent from '../components/CarouselComponent';
+import HomeContainer from '../containers/HomeContainer';
 
 
 const Home = () => {
   return (
    <div>
-    <NavBar/>
-    <CarouselComponent/>
-    <UpcomingMovies/>
+    <HomeContainer/>
    </div>
   );
 }
