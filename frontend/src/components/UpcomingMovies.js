@@ -1,6 +1,6 @@
 import React from 'react'
 import Button from '@mui/material/Button';
-import MovieCard from '../MovieCard';
+import MovieCard from './MovieCard';
 const UpcomingMovies = ({moviesData}) => {
     // console.log("myData ",moviesData)
     // const data=[

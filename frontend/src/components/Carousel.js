@@ -1,6 +1,6 @@
 import React from 'react'
 import Carousel from 'react-material-ui-carousel'
-import CarouselItem from '../CarouselItem'
+import CarouselItem from './CarouselItem'
 
 const CarouselComponent = () => {
     var items = [
