@@ -1,6 +1,6 @@
 import React from 'react'
 import Button from '@mui/material/Button';
-import MovieCard from '../MovieCard';
+import MovieCard from './MovieCard';
 const NewReleases = ({moviesData}) => {
     
   return (
