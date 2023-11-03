@@ -1,8 +1,12 @@
 import React from 'react';
+import HomeContainer from '../containers/HomeContainer';
+
 
 const Home = () => {
   return (
-    <div className='underline text-red-950 text-center text-2xl'>HomeContainer</div>
+   <div>
+    <HomeContainer/>
+   </div>
   );
 }
 
