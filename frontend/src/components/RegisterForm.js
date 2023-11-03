@@ -1,6 +1,8 @@
 import React from 'react';
 import { Component } from 'react';
 import pic_2 from '../assets/pic_2.png';
+import Button from '@mui/material/Button';
+
 
 class RegisterForm extends Component {
   constructor(props) {
@@ -61,22 +63,31 @@ handleSubmit = (e) => {
 };
 render() {
   return (
-    <div>
-      <form onSubmit={this.handleSubmit}>
-        <h2>Registration Page</h2>
-        <img src={pic_2} alt="symbol1" />
+    <div className="min-h-screen flex items-center justify-center">
+      <form className="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4" onSubmit={this.handleSubmit}>
+        <h2 className="text-2xl text-center mb-6">Registration Page</h2>
+        <img  className="mx-auto mb-4 max-w-md w-full p-4" src={pic_2} alt="symbol1" />
         <br />
-        <label htmlFor="username">Username:</label>
+
+        <div className="mb-4">
+        <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="username">Username:</label>
           <input
+           className= "shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
             type="text"
             id="username"
             name="username"
             value={this.state.username}
             onChange={this.handleInputChange}
             required
-          /><br />
-          <label htmlFor="firstName">First Name:</label>
+          />
+          <br />
+          </div>
+
+
+        <div className="mb-4"> 
+          <label className="block text-gray-700 text-sm font-bold mb-2"  htmlFor="firstName">First Name:</label>
           <input
+            className= "shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
             type="text"
             id="firstName"
             name="firstName"
@@ -84,9 +95,12 @@ render() {
             onChange={this.handleInputChange}
             required
           /><br />
+          </div>
 
-          <label htmlFor="lastName">Last Name:</label>
+          <div className="mb-4"> 
+          <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="lastName">Last Name:</label>
           <input
+          className= "shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
             type="text"
             id="lastName"
             name="lastName"
@@ -94,6 +108,7 @@ render() {
             onChange={this.handleInputChange}
             required
           /><br />
+          </div>
 
         {/* <label for="username">Username:</label>
         <input type="text" id="username" name="username" required /><br /> */}
@@ -103,8 +118,9 @@ render() {
 
         <label for="lastname">Last Name:</label>
         <input type="text" id="lastname" name="lastname" required /><br /> */}
-
-        <label htmlFor="email">Email:</label>
+        
+        <div className="mb-4">
+        <label className="block text-gray-700 text-sm font-bold mb-2"  htmlFor="email">Email:</label>
         <input
             type="text"
             id="email"
@@ -113,10 +129,12 @@ render() {
             onChange={this.handleInputChange}
             required
           />
-        <span className="error">{this.state.emailError}</span><br />
+        <span className="text-red-500 text-xs italic error">{this.state.emailError}</span><br />
         <p>Password criteria : Atleast One A-Z/a-z,Atleast number, Atleast on special character from "@$!#^%*?&"</p>
-        <label htmlFor="password">Password (8 characters minimum):</label>
+        </div>
 
+        <div className="mb-4">
+        <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="password">Password (8 characters minimum):</label>
         <input
             type="password"
             id="password"
@@ -126,9 +144,11 @@ render() {
             minLength="8"
             required
           />
-        <span className="error">{this.state.passwordError}</span><br />
+        <span className="text-red-500 text-xs italic error">{this.state.passwordError}</span><br />
+        </div>
 
-        <label htmlFor="confirmPassword">Confirm Password:</label>
+        <div className="mb-4">
+        <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="confirmPassword">Confirm Password:</label>
           <input
             type="password"
             id="confirmPassword"
@@ -137,8 +157,8 @@ render() {
             onChange={this.handleInputChange}
             required
           />
-          <span className="error">{this.state.confirmPasswordError}</span><br />
-
+          <span className="text-red-500 text-xs italic error">{this.state.confirmPasswordError}</span><br />
+        </div>
 
         {/* <label for="email">Email:</label>
         <input type="text" id="email" name="email "required /><br />
@@ -148,8 +168,9 @@ render() {
 
         {/* <label for="confirmPassword">Confirm Password:(8 characters minimum)</label>
         <input type="password" id="confirmPassword" name="confirmPassword" minlength="8" required /><br /> */}
-
-          <label htmlFor="dob">Date of Birth:</label>
+          
+        <div className="mb-4">
+          <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="dob">Date of Birth:</label>
           <input
             type="date"
             id="dob"
@@ -158,8 +179,10 @@ render() {
             onChange={this.handleInputChange}
             required
           /><br />
+        </div>
 
-          <label htmlFor="phone">Phone Number:</label>
+        <div className="mb-4"> 
+          <label className="block text-gray-700 text-sm font-bold mb-2"  htmlFor="phone">Phone Number:</label>
           <input
             type="text"
             id="phone"
@@ -168,7 +191,7 @@ render() {
             onChange={this.handleInputChange}
             required
           /><br />
-
+         </div>
 
         {/* <label for="dob">Date of Birth:</label>
         <input type="date" id="dob" name="dob" required /><br />
@@ -177,8 +200,11 @@ render() {
         {/* we need not have Preferred Movie Genres (optional): */}
         {/* <label for="movieGenres">Preferred Movie Genres (optional):</label>
         <input type="text" id="movieGenres" name="movieGenres" /><br /> */}
-
-        <input type="submit" value="Register" />
+        <div className="mb-6 text-center">
+        <Button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+         type="submit" color="warning" value="Register">
+            Register </Button>
+         </div>
       </form>
     </div>
    );
