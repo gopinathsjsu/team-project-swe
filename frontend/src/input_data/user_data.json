@@ -1,0 +1,47 @@
+{
+    "users": [
+      {
+        "username": "vani",
+        "firstName": "vani vineela",
+        "lastName": "Aremanda",
+        "email": "vanivineela.aremanda@sjsu.edu",
+        "password": "Aremanda@12345",
+        "confirmPassword" : "Aremanda@12345",
+        "dob":"1998-02-05",
+        "phoneNumber": "9874563210"
+      },
+      {
+        "username": "nikhila",
+        "firstName": "bramaramba nikhila",
+        "lastName": "Aremanda",
+        "email": "nikhila.aremanda@sjsu.edu",
+        "password": "Aremanda@1234",
+        "confirmPassword" : "Aremanda@1234",
+        "dob":"1994-02-05",
+        "phoneNumber": "40849991449" 
+        
+      },
+      {
+        "username": "sridevi",
+        "firstName": "sridevi",
+        "lastName": "Aremanda",
+        "email": "sridevi.aremanda@sjsu.edu",
+        "password": "Aremanda@123",
+        "confirmPassword" : "Aremanda@123",
+        "dob":"1972-04-20",
+        "phoneNumber": "7989242732" 
+        
+      },
+      {
+        "username": "raghava",
+        "firstName": "venkataraghavarao",
+        "lastName": "Aremanda",
+        "email": "raghava.aremanda@sjsu.edu",
+        "password": "Aremanda@12",
+        "confirmPassword" : "Aremanda@12",
+        "dob":"1965-06-25",
+        "phoneNumber": "9876543201" 
+        
+      }
+    ]
+  }
