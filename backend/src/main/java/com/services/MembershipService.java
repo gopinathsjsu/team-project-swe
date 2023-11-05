@@ -64,7 +64,7 @@ public class MembershipService {
     }
 
     // delete membership record based on membership id
-    public void deleteMembership(Long id) throws InstanceNotFoundException {
+    public void deleteMembership(Long id) {
 
         try {
 

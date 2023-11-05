@@ -1,14 +1,14 @@
 package com.controllers;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import com.entities.Location;
 import com.services.LocationService;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/locations")
@@ -21,13 +21,19 @@ public class LocationController {
         this.locationService = locationService;
     }
 
+    @GetMapping("/getAll")
+    public ResponseEntity<List<Location>> getAllLocations() {
+        List<Location> locations = locationService.getAllLocations();
+        return ResponseEntity.ok(locations);
+    }
+
     @GetMapping("/getLocation")
     public ResponseEntity<Location> getLocationById(@RequestParam Long id) { 
         
         Location location;
 
         try {
-            location = locationService.getLocationById(id);
+            location = locationService.findLocationById(id);
         } catch (Exception e) {
             return ResponseEntity.badRequest().build();
         }
@@ -38,6 +44,32 @@ public class LocationController {
             return ResponseEntity.notFound().build();
         }
     }
+
+    @PostMapping("/create")
+    public ResponseEntity<Location> createLocation(@RequestParam String locationName) {
+        Location createdLocation = locationService.createLocation(locationName);
+
+        if (createdLocation != null) {
+            return ResponseEntity.ok(createdLocation);
+        } else {
+            return ResponseEntity.badRequest().build();
+        }
+    }
+
+    @DeleteMapping("/delete")
+    public ResponseEntity<String> deleteLocation(@RequestParam Long locationId) {
+        boolean success = locationService.deleteLocation(locationId);
+
+        if (success) {
+            return ResponseEntity.ok("Location deleted successfully.");
+        } else {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Location not found or could not be deleted.");
+        }
+    }
+
+
+
+
 
     // .. add more API endpoints as needed
 }

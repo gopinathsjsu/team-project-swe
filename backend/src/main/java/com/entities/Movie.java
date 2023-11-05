@@ -2,30 +2,39 @@ package com.entities;
 
 import jakarta.persistence.*;
 
+import java.util.Date;
+
 @Entity(name="movie")
 public class Movie {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long movieId;
     private String title;
-    private String director;
+    private float rating;
+    private Date releaseDate;
 
     @Enumerated(EnumType.STRING)
     private Genre genre;
 
-    public Movie(String title, String director, Genre genre) {
+    public Movie(String title, float rating, Date releaseDate, Genre genre) {
         this.title = title;
-        this.director = director;
+        this.rating = rating;
+        this.releaseDate = releaseDate;
         this.genre = genre;
     }
+
+    public Movie() { }
 
     public Long getMovieId() { return this.movieId; }
 
     public String getTitle() { return this.title; }
     public void setTitle(String title) { this.title = title; }
 
-    public String getDirector() { return this.director; }
-    public void setDirector(String director) { this.director = director; }
+    public float getRating() { return this.rating; }
+    public void setRating(float rating) { this.rating = rating; }
+
+    public Date getReleaseDate() { return this.releaseDate; }
+    public void setRating(Date releaseDate) { this.releaseDate = releaseDate; }
 
     public Genre getGenre() { return this.genre; }
     public void setGenre(Genre genre) { this.genre = genre; }
@@ -40,6 +49,7 @@ public class Movie {
         SCIENCE_FICTION,
         FANTASY,
         HISTORICAL,
-        CRIME
+        CRIME,
+        OTHER
     }
 }

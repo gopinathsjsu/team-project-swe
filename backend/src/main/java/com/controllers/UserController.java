@@ -73,12 +73,13 @@ public class UserController {
     }
 
     @DeleteMapping("/delete")
-    public ResponseEntity<String> deleteUser(Long userId) {
-       
-        try {
-            usersService.deleteUser(userId);
-            return ResponseEntity.ok("User and associate membership deleted successfully.");
-        } catch (Exception e) {
+    public ResponseEntity<String> deleteUser(@RequestParam Long userId) {
+
+        boolean success = usersService.deleteUser(userId);
+
+        if (success) {
+            return ResponseEntity.ok("User and associated membership deleted successfully.");
+        } else {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("User not found or could not be deleted.");
         }
         

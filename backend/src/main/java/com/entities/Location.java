@@ -14,6 +14,8 @@ public class Location {
         this.name=name;
     }
 
+    public Location() { }
+
     public Long getLocationId() { return this.locationId; }
 
     public String getLocation() { return this.name; }
