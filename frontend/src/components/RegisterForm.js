@@ -1,8 +1,8 @@
 import React from 'react';
 import { Component } from 'react';
 import pic_2 from '../assets/pic_2.png';
+import UserService from '../services/UserService';
 import Button from '@mui/material/Button';
-
 
 class RegisterForm extends Component {
   constructor(props) {
@@ -20,47 +20,77 @@ class RegisterForm extends Component {
       passwordError: '',
       confirmPasswordError: '',
     };
-}
-handleInputChange = (e) => {
-  const { name, value } = e.target;
-  this.setState({
-    [name]: value,
-    [`${name}Error`]: '', // Clear previous error message
-  });
+  }
+
+  handleInputChange = (e) => {
+    const { name, value } = e.target;
+    this.setState({
+      [name]: value,
+      [`${name}Error`]: '', // Clear previous error message
+    });
+  };
+
+  handleSubmit = (e) => {
+    e.preventDefault();
+
+    // Email validation
+    const emailPattern = /^\S+@\S+\.\S+$/;
+    if (!emailPattern.test(this.state.email)) {
+      this.setState({ emailError: 'Invalid email format' });
+      return;
+    }
+
+    // Password validation
+    const passwordPattern = /^(?![0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!#^%*?&])[A-Za-z\d@$!#^%*?&]{8,}$/;
+    if (!passwordPattern.test(this.state.password)) {
+      this.setState({
+        passwordError:
+          'Password must have at least one uppercase letter, one lowercase letter, one number(should not be the first character), and one special character. It must be at least 8 characters long.',
+      });
+      return;
+    }
+    //confirm Password validation
+    if (this.state.password !== this.state.confirmPassword) {
+      this.setState({
+        confirmPasswordError: 'Passwords do not match',
+      });
+      return;
+    }
+
+    console.log(this.state);
+
+    /* collect user data to be passed to backend 
+      to create user record in database */
+    const userData = {
+      firstName: this.state.firstName,
+      lastName: this.state.lastName,
+      email: this.state.email,
+      phone: this.state.phone,
+      dob: this.state.dob,
+      username: this.state.username,
+      password: this.state.password
+    };
+
+    // call UserService endpoint to post user data
+    // log result success or failure
+    UserService.createUser(userData).then((res) => {
+      console.log(res);
+    })
+
 };
 
-handleSubmit = (e) => {
-  e.preventDefault();
 
-  // Email validation
-  const emailPattern = /^\S+@\S+\.\S+$/;
-  if (!emailPattern.test(this.state.email)) {
-    this.setState({ emailError: 'Invalid email format' });
-    return;
-  }
 
-  // Password validation
-  const passwordPattern = /^(?![0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!#^%*?&])[A-Za-z\d@$!#^%*?&]{8,}$/;
-  if (!passwordPattern.test(this.state.password)) {
-    this.setState({
-      passwordError:
-        'Password must have at least one uppercase letter, one lowercase letter, one number(should not be the first character), and one special character. It must be at least 8 characters long.',
-    });
-    return;
-  }
-  //confirm Password validation
-  if (this.state.password !== this.state.confirmPassword) {
-    this.setState({
-      confirmPasswordError: 'Passwords do not match',
-    });
-    return;
-  }
 
-  // If both email and password are valid and confirm password is same as password , we can proceed with registration logic.
-  // Submit the form or perform other actions.
 
-  console.log('Registration successful');
-};
+// componentDidMount() {
+//   UserService.getAllUsers().then((response) => {
+//     this.setState({ users: response.data})
+// });
+// }
+
+
+
 render() {
   return (
     <div className="min-h-screen flex items-center justify-center">
