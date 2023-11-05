@@ -130,7 +130,7 @@ render() {
             required
           />
         <span className="text-red-500 text-xs italic error">{this.state.emailError}</span><br />
-        <p>Password criteria : Atleast One A-Z/a-z,Atleast number, Atleast on special character from "@$!#^%*?&"</p>
+        <p>Password criteria : Atleast One A-Z/a-z, Atleast one number, Atleast one special character from "@$!#^%*?&"</p>
         </div>
 
         <div className="mb-4">
