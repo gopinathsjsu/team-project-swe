@@ -13,9 +13,13 @@ public class Multiplex {
     @JoinColumn(name = "location_id")
     private Location location;
 
-    public Multiplex(String multiplexName) {
+    public Multiplex(String multiplexName, Location location) {
+
         this.name = multiplexName;
+        this.location = location;
     }
+
+    public Multiplex() { }
 
     public Long getMultiplexId() { return this.multiplexId; }
 
