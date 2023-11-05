@@ -64,7 +64,8 @@
         "dob":"1995-05-20",
         "phoneNumber": "5136090596" 
         
-      }
+      },
+
       {
         "username": "jagadessh",
         "firstName": "jagadesshsharma",
@@ -74,6 +75,17 @@
         "confirmPassword" : "Thegalapalli@12",
         "dob":"1989-05-25",
         "phoneNumber": "8309969929" 
+        
+      },
+      {
+        "username": "Sainath",
+        "firstName": "sainath",
+        "lastName": "Bommera",
+        "email": "sainath.bommera@sjsu.edu",
+        "password": "Sainath@12",
+        "confirmPassword" : "Sainath@12",
+        "dob":"1995-04-03",
+        "phoneNumber": "" 
         
       }
     ]
