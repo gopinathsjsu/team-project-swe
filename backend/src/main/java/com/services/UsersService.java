@@ -34,6 +34,10 @@ public class UsersService {
     // create a user
     public Users createUser(String firstName, String lastName, String email, String phone, 
         LocalDate dateOfBirth, String username, String password, Role role) {
+
+        if (role == null) {
+            role = Role.USER;
+        }
         Users user = new Users(firstName, lastName, email, 
             phone, dateOfBirth, username, password, role);
 
