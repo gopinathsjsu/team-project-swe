@@ -1,11 +1,10 @@
-import React, { useEffect, useState } from 'react'
-import NavBar from '../components/NavBar'
-import CarouselComponent from '../components/Carousel'
-import UpcomingMovies from '../components/UpcomingMovies'
-import NewReleases from '../components/NewReleases';
+import React, { useEffect, useMemo, useState } from 'react'
+import { useParams } from 'react-router-dom'
 
-const HomeContainer = () => {
+const MovieBooking = () => {
+    const { id } = useParams();
     const [moviesData, SetMoviesData]=useState([]);
+    const [movieInformation, SetMovieInformation]=useState([]);
     const options = {
         method: 'GET',
         headers: {
@@ -21,15 +20,22 @@ const HomeContainer = () => {
         .catch(err => console.error(err));
    
       },[])
-    
+      useEffect(()=>{
+        SetMovieInformation(moviesData.filter(data=>data.id==id)[0])
+      },[moviesData])
+      console.log(movieInformation)
+     
   return (
     <div>
-        <NavBar/>
-        <CarouselComponent/>
-        <NewReleases moviesData={moviesData}/>
-        <UpcomingMovies moviesData={moviesData}/>
+        {movieInformation && 
+        <div>
+            <h1>{movieInformation.title}</h1>
+            <h1>{movieInformation.overview}</h1>
+            
+            <h1>{movieInformation.popularity}</h1>
+        </div>}
     </div>
   )
 }
 
-export default HomeContainer;
+export default MovieBooking
