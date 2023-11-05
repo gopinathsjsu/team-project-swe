@@ -93,7 +93,6 @@ class RegisterForm extends Component {
 
 render() {
   return (
-    
     <div className="min-h-screen flex items-center justify-center">
       <form className="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4" onSubmit={this.handleSubmit}>
         <h2 className="text-2xl text-center mb-6">Registration Page</h2>
@@ -161,7 +160,7 @@ render() {
             required
           />
         <span className="text-red-500 text-xs italic error">{this.state.emailError}</span><br />
-        <p>Password criteria : Atleast One A-Z/a-z,Atleast number, Atleast on special character from "@$!#^%*?&"</p>
+        <p>Password criteria : Atleast One A-Z/a-z, Atleast one number, Atleast one special character from "@$!#^%*?&"</p>
         </div>
 
         <div className="mb-4">
