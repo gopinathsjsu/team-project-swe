@@ -14,10 +14,10 @@ function MembershipSelection() {
   return (
     <div className="min-h-screen flex items-center justify-center">
       <form className="bg-white shadow-md rounded px-8 pt-6  pb-8 mb-4" id="MembershipSelectionForm">
-      <h1 className="text-2xl text-center mb-6"> Membership Selection Page</h1>
-      <p>Choose your membership type:</p>
+      <h1 className="text-2xl text-center mb-6"> Premium Membership Payment Page</h1>
+      <p> Upgrade membership:</p>
 
-      <div className="mb-4 block text-gray-700 text-sm font-bold mb-2">
+      {/* <div className="mb-4 block text-gray-700 text-sm font-bold mb-2">
         <input
           type="radio"
           id="regular"
@@ -36,7 +36,7 @@ function MembershipSelection() {
             </ul>
           </div>
         
-      </div>
+      </div> */}
 
       <div className="mb-4 block text-gray-700 text-sm font-bold mb-2">
         <input
