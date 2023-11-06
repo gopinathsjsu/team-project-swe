@@ -1,5 +1,9 @@
 import React, { useEffect, useMemo, useState } from 'react'
 import { useParams } from 'react-router-dom'
+import NavBar from '../components/NavBar'
+import Button from '@mui/material/Button';
+import LocalMoviesRoundedIcon from '@mui/icons-material/LocalMoviesRounded';
+import ConfirmationNumberRoundedIcon from '@mui/icons-material/ConfirmationNumberRounded';
 
 const MovieBooking = () => {
     const { id } = useParams();
@@ -27,12 +31,20 @@ const MovieBooking = () => {
      
   return (
     <div>
+      <NavBar/>
         {movieInformation && 
-        <div>
-            <h1>{movieInformation.title}</h1>
-            <h1>{movieInformation.overview}</h1>
-            
-            <h1>{movieInformation.popularity}</h1>
+        <div className='flex bg-[#0F0F0F] pt-[100px]'>
+           <div className='w-1/4 ml-[40px] '>
+            <img src='https://assets-in.bmscdn.com/iedb/movies/images/mobile/thumbnail/xlarge/five-nights-at-freddy-s-et00363275-1693810842.jpg' />
+           </div>
+           <div className='w-2/3 text-white mr-[40px]'>
+            <h1 className='text-4xl font-bold'>{movieInformation.title}</h1>
+            <h3>{movieInformation.overview}</h3>
+            <div className='flex gap-[20px]'>
+            <Button startIcon={<LocalMoviesRoundedIcon/>} variant='outlined' color="success">Trailer</Button>
+            <Button startIcon={<ConfirmationNumberRoundedIcon/>} variant='outlined' color="success">Book Tickets</Button>
+            </div>
+           </div>
         </div>}
     </div>
   )
