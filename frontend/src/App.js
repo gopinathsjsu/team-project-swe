@@ -2,7 +2,7 @@ import React from 'react';
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
 
 import Home from './pages/Home';
-import Payment from './pages/Payment';
+//import Payment from './pages/Payment';
 import PaymentResult from './pages/PaymentResult'
 import MemberDashboard from './pages/MemberDashboard';
 import Register from './pages/Register';
@@ -14,7 +14,7 @@ const App = () => {
     <BrowserRouter>
       <Routes>
         <Route path="/" exact element={<Home />} />
-        <Route path="/" exact element={<Payment />} />
+        {/* //<Route path="/" exact element={<Payment />} /> */}
         <Route path="/" exact element={<PaymentResult />} />
         <Route path="/member" exact element={<MemberDashboard/>}/>
         <Route path="/register" exact element={<Register/>}/>
