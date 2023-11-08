@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import NavBar from '../components/NavBar'
-// import CarouselComponent from '../../components/CarouselComponent'
+import CarouselComponent from '../components/Carousel'
 import UpcomingMovies from '../components/UpcomingMovies'
 import NewReleases from '../components/NewReleases';
 
@@ -25,7 +25,7 @@ const HomeContainer = () => {
   return (
     <div>
         <NavBar/>
-        {/* <CarouselComponent/> */}
+        <CarouselComponent/>
         <NewReleases moviesData={moviesData}/>
         <UpcomingMovies moviesData={moviesData}/>
     </div>

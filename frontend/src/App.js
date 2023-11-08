@@ -5,6 +5,7 @@ import MemberDashboard from './pages/MemberDashboard';
 import Register from './pages/Register';
 import Login from './pages/Login';
 import MemberSelection from './pages/MemberSelection';
+import MovieBooking from './pages/MovieBooking';
 const App = () => {
   return (
 
@@ -15,6 +16,7 @@ const App = () => {
         <Route path="/register" exact element={<Register/>}/>
         <Route path="/login" exact element={<Login/>}/>
         <Route path="/memberSelection" exact element={<MemberSelection/>}/>
+        <Route path='/movie/:id' exact element={<MovieBooking/>}/>
       </Routes>
     </BrowserRouter>
 
