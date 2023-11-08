@@ -3,6 +3,7 @@ import NavBar from '../components/NavBar'
 import CarouselComponent from '../components/Carousel'
 import UpcomingMovies from '../components/UpcomingMovies'
 import NewReleases from '../components/NewReleases';
+import LocationHome from '../components/LocationHome';
 
 const HomeContainer = () => {
     const [moviesData, SetMoviesData]=useState([]);
@@ -26,6 +27,7 @@ const HomeContainer = () => {
     <div>
         <NavBar/>
         <CarouselComponent/>
+        <LocationHome/>
         <NewReleases moviesData={moviesData}/>
         <UpcomingMovies moviesData={moviesData}/>
     </div>
