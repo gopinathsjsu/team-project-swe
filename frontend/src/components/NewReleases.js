@@ -1,6 +1,7 @@
 import React from 'react'
 import Button from '@mui/material/Button';
 import MovieCard from './MovieCard';
+import { Link } from "react-router-dom";
 const NewReleases = ({moviesData}) => {
     
   return (
@@ -10,7 +11,7 @@ const NewReleases = ({moviesData}) => {
             <Button variant="outlined" size="medium">See All</Button>
         </div>
         <div className='grid grid-cols-5 gap-[10px] px-[50px] '>
-            {moviesData.map((data)=><MovieCard thumbnail="https://assets-in.bmscdn.com/iedb/movies/images/mobile/thumbnail/xlarge/five-nights-at-freddy-s-et00363275-1693810842.jpg" MovieName={data.original_title} />)}
+            {moviesData.map((data)=><Link to={{pathname:'/movie/'+data.id}}><MovieCard thumbnail="https://assets-in.bmscdn.com/iedb/movies/images/mobile/thumbnail/xlarge/five-nights-at-freddy-s-et00363275-1693810842.jpg" MovieName={data.original_title} /></Link>)}
         </div>
     </div>
   )

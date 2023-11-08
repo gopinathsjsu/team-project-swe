@@ -10,6 +10,6 @@ const CarouselItem = ({item}) => {
         <img alt='scrollImage' className='w-full h-[390px] ' src={item.imageLink} />
    </Paper>
   )
-}
+} 
 
 export default CarouselItem
