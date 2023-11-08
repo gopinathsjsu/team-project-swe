@@ -42,6 +42,51 @@
         "dob":"1965-06-25",
         "phoneNumber": "9876543201" 
         
+      },
+      {
+        "username": "nitya",
+        "firstName": "lakshmisrinitya",
+        "lastName": "Sunkara",
+        "email": "lakshmisrinitya.sunkara@sjsu.edu",
+        "password": "Sunkara@12",
+        "confirmPassword" : "Sunkara@12",
+        "dob":"2002-08-16",
+        "phoneNumber": "9259130940" 
+        
+      },
+      {
+        "username": "vamshi",
+        "firstName": "vamshikrishna",
+        "lastName": "Kovvur",
+        "email": "vamshikrishna.kovvuru@sjsu.edu",
+        "password": "Kovvuru@12",
+        "confirmPassword" : "Kovvuru@12",
+        "dob":"1995-05-20",
+        "phoneNumber": "5136090596" 
+        
+      },
+
+      {
+        "username": "jagadessh",
+        "firstName": "jagadesshsharma",
+        "lastName": "Thegalapalli",
+        "email": "jagadesshsharma.thegalapalli@sjsu.edu",
+        "password": "Thegalapalli@12",
+        "confirmPassword" : "Thegalapalli@12",
+        "dob":"1989-05-25",
+        "phoneNumber": "8309969929" 
+        
+      },
+      {
+        "username": "Sainath",
+        "firstName": "sainath",
+        "lastName": "Bommera",
+        "email": "sainath.bommera@sjsu.edu",
+        "password": "Sainath@12",
+        "confirmPassword" : "Sainath@12",
+        "dob":"1995-04-03",
+        "phoneNumber": "" 
+        
       }
     ]
   }

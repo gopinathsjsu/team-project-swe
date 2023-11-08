@@ -12,10 +12,12 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.CrossOrigin;
 
 import com.entities.Users;
 import com.services.UsersService;
 
+@CrossOrigin(origins = "http://localhost:3000")
 @RestController
 @RequestMapping("/api/users")
 public class UserController {
@@ -71,12 +73,13 @@ public class UserController {
     }
 
     @DeleteMapping("/delete")
-    public ResponseEntity<String> deleteUser(Long userId) {
-       
-        try {
-            usersService.deleteUser(userId);
-            return ResponseEntity.ok("User and associate membership deleted successfully.");
-        } catch (Exception e) {
+    public ResponseEntity<String> deleteUser(@RequestParam Long userId) {
+
+        boolean success = usersService.deleteUser(userId);
+
+        if (success) {
+            return ResponseEntity.ok("User and associated membership deleted successfully.");
+        } else {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("User not found or could not be deleted.");
         }
         
