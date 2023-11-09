@@ -1,6 +1,7 @@
 package com.controllers;
 
 import com.entities.Movie;
+import com.entities.Showtime;
 import com.services.MovieService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -21,6 +22,18 @@ public class MovieController {
         this.movieService = movieService;
     }
 
+
+    @GetMapping("/getAllMovieIds")
+    public ResponseEntity<List<Long>> getAllMovieIds() {
+        List<Long> movieIds = movieService.getAllMovieIds();
+        return ResponseEntity.ok(movieIds);
+    }
+
+    @GetMapping("/getShowTimes")
+    public ResponseEntity<List<Showtime>> getShowTimesForMovie(@RequestParam Long movieId) {
+        List<Showtime> showTimes = movieService.getShowtimesForMovie(movieId);
+        return ResponseEntity.ok(showTimes);
+    }
     @GetMapping("/getNewReleases")
     public ResponseEntity<List<Movie>> getNewReleases() {
         List<Movie> newReleases = movieService.getNewReleases();
@@ -38,7 +51,7 @@ public class MovieController {
 
         Movie createdMovie;
 
-        createdMovie = movieService.createMovie(movie.getTitle(), movie.getRating(), movie.getReleaseDate(), movie.getGenre());
+        createdMovie = movieService.createMovie(movie.getTitle(), movie.getRating(), movie.getReleaseDate(), movie.getGenre(), movie.getDuration());
 
         if (createdMovie != null) {
             return ResponseEntity.ok(createdMovie);
