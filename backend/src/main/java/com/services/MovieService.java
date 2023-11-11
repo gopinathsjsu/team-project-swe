@@ -72,12 +72,12 @@ public class MovieService {
     }
 
     // create Movie
-    public Movie createMovie(String title, float rating, Date releaseDate, Movie.Genre genre, String duration) {
+    public Movie createMovie(String title, float rating, Date releaseDate, Movie.Genre genre, String duration, String description) {
 
         if (genre == null) {
             genre = Movie.Genre.OTHER;
         }
-        Movie movie = new Movie(title, rating, releaseDate, genre, duration);
+        Movie movie = new Movie(title, rating, releaseDate, genre, duration, description);
 
         return movieRepository.save(movie);
 

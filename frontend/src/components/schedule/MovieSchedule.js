@@ -3,20 +3,24 @@ import { Stack } from "@mui/material";
 
 import ScheduleCard from "./ScheduleCard";
 
-const MovieSchedule = (movieId) => {
+const MovieSchedule = ({theaterId}) => {
+
+    // TODO: get specific movie schedule data for a specific theater
 
     // dummy movie schedule data
     const dummyScheduleData = [
-        {title: "Movie Title",
-        rating: "3",
-        duration: "1h",
-        times: [
-            "1:00pm",
-            "2:00pm",
-            "3:00pm",
-            "7:30pm"
-        ],
-        genre: "Action"
+        {
+            title: "Movie Title",
+            rating: "3",
+            duration: "1h",
+            times: [
+                "1:00pm",
+                "2:00pm",
+                "3:00pm",
+                "7:30pm"
+            ],
+            genre: "Action",
+            description: "lorem ipsum",
         }, 
         {
             title: "Movie Title",
@@ -28,7 +32,8 @@ const MovieSchedule = (movieId) => {
                 "3:45pm",
                 "7:30pm"
             ],
-            genre: "Mystery"
+            genre: "Mystery",
+            description: "lorem ipsum",
         },
         {
             title: "Movie Title",
@@ -40,7 +45,8 @@ const MovieSchedule = (movieId) => {
                 "3:45pm",
                 "7:30pm"
             ],
-            genre: "Romance"
+            genre: "Romance",
+            description: "lorem ipsum",
         },
         {
             title: "Movie Title",
@@ -52,7 +58,8 @@ const MovieSchedule = (movieId) => {
                 "3:45pm",
                 "7:30pm"
             ],
-            genre: "Horror"
+            genre: "Horror",
+            description: "lorem ipsum",
         }
     ];
 
@@ -60,7 +67,9 @@ const MovieSchedule = (movieId) => {
 
     // create ScheduleCard objects for each movie 
 
-     // temp map function
+    // temp map function
+    // for displaying ALL movie showtimes
+    // for a specific theater
     const displaySchedule = () => {
         return dummyScheduleData.map((item, index) => (
             <Stack 

@@ -51,7 +51,14 @@ public class MovieController {
 
         Movie createdMovie;
 
-        createdMovie = movieService.createMovie(movie.getTitle(), movie.getRating(), movie.getReleaseDate(), movie.getGenre(), movie.getDuration());
+        createdMovie = movieService.createMovie(
+                movie.getTitle(),
+                movie.getRating(),
+                movie.getReleaseDate(),
+                movie.getGenre(),
+                movie.getDuration(),
+                movie.getDescription()
+        );
 
         if (createdMovie != null) {
             return ResponseEntity.ok(createdMovie);
