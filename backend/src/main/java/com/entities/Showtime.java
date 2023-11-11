@@ -12,17 +12,17 @@ public class Showtime {
     private Long showtimeId;
     private LocalTime time;
     private LocalDate date;
-    private int duration;
 
     @ManyToOne
-    @JoinColumn(name = "schedule_id")
-    private Schedule schedule;
+    @JoinColumn(name = "movie_id")
+    private Movie movie;
 
-    public Showtime(LocalTime time, LocalDate date, int duration) {
+    public Showtime(LocalTime time, LocalDate date, Movie movie) {
         this.time = time;
         this.date = date;
-        this.duration = duration;
+        this.movie = movie;
     }
+    public Showtime() { }
 
     public Long getShowtimeId() { return this.showtimeId; }
 
@@ -31,8 +31,5 @@ public class Showtime {
 
     public LocalDate getMovieDate() { return this.date; }
     public void setMovieDate(LocalDate date) { this.date = date; }
-
-    public int getDuration() { return this.duration; }
-    public void setDuration(int duration) { this.duration = duration; }
 
 }

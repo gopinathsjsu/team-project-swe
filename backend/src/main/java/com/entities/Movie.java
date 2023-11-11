@@ -2,7 +2,9 @@ package com.entities;
 
 import jakarta.persistence.*;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 @Entity(name="movie")
 public class Movie {
@@ -12,15 +14,23 @@ public class Movie {
     private String title;
     private float rating;
     private Date releaseDate;
+    private String duration;
+
+    private String description;
+
+    @OneToMany(mappedBy = "movie", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Showtime> showtimes = new ArrayList<>();
 
     @Enumerated(EnumType.STRING)
     private Genre genre;
 
-    public Movie(String title, float rating, Date releaseDate, Genre genre) {
+    public Movie(String title, float rating, Date releaseDate, Genre genre, String duration, String description) {
         this.title = title;
         this.rating = rating;
         this.releaseDate = releaseDate;
         this.genre = genre;
+        this.duration = duration;
+        this.description = description;
     }
 
     public Movie() { }
@@ -38,6 +48,17 @@ public class Movie {
 
     public Genre getGenre() { return this.genre; }
     public void setGenre(Genre genre) { this.genre = genre; }
+
+    public String getDuration() { return this.duration; }
+    public void setDuration(String duration) { this.duration = duration; }
+
+    public String getDescription() { return this.description; }
+    public void setDescription(String description) { this.description = description; }
+
+    public List<Showtime> getShowtimes() { return this.showtimes; }
+
+    public void setShowtimes(List<Showtime> showtimes) { this.showtimes = showtimes; }
+    public void addShowtime(Showtime showtime) { this.showtimes.add(showtime); }
 
     public enum Genre {
         ACTION,

@@ -1,11 +1,13 @@
 package com.services;
 
 import com.entities.Movie;
+import com.entities.Showtime;
 import com.repositories.MovieRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.time.Instant;
 import java.util.Calendar;
@@ -18,6 +20,32 @@ public class MovieService {
     private final static Logger logger = LoggerFactory.getLogger(MovieService.class);
 
     public MovieService(MovieRepository movieRepository) { this.movieRepository = movieRepository; }
+
+
+    // get all Movie ids
+    public List<Long> getAllMovieIds() {
+        List<Movie> allMovies = movieRepository.findAll();
+
+        List<Long> ids = new ArrayList<>();
+
+        for (Movie movie: allMovies) {
+            ids.add(movie.getMovieId());
+        }
+        // Set duration and genre information for each movie if needed
+        return ids;
+    }
+
+    // get movie by id
+    public Movie findMovieById(Long movieId) {
+
+        return movieRepository.findById(movieId).orElse(null);
+    }
+
+    // get Showtimes given Movie id
+    public List<Showtime> getShowtimesForMovie(Long movieId) {
+        return movieRepository.findShowtimesByMovieId(movieId);
+    }
+
 
     // get Upcoming Movies
     public List<Movie> getUpcomingMovies() {
@@ -44,12 +72,12 @@ public class MovieService {
     }
 
     // create Movie
-    public Movie createMovie(String title, float rating, Date releaseDate, Movie.Genre genre) {
+    public Movie createMovie(String title, float rating, Date releaseDate, Movie.Genre genre, String duration, String description) {
 
         if (genre == null) {
             genre = Movie.Genre.OTHER;
         }
-        Movie movie = new Movie(title, rating, releaseDate, genre);
+        Movie movie = new Movie(title, rating, releaseDate, genre, duration, description);
 
         return movieRepository.save(movie);
 
