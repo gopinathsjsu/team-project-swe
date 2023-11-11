@@ -2,15 +2,15 @@ import React from "react";
 import { Card, CardContent, Typography, CardActions, Button, CardMedia } from "@mui/material";
 
 // retrieve schedule data from movie schedule
-const ScheduleCard = ({ data }) => {
+const ScheduleCard = ({ movie }) => {
 
-    const { title, rating, duration, times, genre } = data;
+    const { title, rating, duration, times, genre, description } = movie;
 
     // map over showtimes and create a button for each
     // that upon selection lead to seat selection page
     const displayShowtimes = () => {
-        return times.map((item, i) => (
-            <Button key={i} size="small">{item}</Button>
+        return times.map((showtime, i) => (
+            <Button key={i} size="small">{showtime}</Button>
         ));
     }
 
@@ -31,6 +31,9 @@ const ScheduleCard = ({ data }) => {
                     </Typography>
                     <Typography variant="body2" color="text.secondary">
                         Rating: {rating} | Duration: {duration} | Genre: {genre}
+                    </Typography>
+                    <Typography variant="body3" color="text.primary">
+                        {description}
                     </Typography>
                     <CardActions>
                         {displayShowtimes()}
