@@ -1,11 +1,6 @@
 import React, { useEffect, useState } from 'react'
-import NavBar from '../components/NavBar'
-import CarouselComponent from '../components/Carousel'
-import UpcomingMovies from '../components/UpcomingMovies'
 import NewReleases from '../components/NewReleases';
-import LocationHome from '../components/LocationHome';
-
-const HomeContainer = () => {
+const NewReleasesPage = () => {
     const [moviesData, SetMoviesData]=useState([]);
     const options = {
         method: 'GET',
@@ -22,16 +17,11 @@ const HomeContainer = () => {
         .catch(err => console.error(err));
    
       },[])
-    
   return (
     <div>
-        <NavBar/>
-        <CarouselComponent/>
-        <LocationHome/>
-        <NewReleases moviesData={moviesData} seeAll={true}/>
-        <UpcomingMovies moviesData={moviesData} seeAll={true}/>
+        <NewReleases moviesData={moviesData} seeAll={false}/>
     </div>
   )
 }
 
-export default HomeContainer;
+export default NewReleasesPage

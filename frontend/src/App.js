@@ -11,6 +11,8 @@ import Login from './pages/Login';
 import MemberSelection from './pages/MemberSelection';
 import MovieBooking from './pages/MovieBooking';
 import MovieSchedule from './components/schedule/MovieSchedule';
+import NewReleasesPage from './pages/NewReleasesPage';
+import UpcomingMoviesPage from './pages/UpcomingMoviesPage';
 const App = () => {
   return (
 
@@ -25,6 +27,8 @@ const App = () => {
         <Route path="/memberSelection" exact element={<MemberSelection/>}/>
         <Route path='/movie/:id' exact element={<MovieBooking/>}/>
         <Route path="/schedule" exact element={<MovieSchedule/>} />
+        <Route path='/newreleases' exact element={<NewReleasesPage/>}/>
+        <Route path='/upcomingmovies' exact element={<UpcomingMoviesPage/>}/>
       </Routes>
     </BrowserRouter>
 
