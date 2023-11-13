@@ -40,9 +40,9 @@ const LocationHome = () => {
         }
     ]
     return (
-        <div className='bg-[#fff] flex justify-between px-[30px] my-[10px]'>
+        <div className='bg-[#fff] flex gap-[30px] px-[30px] my-[10px]'>
             <FormControl sx={{ m: 1, minWidth: 250 }} size="small">
-                <InputLabel id="demo-select-small-label">Location</InputLabel>
+                <InputLabel id="demo-select-small-label">Select Location</InputLabel>
                 <Select
 
                     labelId="demo-select-small-label"
@@ -57,21 +57,25 @@ const LocationHome = () => {
                     {locations.map((data) => <MenuItem value={data.value}>{data.locationName}</MenuItem>)}
                 </Select>
             </FormControl>
-            <Paper 
-                component="form"
-                sx={{ p: '2px 4px', display: 'flex', alignItems: 'center', width: 400,border:'2px solid #A4B0BD' }}
-            >
+            <FormControl sx={{ m: 1, minWidth: 250 }} size="small">
+                <InputLabel id="demo-select-small-label">Select Multiplex</InputLabel>
+                <Select
 
-                <InputBase
-                    sx={{ ml: 1, flex: 1 }}
-                    placeholder="Search Movie"
-                    inputProps={{ 'aria-label': 'search google maps' }}
-                />
-                <IconButton type="button" sx={{ p: '10px' }} aria-label="search">
-                    <SearchIcon />
-                </IconButton>
+                    labelId="demo-select-small-label"
+                    id="demo-select-small"
+                    value={location}
+                    label="Location"
+                    onChange={handleChange}
+                >
+                    <MenuItem value="">
+                        <em>None</em>
+                    </MenuItem>
+                    {locations.map((data) => <MenuItem value={data.value}>{data.locationName}</MenuItem>)}
+                </Select>
+            </FormControl>
 
-            </Paper>
+
+                
         </div>
     )
 }
