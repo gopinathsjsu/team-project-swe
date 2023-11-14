@@ -1,7 +1,8 @@
-import React from "react";
-import { Stack } from "@mui/material";
+import React, {useState} from "react";
+import { Stack, Button } from "@mui/material";
 
 import ScheduleCard from "./ScheduleCard";
+import EditMovieSchedule from "../../components/admin/EditMovieSchedule";
 
 const MovieSchedule = ({theaterId}) => {
 
@@ -63,6 +64,20 @@ const MovieSchedule = ({theaterId}) => {
         }
     ];
 
+    const [openEditDialog, setOpenEditDialog] = useState(false);
+    const [selectedMovie, setSelectedMovie] = useState(null);
+
+    const handleEditMovie = (movie) => {
+        setSelectedMovie(movie);
+        setOpenEditDialog(true);
+    };
+
+    const handleSaveMovie = (updatedMovie) => {
+        // TODO: Handle saving updated movie to backend
+        console.log('Saving movie:', updatedMovie);
+        setOpenEditDialog(false);
+    };
+
     // get movies for specific movieId
 
     // create ScheduleCard objects for each movie 
@@ -79,7 +94,8 @@ const MovieSchedule = ({theaterId}) => {
                 justifyContent="center"
                 sx={{ minHeight: '20vh' }}
             >
-                <ScheduleCard data={item} />
+                <ScheduleCard movie={item} />
+                <Button onClick={() => handleEditMovie(item)}>Edit</Button>
             </Stack>
         ));
     }
@@ -88,6 +104,15 @@ const MovieSchedule = ({theaterId}) => {
         <div>
             {/* map through ScheduleCards and display them in Schedule */}
             {displaySchedule()}
+
+            <Button onClick={() => setOpenEditDialog(true)}>Add Movie</Button>
+
+            <EditMovieSchedule
+                open={openEditDialog}
+                handleClose={() => setOpenEditDialog(false)}
+                onSave={handleSaveMovie}
+                initialData={selectedMovie || {}}
+            />
         </div>
     );
 }
