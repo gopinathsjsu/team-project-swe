@@ -1,117 +1,126 @@
-import React, {useState} from "react";
+import React, {useState, useEffect} from "react";
 import { Stack, Button } from "@mui/material";
 
 import ScheduleCard from "./ScheduleCard";
 import EditMovieSchedule from "../../components/admin/EditMovieSchedule";
 
-const MovieSchedule = ({theaterId}) => {
+import axios from "axios";
 
-    // TODO: get specific movie schedule data for a specific theater
+const MovieSchedule = ({multiplexId, isAdmin}) => {
 
-    // dummy movie schedule data
-    const dummyScheduleData = [
-        {
-            title: "Movie Title",
-            rating: "3",
-            duration: "1h",
-            times: [
-                "1:00pm",
-                "2:00pm",
-                "3:00pm",
-                "7:30pm"
-            ],
-            genre: "Action",
-            description: "lorem ipsum",
-        }, 
-        {
-            title: "Movie Title",
-            rating: "4.5",
-            duration: "2h",
-            times: [
-                "1:30pm",
-                "2:00pm",
-                "3:45pm",
-                "7:30pm"
-            ],
-            genre: "Mystery",
-            description: "lorem ipsum",
-        },
-        {
-            title: "Movie Title",
-            rating: "2.4",
-            duration: "2h",
-            times: [
-                "1:30pm",
-                "2:00pm",
-                "3:45pm",
-                "7:30pm"
-            ],
-            genre: "Romance",
-            description: "lorem ipsum",
-        },
-        {
-            title: "Movie Title",
-            rating: "3.6",
-            duration: "1h30m",
-            times: [
-                "1:30pm",
-                "2:00pm",
-                "3:45pm",
-                "7:30pm"
-            ],
-            genre: "Horror",
-            description: "lorem ipsum",
-        }
-    ];
-
+    const [movieSchedules, setMovieSchedules] = useState([]);
     const [openEditDialog, setOpenEditDialog] = useState(false);
-    const [selectedMovie, setSelectedMovie] = useState(null);
+    const [selectedMovieSchedule, setSelectedMovieSchedule] = useState(null);
 
-    const handleEditMovie = (movie) => {
-        setSelectedMovie(movie);
+    useEffect(() => {
+        const fetchMovieSchedules = async () => {
+            try {
+                const response = await axios.get(`/api/schedules/multiplex/${multiplexId}`);
+                setMovieSchedules(response.data);
+            } catch (error) {
+                console.error('Error fetching movie schedules:', error);
+            }
+        };
+
+        fetchMovieSchedules();
+    }, [multiplexId]);
+
+    const handleEditMovieSchedule = (schedule) => {
+        setSelectedMovieSchedule(schedule);
         setOpenEditDialog(true);
     };
 
-    const handleSaveMovie = (updatedMovie) => {
-        // TODO: Handle saving updated movie to backend
-        console.log('Saving movie:', updatedMovie);
+    const handleSaveMovieSchedule = (updatedSchedule) => {
+        // TODO: updating schedule in the backend
+        console.log('Saving schedule:', updatedSchedule);
         setOpenEditDialog(false);
     };
 
-    // get movies for specific movieId
-
-    // create ScheduleCard objects for each movie 
-
-    // temp map function
-    // for displaying ALL movie showtimes
-    // for a specific theater
     const displaySchedule = () => {
-        return dummyScheduleData.map((item, index) => (
-            <Stack 
-                key={index} 
-                direction="row" 
+        return movieSchedules.map((schedule, index) => (
+            <Stack
+                key={index}
+                direction="row"
                 alignItems="center"
                 justifyContent="center"
                 sx={{ minHeight: '20vh' }}
             >
-                <ScheduleCard movie={item} />
-                <Button onClick={() => handleEditMovie(item)}>Edit</Button>
+                <ScheduleCard schedule={schedule} />
+                {isAdmin && (
+                    <Button onClick={() => handleEditMovieSchedule(schedule)}>Edit</Button>
+                )}
             </Stack>
         ));
-    }
+    };
+
+
+    // // dummy movie schedule data
+    // const dummyScheduleData = [
+    //     {
+    //         title: "Movie Title",
+    //         rating: "3",
+    //         duration: "1h",
+    //         times: [
+    //             "1:00pm",
+    //             "2:00pm",
+    //             "3:00pm",
+    //             "7:30pm"
+    //         ],
+    //         genre: "Action",
+    //         description: "lorem ipsum",
+    //     }, 
+    //     {
+    //         title: "Movie Title",
+    //         rating: "4.5",
+    //         duration: "2h",
+    //         times: [
+    //             "1:30pm",
+    //             "2:00pm",
+    //             "3:45pm",
+    //             "7:30pm"
+    //         ],
+    //         genre: "Mystery",
+    //         description: "lorem ipsum",
+    //     },
+    //     {
+    //         title: "Movie Title",
+    //         rating: "2.4",
+    //         duration: "2h",
+    //         times: [
+    //             "1:30pm",
+    //             "2:00pm",
+    //             "3:45pm",
+    //             "7:30pm"
+    //         ],
+    //         genre: "Romance",
+    //         description: "lorem ipsum",
+    //     },
+    //     {
+    //         title: "Movie Title",
+    //         rating: "3.6",
+    //         duration: "1h30m",
+    //         times: [
+    //             "1:30pm",
+    //             "2:00pm",
+    //             "3:45pm",
+    //             "7:30pm"
+    //         ],
+    //         genre: "Horror",
+    //         description: "lorem ipsum",
+    //     }
+    // ];
 
     return (
         <div>
-            {/* map through ScheduleCards and display them in Schedule */}
             {displaySchedule()}
 
-            <Button onClick={() => setOpenEditDialog(true)}>Add Movie</Button>
+            {isAdmin && <Button onClick={() => setOpenEditDialog(true)}>Add Movie Schedule</Button>}
 
             <EditMovieSchedule
                 open={openEditDialog}
                 handleClose={() => setOpenEditDialog(false)}
-                onSave={handleSaveMovie}
-                initialData={selectedMovie || {}}
+                onSave={handleSaveMovieSchedule}
+                initialData={selectedMovieSchedule || {}}
             />
         </div>
     );
