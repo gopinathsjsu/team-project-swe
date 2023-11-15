@@ -10,7 +10,7 @@ import { FormControl, InputLabel, NativeSelect, Card, CardContent } from '@mui/m
 
 import EditTheaterCapacity from '../../components/admin/EditTheaterCapacity';
 import EditDiscountPrices from '../../components/admin/EditDiscountPrices';
-import EditMovieSchedule from '../../components/admin/EditMovieSchedule';
+// import EditMovieSchedule from '../../components/admin/EditMovieSchedule';
 import MovieSchedule from '../../components/schedule/MovieSchedule';
 
 const AdminDashboard = () => {
@@ -82,8 +82,7 @@ const AdminDashboard = () => {
 
             <EditTheaterCapacity />
             <EditDiscountPrices />
-            <h2>Movie Schedule</h2>
-            <MovieSchedule theaterId={1} />
+            {multiplex && <MovieSchedule multiplexId={multiplex.multiplexId} isAdmin={true} />}
         </div>
 
     );
