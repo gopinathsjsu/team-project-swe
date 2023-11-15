@@ -1,7 +1,7 @@
 import React from 'react';
 import Button from '@mui/material/Button';
 
-const CancelTicketPage = () => {
+const CancelTicket = () => {
   const handleCancelTicket = () => {
     // Dummy logic for canceling a ticket
     alert('Ticket canceled successfully!');
@@ -22,4 +22,4 @@ const CancelTicketPage = () => {
   );
 };
 
-export default CancelTicketPage;
+export default CancelTicket;
