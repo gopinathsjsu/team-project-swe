@@ -4,6 +4,7 @@ import CarouselComponent from '../components/Carousel'
 import UpcomingMovies from '../components/UpcomingMovies'
 import NewReleases from '../components/NewReleases';
 import LocationHome from '../components/LocationHome';
+import LocationMultiplexDropdown from '../components/LocationMultiplexDropdown/LocationMultiplexDropdown';
 
 const HomeContainer = () => {
     const [moviesData, SetMoviesData]=useState([]);
@@ -27,7 +28,8 @@ const HomeContainer = () => {
     <div>
         <NavBar/>
         <CarouselComponent/>
-        <LocationHome/>
+        {/* <LocationHome/> */}
+        <LocationMultiplexDropdown/>
         <NewReleases moviesData={moviesData} seeAll={true}/>
         <UpcomingMovies moviesData={moviesData} seeAll={true}/>
     </div>
