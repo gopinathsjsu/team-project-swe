@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import Button from '@mui/material/Button';
 
-const RefundRequestPage = () => {
+const RequestRefund = () => {
   const [refundReason, setRefundReason] = useState('');
 
   const handleRequestRefund = () => {
@@ -33,4 +33,4 @@ const RefundRequestPage = () => {
   );
 };
 
-export default RefundRequestPage;
+export default RequestRefund;
