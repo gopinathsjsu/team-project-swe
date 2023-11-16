@@ -3,7 +3,7 @@ import NavBar from '../components/NavBar'
 import CarouselComponent from '../components/Carousel'
 import UpcomingMovies from '../components/UpcomingMovies'
 import NewReleases from '../components/NewReleases';
-import LocationHome from '../components/LocationHome';
+// import LocationHome from '../components/LocationHome';
 import LocationMultiplexDropdown from '../components/LocationMultiplexDropdown/LocationMultiplexDropdown';
 
 const HomeContainer = () => {
@@ -29,7 +29,7 @@ const HomeContainer = () => {
         <NavBar/>
         <CarouselComponent/>
         {/* <LocationHome/> */}
-        <LocationMultiplexDropdown/>
+        <LocationMultiplexDropdown isAdmin={false}/>
         <NewReleases moviesData={moviesData} seeAll={true}/>
         <UpcomingMovies moviesData={moviesData} seeAll={true}/>
     </div>
