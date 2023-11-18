@@ -8,17 +8,17 @@ public class Location {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long locationId;
-    private String name;
+    private String locationName;
 
     public Location(String name) {
-        this.name=name;
+        this.locationName =name;
     }
 
     public Location() { }
 
     public Long getLocationId() { return this.locationId; }
 
-    public String getLocation() { return this.name; }
-    public void setLocation(String location) { this.name = location; }
+    public String getLocation() { return this.locationName; }
+    public void setLocation(String location) { this.locationName = location; }
     
 }
