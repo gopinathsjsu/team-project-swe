@@ -1,9 +1,9 @@
 package com.entities;
 import jakarta.persistence.*;
 
-@Entity(name="multiplex")
+@Entity(name = "multiplex")
 public class Multiplex {
-    
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long multiplexId;
@@ -14,7 +14,6 @@ public class Multiplex {
     private Location location;
 
     public Multiplex(String multiplexName, Location location) {
-
         this.name = multiplexName;
         this.location = location;
     }

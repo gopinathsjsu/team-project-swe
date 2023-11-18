@@ -1,6 +1,8 @@
 package com.controllers;
 
+import com.entities.Movie;
 import com.entities.Schedule;
+import com.services.MovieService;
 import com.services.ScheduleService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -14,16 +16,16 @@ import java.util.Optional;
 @RequestMapping("/api/schedules")
 public class ScheduleController {
 
-    @Autowired
-    private ScheduleService scheduleService;
+    private final ScheduleService scheduleService;
+    private final MovieService movieService;
 
-    @PostMapping
-    public ResponseEntity<Schedule> createSchedule(@RequestBody Schedule schedule) {
-        Schedule savedSchedule = scheduleService.saveSchedule(schedule);
-        return new ResponseEntity<>(savedSchedule, HttpStatus.CREATED);
+    @Autowired
+    public ScheduleController(ScheduleService scheduleService, MovieService movieService) {
+        this.scheduleService = scheduleService;
+        this.movieService = movieService;
     }
 
-    @GetMapping
+    @GetMapping("/getAll")
     public ResponseEntity<List<Schedule>> getAllSchedules() {
         List<Schedule> schedules = scheduleService.getAllSchedules();
         return new ResponseEntity<>(schedules, HttpStatus.OK);
@@ -42,16 +44,23 @@ public class ScheduleController {
         return new ResponseEntity<>(schedules, HttpStatus.OK);
     }
 
+    @PostMapping
+    public ResponseEntity<Schedule> createSchedule(@RequestBody Schedule schedule) {
+        Schedule createdSchedule = scheduleService.saveSchedule(schedule);
+        return new ResponseEntity<>(createdSchedule, HttpStatus.CREATED);
+    }
+
     @PutMapping("/{id}")
     public ResponseEntity<Schedule> updateSchedule(@PathVariable Long id, @RequestBody Schedule updatedSchedule) {
         Optional<Schedule> existingSchedule = scheduleService.getScheduleById(id);
-
         if (existingSchedule.isPresent()) {
-            Schedule schedule = existingSchedule.get();
-            schedule.setMultiplex(updatedSchedule.getMultiplex());
-            schedule.setMovies(updatedSchedule.getMovies());
+            // Update the fields of the existing schedule with the data from updatedSchedule
+            Schedule scheduleToUpdate = existingSchedule.get();
+            scheduleToUpdate.setMultiplex(updatedSchedule.getMultiplex());
+            scheduleToUpdate.setMovies(updatedSchedule.getMovies());
 
-            Schedule savedSchedule = scheduleService.saveSchedule(schedule);
+            // Save the updated schedule
+            Schedule savedSchedule = scheduleService.saveSchedule(scheduleToUpdate);
             return new ResponseEntity<>(savedSchedule, HttpStatus.OK);
         } else {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
@@ -60,8 +69,44 @@ public class ScheduleController {
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteSchedule(@PathVariable Long id) {
-        if (scheduleService.getScheduleById(id).isPresent()) {
-            scheduleService.deleteSchedule(id);
+        scheduleService.deleteSchedule(id);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    }
+
+    @PostMapping("/{id}/addMovies")
+    public ResponseEntity<Schedule> addMoviesToSchedule(@PathVariable Long id, @RequestBody List<Long> movieIds) {
+        Optional<Schedule> existingSchedule = scheduleService.getScheduleById(id);
+
+        if (existingSchedule.isPresent()) {
+            Schedule scheduleToUpdate = existingSchedule.get();
+
+            List<Movie> moviesToAdd = movieService.getMoviesByIds(movieIds);
+
+            scheduleToUpdate.getMovies().addAll(moviesToAdd);
+
+            Schedule savedSchedule = scheduleService.saveSchedule(scheduleToUpdate);
+
+            return new ResponseEntity<>(savedSchedule, HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+    }
+
+    @DeleteMapping("/{scheduleId}/movies/{movieId}")
+    public ResponseEntity<Void> deleteMovieFromSchedule(
+            @PathVariable Long scheduleId,
+            @PathVariable Long movieId) {
+
+        Optional<Schedule> optionalSchedule = scheduleService.getScheduleById(scheduleId);
+        Optional<Movie> optionalMovie = Optional.ofNullable(movieService.getMovieById(movieId));
+
+        if (optionalSchedule.isPresent() && optionalMovie.isPresent()) {
+            Schedule schedule = optionalSchedule.get();
+            Movie movieToRemove = optionalMovie.get();
+
+            schedule.getMovies().remove(movieToRemove);
+            scheduleService.saveSchedule(schedule);
+
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         } else {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);

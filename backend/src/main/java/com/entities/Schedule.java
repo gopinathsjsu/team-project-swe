@@ -5,17 +5,17 @@ import jakarta.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
 
-@Entity(name="schedule")
+@Entity(name = "schedule")
 public class Schedule {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long scheduleId;
 
     @ManyToOne
-    @JoinColumn(name = "multiplex_id")
+    @JoinColumn(name = "multiplex_id", unique = true)  // Ensure a unique constraint
     private Multiplex multiplex;
 
-    @ManyToMany
+    @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(
             name = "schedule_movies",
             joinColumns = @JoinColumn(name = "schedule_id"),
@@ -41,5 +41,4 @@ public class Schedule {
     public void setMovies(List<Movie> movies) {
         this.movies = movies;
     }
-    
 }

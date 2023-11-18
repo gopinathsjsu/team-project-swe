@@ -10,12 +10,9 @@ import Login from './pages/Login';
 import MemberSelection from './pages/MemberSelection';
 import MovieBooking from './pages/MovieBooking';
 import MovieSchedule from './components/schedule/MovieSchedule';
-<<<<<<< HEAD
 import AdminDashboard from './pages/admin/AdminDashboard';
-=======
 import NewReleasesPage from './pages/NewReleasesPage';
 import UpcomingMoviesPage from './pages/UpcomingMoviesPage';
->>>>>>> origin
 const App = () => {
   return (
 
@@ -30,12 +27,9 @@ const App = () => {
         <Route path="/memberSelection" exact element={<MemberSelection/>}/>
         <Route path='/movie/:id' exact element={<MovieBooking/>}/>
         <Route path="/schedule" exact element={<MovieSchedule/>} />
-<<<<<<< HEAD
         <Route path="/admin" exact element={<AdminDashboard />} />
-=======
         <Route path='/newreleases' exact element={<NewReleasesPage/>}/>
         <Route path='/upcomingmovies' exact element={<UpcomingMoviesPage/>}/>
->>>>>>> origin
       </Routes>
     </BrowserRouter>
 

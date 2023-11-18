@@ -19,21 +19,26 @@ const LocationMultiplexDropdown = ({ isAdmin, setAdminLocation, setAdminMultiple
     };
 
     const handleMultiplexChange = (e) => {
-        setMultiplex(e.target.value);
+        const selectedMultiplex = getMultiplexOptions().find(option => option.locationName === e.target.value);
+        console.log('Selected Multiplex:', selectedMultiplex);
+        setMultiplex(selectedMultiplex);
+    
         if (isAdmin) {
-            setAdminMultiplex(e.target.value)
+            console.log('Admin Multiplex:', selectedMultiplex);
+            setAdminMultiplex(selectedMultiplex);
         }
-        
     };
 
     const getMultiplexOptions = () => {
         switch (location) {
             case 'San Jose, CA':
-                return [{multiplexId: 0, location: 'San Jose, CA', name: 'AMC Mercado'}, {multiplexId: 1, location: 'San Jose, CA', name: 'AMC SJ'}];
-            case 'San Francisco, CA':
-                return [{multiplexId: 2, location: 'San Francisco, CA', name: 'AMC SF'}, {multiplexId: 3, location: 'San Francisco, CA', name: 'AMC South SF'}];
-            case 'Fremont, CA':
-                return [{multiplexId: 4, location: 'Fremont, CA', name: 'AMC Fremont'}, {multiplexId: 5, location: 'Fremont, CA', name: 'AMC Pacific Commons'}];
+                return [{multiplexId: 5, location: 'San Jose, CA', locationName: 'AMC SJ'}];
+            case 'New York, NY':
+                return [{multiplexId: 6, location: 'New York, NY', locationName: 'Regal Times Square'}];
+            case 'Los Angeles, CA':
+                return [{multiplexId: 7, location: 'Los Angeles, CA', locationName: 'Cineplex LA'}];
+            case 'Chicago, IL':
+                return [{multiplexId: 8, location: 'Chicago, IL', locationName: 'Cineplex LA'}];
             default:
                 return [];
         }
@@ -53,8 +58,9 @@ const LocationMultiplexDropdown = ({ isAdmin, setAdminLocation, setAdminMultiple
                         >
                             <option value="">Select Location</option>
                             <option value="San Jose, CA">San Jose, CA</option>
-                            <option value="San Francisco, CA">San Francisco, CA</option>
-                            <option value="Fremont, CA">Fremont, CA</option>
+                            <option value="New York, NY">New York, NY</option>
+                            <option value="Los Angeles, CA">Los Angeles, CA</option>
+                            <option value="Chicago, IL">Chicago, IL</option>
                         </NativeSelect>
                     </FormControl>
 
@@ -70,8 +76,8 @@ const LocationMultiplexDropdown = ({ isAdmin, setAdminLocation, setAdminMultiple
                         >
                             <option value="">Select Multiplex</option>
                             {getMultiplexOptions().map((option) => (
-                                <option key={option.multiplexId} value={option.name}>
-                                    {option.name}
+                                <option key={option.multiplexId} value={option.locationName}>
+                                    {option.locationName}
                                 </option>
                             ))}
                         </NativeSelect>
