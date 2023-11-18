@@ -3,7 +3,10 @@ package com.services;
 import com.entities.Schedule;
 import com.repositories.ScheduleRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 
 import java.util.List;
 import java.util.Optional;
@@ -37,6 +40,4 @@ public class ScheduleService {
     public List<Schedule> getSchedulesByMultiplexId(Long multiplexId) {
         return scheduleRepository.findByMultiplexMultiplexId(multiplexId);
     }
-
-    // Add other API endpoints...
 }

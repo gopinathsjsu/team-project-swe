@@ -8,27 +8,31 @@ import axios from "axios";
 
 const MovieSchedule = ({multiplexId, isAdmin}) => {
 
-    const [movieSchedules, setMovieSchedules] = useState([]);
+    const [movieSchedule, setMovieSchedule] = useState([]);
     const [openEditDialog, setOpenEditDialog] = useState(false);
     const [selectedMovieSchedule, setSelectedMovieSchedule] = useState(null);
 
     useEffect(() => {
-        const fetchMovieSchedules = async () => {
+        console.log(multiplexId);
+        const fetchMovieSchedule = async () => {
             try {
                 const response = await axios.get(`/api/schedules/multiplex/${multiplexId}`);
-                setMovieSchedules(response.data);
+                setMovieSchedule(response.data);
             } catch (error) {
                 console.error('Error fetching movie schedules:', error);
             }
         };
 
-        fetchMovieSchedules();
+        // Fetch movie schedules only if multiplexId is available
+        if (multiplexId !== undefined) {
+            fetchMovieSchedule();
+        }
     }, [multiplexId]);
 
-    const handleEditMovieSchedule = (schedule) => {
-        setSelectedMovieSchedule(schedule);
-        setOpenEditDialog(true);
-    };
+    // const handleEditMovieSchedule = (schedule) => {
+    //     setSelectedMovieSchedule(schedule);
+    //     setOpenEditDialog(true);
+    // };
 
     const handleSaveMovieSchedule = (updatedSchedule) => {
         // TODO: updating schedule in the backend
@@ -37,20 +41,26 @@ const MovieSchedule = ({multiplexId, isAdmin}) => {
     };
 
     const displaySchedule = () => {
-        return movieSchedules.map((schedule, index) => (
-            <Stack
-                key={index}
-                direction="row"
-                alignItems="center"
-                justifyContent="center"
-                sx={{ minHeight: '20vh' }}
-            >
-                <ScheduleCard schedule={schedule} />
-                {isAdmin && (
-                    <Button onClick={() => handleEditMovieSchedule(schedule)}>Edit</Button>
-                )}
-            </Stack>
-        ));
+        if (movieSchedule.length > 0) {
+            const movies = movieSchedule[0].movies;
+            if (movies != null) {
+                return movies.map((movie, index) => (
+                    <Stack
+                        key={index}
+                        direction="row"
+                        alignItems="center"
+                        justifyContent="center"
+                        sx={{ minHeight: '20vh' }}
+                    >
+                        <ScheduleCard movie={movie} />
+                    </Stack>
+                ));
+            } else {
+                return <p>No movies for selected schedule!</p>
+            }
+        } else {
+            return <p>No schedule available!</p>
+        }
     };
 
 
@@ -114,7 +124,7 @@ const MovieSchedule = ({multiplexId, isAdmin}) => {
         <div>
             {displaySchedule()}
 
-            {isAdmin && <Button onClick={() => setOpenEditDialog(true)}>Add Movie Schedule</Button>}
+            {isAdmin && <Button onClick={() => setOpenEditDialog(true)}>Edit Movie Schedule</Button>}
 
             <EditMovieSchedule
                 open={openEditDialog}

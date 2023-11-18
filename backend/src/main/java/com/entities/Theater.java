@@ -11,12 +11,16 @@ public class Theater {
     private int capacity;
 
     @ManyToOne
-    @JoinColumn(name = "location_id")
-    private Location location;
+    @JoinColumn(name = "multiplex_id")
+    private Multiplex multiplex;
 
     public Theater(String name, int capacity) {
         this.name = name;
         this.capacity = capacity;
+    }
+
+    public Theater() {
+
     }
 
     public Long getTheaterId() { return this.theaterId; }
