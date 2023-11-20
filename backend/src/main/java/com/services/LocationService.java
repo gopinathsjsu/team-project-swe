@@ -51,4 +51,8 @@ public class LocationService {
         }
 
     }
+
+    public Location findByLocationName(String locationName) {
+        return locationRepository.findByLocationName(locationName);
+    }
 }

@@ -10,7 +10,9 @@ import com.services.LocationService;
 
 import java.util.List;
 
+
 @RestController
+@CrossOrigin(origins = "http://localhost:3000")
 @RequestMapping("/api/locations")
 public class LocationController {
     
@@ -42,6 +44,22 @@ public class LocationController {
             return ResponseEntity.ok(location);
         } else {
             return ResponseEntity.notFound().build();
+        }
+    }
+
+    // get Location by locationName
+    @GetMapping("/getByName/{locationName}")
+    public ResponseEntity<Location> getLocationByName(@PathVariable String locationName) {
+        try {
+            Location location = locationService.findByLocationName(locationName);
+
+            if (location != null) {
+                return ResponseEntity.ok(location);
+            } else {
+                return ResponseEntity.notFound().build();
+            }
+        } catch (Exception e) {
+            return ResponseEntity.internalServerError().build();
         }
     }
 
