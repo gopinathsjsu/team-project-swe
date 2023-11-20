@@ -1,89 +1,115 @@
-import React, { useState } from 'react';
-import NativeSelect from '@mui/material/NativeSelect';
+import React, { useState, useEffect } from 'react';
 import FormControl from '@mui/material/FormControl';
+import NativeSelect from '@mui/material/NativeSelect';
+import MultiplexService from '../../services/MultiplexService';
+import LocationService from '../../services/LocationService';
 
 
 const LocationMultiplexDropdown = ({ isAdmin, setAdminLocation, setAdminMultiplex }) => {
-    const [location, setLocation] = useState('');
+    const [locations, setLocations] = useState([]);
+    const [multiplexOptions, setMultiplexOptions] = useState([]);
+    const [locationName, setLocationName] = useState('');
     const [multiplex, setMultiplex] = useState({});
 
+    const fetchLocationOptions = async () => {
+        try {
+            const locationData = await LocationService.getAllLocations();
+            const options = locationData.map((locationObj) => ({
+                locationId: locationObj.locationId,
+                location: locationObj.location,
+            }));
+            setLocations(options);
+        } catch (error) {
+            console.error('Error fetching locations:', error);
+        }
+    };
+
+    const fetchMultiplexOptions = async (locationName) => {
+        try {
+            const locationNameData = await LocationService.getLocationByName(locationName);
+
+            const locationId = locationNameData.locationId;
+            const multiplexes = await MultiplexService.getMultiplexesByLocationId(locationId);
+
+            const options = multiplexes.map((multiplex) => ({
+                multiplexId: multiplex.multiplexId,
+                location: locationNameData.location,
+                locationName: multiplex.multiplexName,
+            }));
+            setMultiplexOptions(options);
+        } catch (error) {
+            console.error('Error fetching multiplex options:', error);
+        }
+    };
+
     const handleLocationChange = (e) => {
-        setLocation(e.target.value);
+        setLocationName(e.target.value);
         setMultiplex({});
+        
+        fetchMultiplexOptions(e.target.value);
 
         if (isAdmin) {
-            setAdminLocation(e.target.value)
+            setAdminLocation(e.target.value);
             setAdminMultiplex({});
         }
-       
     };
 
     const handleMultiplexChange = (e) => {
-        const selectedMultiplex = getMultiplexOptions().find(option => option.locationName === e.target.value);
+        const selectedMultiplex = multiplexOptions.find(option => option.locationName === e.target.value);
         console.log('Selected Multiplex:', selectedMultiplex);
         setMultiplex(selectedMultiplex);
-    
+
         if (isAdmin) {
             console.log('Admin Multiplex:', selectedMultiplex);
             setAdminMultiplex(selectedMultiplex);
         }
     };
 
-    const getMultiplexOptions = () => {
-        switch (location) {
-            case 'San Jose, CA':
-                return [{multiplexId: 5, location: 'San Jose, CA', locationName: 'AMC SJ'}];
-            case 'New York, NY':
-                return [{multiplexId: 6, location: 'New York, NY', locationName: 'Regal Times Square'}];
-            case 'Los Angeles, CA':
-                return [{multiplexId: 7, location: 'Los Angeles, CA', locationName: 'Cineplex LA'}];
-            case 'Chicago, IL':
-                return [{multiplexId: 8, location: 'Chicago, IL', locationName: 'Cineplex LA'}];
-            default:
-                return [];
-        }
-    };
+    useEffect(() => {
+        fetchLocationOptions();
+    }, []);
 
     return (
         <div className='flex gap-[30px] pl-[40px]  py-[25px]'>
-                    <FormControl  size='medium' sx={{ marginBottom: '0rem' }}>
-                        <NativeSelect
-                            variant='filled'
-                            value={location}
-                            onChange={handleLocationChange}
-                            inputProps={{
-                                name: 'location',
-                                id: 'location-select',
-                            }}
-                        >
-                            <option value="">Select Location</option>
-                            <option value="San Jose, CA">San Jose, CA</option>
-                            <option value="New York, NY">New York, NY</option>
-                            <option value="Los Angeles, CA">Los Angeles, CA</option>
-                            <option value="Chicago, IL">Chicago, IL</option>
-                        </NativeSelect>
-                    </FormControl>
+            <FormControl size='medium' sx={{ marginBottom: '0rem' }}>
+                <NativeSelect
+                    variant='filled'
+                    value={locationName}
+                    onChange={handleLocationChange}
+                    inputProps={{
+                        name: 'locationName',
+                        id: 'location-select',
+                    }}
+                >
+                    <option value="">Select Location</option>
+                    {locations.map((option) => (
+                        <option key={option.locationId} value={option.location}>
+                            {option.location}
+                        </option>
+                    ))}
+                </NativeSelect>
+            </FormControl>
 
-                    <FormControl sx={{ marginBottom: '0rem' }}>
-                        <NativeSelect
-                            value={multiplex}
-                            onChange={handleMultiplexChange}
-                            inputProps={{
-                                name: 'multiplex',
-                                id: 'multiplex-select',
-                            }}
-                            disabled={!location}
-                        >
-                            <option value="">Select Multiplex</option>
-                            {getMultiplexOptions().map((option) => (
-                                <option key={option.multiplexId} value={option.locationName}>
-                                    {option.locationName}
-                                </option>
-                            ))}
-                        </NativeSelect>
-                    </FormControl>
-                
-        </div>)
+            <FormControl sx={{ marginBottom: '0rem' }}>
+                <NativeSelect
+                    value={multiplex}
+                    onChange={handleMultiplexChange}
+                    inputProps={{
+                        name: 'multiplex',
+                        id: 'multiplex-select',
+                    }}
+                    disabled={!locationName}
+                >
+                    <option value="">Select Multiplex</option>
+                    {multiplexOptions.map((option) => (
+                        <option key={option.multiplexId} value={option.locationName}>
+                            {option.locationName}
+                        </option>
+                    ))}
+                </NativeSelect>
+            </FormControl>
+        </div>
+    );
 }
 
-export default LocationMultiplexDropdown
+export default LocationMultiplexDropdown;

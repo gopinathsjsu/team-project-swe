@@ -10,8 +10,8 @@ public class Location {
     private Long locationId;
     private String locationName;
 
-    public Location(String name) {
-        this.locationName =name;
+    public Location(String locationName) {
+        this.locationName = locationName;
     }
 
     public Location() { }

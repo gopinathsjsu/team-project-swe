@@ -1,6 +1,8 @@
 package com.controllers;
 
+import com.entities.Location;
 import com.entities.Multiplex;
+import com.services.LocationService;
 import com.services.MultiplexService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -10,6 +12,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
+@CrossOrigin(origins = "http://localhost:3000")
 @RequestMapping("/api/multiplexes")
 public class MultiplexController {
 
