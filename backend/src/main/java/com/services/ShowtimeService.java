@@ -27,7 +27,7 @@ public class ShowtimeService {
     }
 
     public Showtime createShowtime(Long movieId, LocalDate date, LocalTime startTime) {
-        Movie movie = movieService.findMovieById(movieId);
+        Movie movie = movieService.getMovieById(movieId);
         if (movie == null) {
             // Handle movie not found
             return null;
