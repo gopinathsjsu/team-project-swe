@@ -7,11 +7,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.Date;
+import java.util.*;
 import java.time.Instant;
-import java.util.Calendar;
-import java.util.List;
 
 @Service
 public class MovieService {
@@ -36,7 +33,7 @@ public class MovieService {
     }
 
     // get movie by id
-    public Movie findMovieById(Long movieId) {
+    public Movie getMovieById(Long movieId) {
 
         return movieRepository.findById(movieId).orElse(null);
     }
@@ -83,8 +80,6 @@ public class MovieService {
 
     }
 
-    // update Movie
-
     // delete Movie
     public boolean deleteMovie(Long id) {
         try {
@@ -96,5 +91,7 @@ public class MovieService {
         }
     }
 
-    
+    public List<Movie> getMoviesByIds(List<Long> movieIds) {
+        return movieRepository.findAllById(movieIds);
+    }
 }
