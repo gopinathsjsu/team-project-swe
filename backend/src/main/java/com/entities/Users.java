@@ -1,6 +1,8 @@
 package com.entities;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
@@ -31,6 +33,10 @@ public class Users {
     @OneToOne(mappedBy = "user", cascade = CascadeType.REMOVE, orphanRemoval =  true)
     private Membership membership;
 
+    @OneToMany(mappedBy = "user")
+    @JsonIgnore
+    private List<Ticket> tickets = new ArrayList<>();
+
     public Users(String firstName, String lastName, String email, String phone, 
         LocalDate dateOfBirth, String username, String password, Role role) {
         this.firstName = firstName;
@@ -42,6 +48,7 @@ public class Users {
         this.password = password;
         this.role = role;
         this.membership = null;
+        this.tickets = new ArrayList<>();
     }
 
     // default constructor
@@ -76,6 +83,8 @@ public class Users {
     @JsonIgnore
     public Membership getMembership() { return this.membership; }
     public void setMembership(Membership membership) { this.membership = membership; }
+
+    public List<Ticket> getTickets() { return this.tickets; }
     
     public enum Role {
         USER,

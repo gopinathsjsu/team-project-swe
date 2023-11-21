@@ -2,20 +2,17 @@ package com.controllers;
 
 import java.util.List;
 
+import com.entities.Ticket;
+import com.services.TicketService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.*;
 
 import com.entities.Users;
 import com.services.UsersService;
+
+import javax.management.InstanceNotFoundException;
 
 @RestController
 @CrossOrigin(origins = "http://localhost:3000")
@@ -23,17 +20,24 @@ import com.services.UsersService;
 public class UserController {
     
     private final UsersService usersService;
+    private final TicketService ticketService;
 
     @Autowired
-    public UserController(UsersService usersService) {
+    public UserController(UsersService usersService, TicketService ticketService) {
         this.usersService = usersService;
+        this.ticketService = ticketService;
     }
 
     @GetMapping("/getUsers")
     public ResponseEntity<List<Users>> getAllUsers() {
-        List<Users> users = usersService.getAllUsers();
-
-        return ResponseEntity.ok(users);
+        try {
+            List<Users> users = usersService.getAllUsers();
+            return ResponseEntity.ok(users);
+        } catch (Exception e) {
+            // Log the exception
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
     }
 
     @GetMapping("/getUser")
@@ -69,6 +73,18 @@ public class UserController {
         } else {
             return ResponseEntity.badRequest().build();
         }
+
+    }
+
+    @GetMapping("/{userId}/getTickets")
+    public ResponseEntity<List<Ticket>> getTickets(@PathVariable Long userId) {
+        try {
+            List<Ticket> tickets = ticketService.getTicketsByUserId(userId);
+            return new ResponseEntity<>(tickets, HttpStatus.OK);
+        } catch (InstanceNotFoundException e) {
+            return ResponseEntity.notFound().build();
+        }
+
 
     }
 
