@@ -1,12 +1,15 @@
 package com.services;
 
 import com.entities.Movie;
+import com.entities.Multiplex;
 import com.entities.Showtime;
+import com.entities.Theater;
 import com.repositories.ShowtimeRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.List;
 
@@ -26,16 +29,21 @@ public class ShowtimeService {
         return showtimeRepository.findByMovieMovieId(movieId);
     }
 
-    public Showtime createShowtime(Long movieId, LocalDate date, LocalTime startTime) {
+    public Showtime createShowtime(Long movieId, LocalDateTime startDateTime, Theater theater, Multiplex multiplex) {
         Movie movie = movieService.getMovieById(movieId);
         if (movie == null) {
-            // Handle movie not found
+            System.out.println("Movie does not exist, show time not created");
             return null;
         }
 
-        Showtime showTime = new Showtime(startTime, date, movie);
-        return showtimeRepository.save(showTime);
+        Showtime showtime = new Showtime(
+                startDateTime.toLocalTime(),
+                startDateTime.toLocalDate(),
+                movie,
+                theater,
+                multiplex
+        );
+        return showtimeRepository.save(showtime);
     }
 
-    // Other methods...
 }
