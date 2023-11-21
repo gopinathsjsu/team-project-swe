@@ -1,14 +1,15 @@
 package com.controllers;
 
-import com.entities.Location;
+import com.entities.Theater;
 import com.entities.Multiplex;
-import com.services.LocationService;
 import com.services.MultiplexService;
+import com.services.TheaterService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.management.InstanceNotFoundException;
 import java.util.List;
 
 @RestController
@@ -17,10 +18,12 @@ import java.util.List;
 public class MultiplexController {
 
     private final MultiplexService multiplexService;
+    private final TheaterService theaterService;
 
     @Autowired
-    public MultiplexController(MultiplexService multiplexService) {
+    public MultiplexController(MultiplexService multiplexService, TheaterService theaterService) {
         this.multiplexService = multiplexService;
+        this.theaterService = theaterService;
     }
 
     // get Multiplex by location id
@@ -53,6 +56,13 @@ public class MultiplexController {
         } else {
             return ResponseEntity.notFound().build();
         }
+    }
+
+    // get theaters for multiplex
+    @GetMapping("/{multiplexId}/getTheaters")
+    public ResponseEntity<List<Theater>> getTheatersByMultiplexId(@PathVariable Long multiplexId) throws InstanceNotFoundException {
+        List<Theater> theaters = theaterService.getTheatersByMultiplexId(multiplexId);
+        return new ResponseEntity<>(theaters, HttpStatus.OK);
     }
 
     // delete Multiplex

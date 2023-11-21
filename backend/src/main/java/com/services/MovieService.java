@@ -38,6 +38,11 @@ public class MovieService {
         return movieRepository.findById(movieId).orElse(null);
     }
 
+    // get movie by title
+    public Optional<Movie> findByTitle(String title) {
+        return movieRepository.findByTitle(title);
+    }
+
     // get Showtimes given Movie id
     public List<Showtime> getShowtimesForMovie(Long movieId) {
         return movieRepository.findShowtimesByMovieId(movieId);
