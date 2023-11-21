@@ -1,13 +1,15 @@
 package com.controllers;
 
 import com.entities.Showtime;
+import com.repositories.MultiplexRepository;
+import com.repositories.TheaterRepository;
 import com.services.ShowtimeService;
+import com.services.MovieService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.time.LocalDate;
-import java.time.LocalTime;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @RestController
@@ -16,10 +18,21 @@ import java.util.List;
 public class ShowtimeController {
 
     private final ShowtimeService showtimeService;
+    private final MovieService movieService;
+    private final TheaterRepository theaterRepository;
+    private final MultiplexRepository multiplexRepository;
 
     @Autowired
-    public ShowtimeController(ShowtimeService showTimeService) {
+    public ShowtimeController(
+            ShowtimeService showTimeService,
+            MovieService movieService,
+            TheaterRepository theaterRepository,
+            MultiplexRepository multiplexRepository
+    ) {
         this.showtimeService = showTimeService;
+        this.movieService = movieService;
+        this.theaterRepository = theaterRepository;
+        this.multiplexRepository = multiplexRepository;
     }
 
     @GetMapping("/getByMovie")
@@ -29,11 +42,26 @@ public class ShowtimeController {
     }
 
     @PostMapping("/create")
-    public ResponseEntity<Showtime> createShowtime(@RequestParam Long movieId, @RequestParam String startTime,
-                                                   @RequestParam CharSequence movieDate) {
-        LocalTime start = LocalTime.parse(startTime);
-        LocalDate date = LocalDate.parse(movieDate);
-        Showtime createdShowTime = showtimeService.createShowtime(movieId, date, start);
+    public ResponseEntity<Showtime> createShowtime(
+            @RequestParam Long movieId,
+            @RequestParam LocalDateTime showDateTime,
+            @RequestParam Long theaterId,
+            @RequestParam Long multiplexId
+    ) {
+
+        if (movieService.getMovieById(movieId) == null ||
+                theaterRepository.findById(theaterId).isEmpty() ||
+                multiplexRepository.findById(multiplexId).isEmpty()) {
+            return ResponseEntity.notFound().build();
+        }
+
+        // Create Showtime
+        Showtime createdShowTime = showtimeService.createShowtime(
+                movieId,
+                showDateTime,
+                theaterRepository.findById(theaterId).get(),
+                multiplexRepository.findById(multiplexId).get()
+        );
 
         if (createdShowTime != null) {
             return ResponseEntity.ok(createdShowTime);
