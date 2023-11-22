@@ -27,6 +27,8 @@ public class Users {
     private String username;
     private String password;
 
+    private int rewardPoints = 0;
+
     @Enumerated(EnumType.STRING)
     private Role role;
 
@@ -49,6 +51,7 @@ public class Users {
         this.role = role;
         this.membership = null;
         this.tickets = new ArrayList<>();
+        this.rewardPoints = 0;
     }
 
     // default constructor
@@ -85,6 +88,9 @@ public class Users {
     public void setMembership(Membership membership) { this.membership = membership; }
 
     public List<Ticket> getTickets() { return this.tickets; }
+
+    public int getRewardPoints() { return this.rewardPoints; }
+    public void setRewardPoints(int rewardPoints) { this.rewardPoints = rewardPoints; }
     
     public enum Role {
         USER,

@@ -7,10 +7,14 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 
 import com.entities.Users;
 import com.entities.Users.Role;
 import com.repositories.UsersRepository;
+import org.springframework.web.bind.annotation.PathVariable;
+
+import javax.management.InstanceNotFoundException;
 
 @Service
 public class UsersService {
@@ -43,6 +47,28 @@ public class UsersService {
             phone, dateOfBirth, username, password, role);
 
         return userRepository.save(user);
+    }
+
+    // get a user's reward points
+    public int getUserRewardPoints(Long userId) throws InstanceNotFoundException {
+        Users user = userRepository.findById(userId).orElse(null);
+        if (user != null) {
+            return user.getRewardPoints();
+        } else {
+            throw new InstanceNotFoundException("User not found");
+        }
+    }
+
+    // add to user's reward points
+    public void incrementUserRewardPoints(Long userId, int rewardPoints) throws InstanceNotFoundException {
+        Optional<Users> userOptional = userRepository.findById(userId);
+        if (userOptional.isPresent()) {
+            Users user = userOptional.get();
+            user.setRewardPoints(user.getRewardPoints() + rewardPoints);
+            userRepository.save(user);
+        } else {
+            throw new InstanceNotFoundException("User not found");
+        }
     }
 
     // delete user by its id
