@@ -12,6 +12,10 @@ public class Theater {
     private int capacity;
 
     @ManyToOne
+    @JoinColumn(name = "movie_id")
+    private Movie assignedMovie;
+
+    @ManyToOne
     @JoinColumn(name = "multiplex_id")
     private Multiplex multiplex;
 
@@ -31,5 +35,8 @@ public class Theater {
 
     public int getCapacity() { return this.capacity; }
     public void setCapacity(int capacity) { this.capacity = capacity; }
-    
+
+    public Movie getAssignedMovie() { return this.assignedMovie; }
+    public void setAssignedMovie(Movie movie) { this.assignedMovie = movie; }
+
 }
