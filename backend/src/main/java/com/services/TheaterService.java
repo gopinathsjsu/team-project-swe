@@ -1,9 +1,12 @@
 package com.services;
 
+import com.entities.Movie;
 import com.entities.Multiplex;
 import com.entities.Theater;
+import com.repositories.MovieRepository;
 import com.repositories.MultiplexRepository;
 import com.repositories.TheaterRepository;
+import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -15,11 +18,16 @@ import java.util.Optional;
 public class TheaterService {
     private final TheaterRepository theaterRepository;
     private final MultiplexRepository multiplexRepository;
+    private final MovieRepository movieRepository;
 
     @Autowired
-    public TheaterService(TheaterRepository theaterRepository, MultiplexRepository multiplexRepository) {
+    public TheaterService(TheaterRepository theaterRepository,
+                          MultiplexRepository multiplexRepository,
+                          MovieRepository movieRepository) {
+
         this.theaterRepository = theaterRepository;
         this.multiplexRepository = multiplexRepository;
+        this.movieRepository = movieRepository;
     }
 
     public List<Theater> getTheatersByMultiplexId(Long multiplexId) throws InstanceNotFoundException {
@@ -36,5 +44,35 @@ public class TheaterService {
     public Optional<Theater> findByName(String name) {
         return theaterRepository.findByName(name);
     }
-    
+
+    public void assignMovieToTheater(Theater theater, Long movieId) {
+        Optional<Movie> movie = movieRepository.findById(movieId);
+        if (movie.isPresent()) {
+            theater.setAssignedMovie(movie.get());
+            theaterRepository.save(theater);
+        } else {
+            throw new EntityNotFoundException("Movie not found with ID: " + movieId);
+        }
+
+    }
+
+    public Movie findAssignedMovieIdByTheaterId(Long theaterId) {
+        Optional<Theater> theaterOptional = theaterRepository.findById(theaterId);
+
+        if (theaterOptional.isPresent()) {
+            Theater theater = theaterOptional.get();
+            return theater.getAssignedMovie();
+        } else {
+            throw new EntityNotFoundException("Theater not found with theaterId:" + theaterId);
+        }
+    }
+
+    public List<Theater> getAllTheaters() {
+        return theaterRepository.findAll();
+    }
+
+    public Theater getTheaterById(Long theaterId) {
+        return theaterRepository.findById(theaterId)
+                .orElseThrow(() -> new EntityNotFoundException("Theater not found with ID: " + theaterId));
+    }
 }

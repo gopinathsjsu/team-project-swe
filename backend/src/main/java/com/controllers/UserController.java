@@ -88,6 +88,25 @@ public class UserController {
 
     }
 
+    @GetMapping("{userId}/getRewardPoints")
+    public ResponseEntity<Integer> getRewardPoints(@PathVariable Long userId) {
+        try {
+            return ResponseEntity.ok(usersService.getUserRewardPoints(userId));
+        } catch (InstanceNotFoundException err) {
+            return ResponseEntity.notFound().build();
+        }
+    }
+
+    @PostMapping("{userId}/incrementRewardPoints")
+    public ResponseEntity<String> incrementRewardPoints(@PathVariable Long userId, @RequestParam int rewardPoints) {
+        try {
+            usersService.incrementUserRewardPoints(userId, rewardPoints);
+            return ResponseEntity.ok("Reward points incremented successfully");
+        } catch (InstanceNotFoundException e) {
+            return ResponseEntity.notFound().build();
+        }
+    }
+
     @DeleteMapping("/delete")
     public ResponseEntity<String> deleteUser(@RequestParam Long userId) {
 
