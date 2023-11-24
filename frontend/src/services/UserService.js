@@ -1,8 +1,26 @@
 import axios from 'axios';
+import authHeader from '../services/auth/auth-header';
 
 const USERS_BASE_URL = 'http://localhost:8080/api/users';
 
 class UserService {
+
+    // methods to check auth backend
+    getPublicContent() {
+        return axios.get(USERS_BASE_URL + 'all');
+    }
+
+    getUserBoard() {
+        return axios.get(USERS_BASE_URL + 'user', { headers: authHeader() });
+    }
+
+    getMemberBoard() { 
+        return axios.get(USERS_BASE_URL + 'member', { headers: authHeader() });
+    }
+
+    getAdminBoard() {
+        return axios.get(USERS_BASE_URL + 'admin', { headers: authHeader() });
+    }
 
     async getAllUsers() {
         return await axios.get(USERS_BASE_URL + '/getUsers').catch(function (error) {

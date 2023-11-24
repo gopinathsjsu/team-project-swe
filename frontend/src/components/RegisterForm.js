@@ -1,96 +1,108 @@
-import React from "react";
-import { Component } from "react";
+import React, {useState, useRef} from "react";
 import pic_2 from "../assets/pic_2.png";
 import UserService from "../services/UserService";
+import AuthService from "../services/auth/auth.service";
 import Button from "@mui/material/Button";
-import { createUserWithEmailAndPassword } from "firebase/auth";
-class RegisterForm extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      email: "",
-      password: "",
-      confirmPassword: "",
-      username: "",
-      firstName: "",
-      lastName: "",
-      dob: "",
-      phone: "",
-      emailError: "",
-      passwordError: "",
-      confirmPasswordError: "",
-    };
-  }
 
-  handleInputChange = (e) => {
+
+const RegisterForm = () => {
+
+  const form = useRef();
+  const [successful, setSuccessful] = useState(false);
+
+
+  const [formData, setFormData] = useState({
+    email: '',
+    password: '',
+    confirmPassword: '',
+    username: '',
+    firstName: '',
+    lastName: '',
+    dob: '',
+    phone: '',
+    emailError: '',
+    passwordError: '',
+    confirmPasswordError: '',
+  });
+
+  const handleInputChange = (e) => {
     const { name, value } = e.target;
-    this.setState({
+    setFormData({
+      ...formData,
       [name]: value,
-      [`${name}Error`]: "", // Clear previous error message
+      [`${name}Error`]: '',
     });
   };
 
-  handleSubmit = (e) => {
+  const handleSubmit = (e) => {
     e.preventDefault();
 
-    // Email validation
     const emailPattern = /^\S+@\S+\.\S+$/;
-    if (!emailPattern.test(this.state.email)) {
-      this.setState({ emailError: "Invalid email format" });
+    if (!emailPattern.test(formData.email)) {
+      setFormData({ ...formData, emailError: 'Invalid email format' });
       return;
     }
-
-    // Password validation
+    
     const passwordPattern =
       /^(?![0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!#^%*?&])[A-Za-z\d@$!#^%*?&]{8,}$/;
-    if (!passwordPattern.test(this.state.password)) {
-      this.setState({
+    if (!passwordPattern.test(formData.password)) {
+      setFormData({
+        ...formData,
         passwordError:
-          "Password must have at least one uppercase letter, one lowercase letter, one number(should not be the first character), and one special character. It must be at least 8 characters long.",
-      });
-      return;
-    }
-    //confirm Password validation
-    if (this.state.password !== this.state.confirmPassword) {
-      this.setState({
-        confirmPasswordError: "Passwords do not match",
+          'Password must have at least one uppercase letter, one lowercase letter, one number(should not be the first character), and one special character. It must be at least 8 characters long.',
       });
       return;
     }
 
-    console.log(this.state);
+    if (formData.password !== formData.confirmPassword) {
+      setFormData({
+        ...formData,
+        confirmPasswordError: 'Passwords do not match',
+      });
+      return;
+    }
+
+    // console.log(formData);
 
     /* collect user data to be passed to backend 
-      to create user record in database */
+      to create a user record in the database */
     const userData = {
-      firstName: this.state.firstName,
-      lastName: this.state.lastName,
-      email: this.state.email,
-      phone: this.state.phone,
-      dob: this.state.dob,
-      username: this.state.username,
-      password: this.state.password,
+      // firstName: formData.firstName,
+      // lastName: formData.lastName,
+      email: formData.email,
+      // phone: formData.phone,
+      // dob: formData.dob,
+      username: formData.username,
+      password: formData.password,
+
+
     };
 
-    // call UserService endpoint to post user data
-    // log result success or failure
-    UserService.createUser(userData).then((res) => {
-      console.log(res);
-    });
+    // call AuthService endpoint to post user data
+    // log the result success or failure
+    AuthService.register(userData.username, userData.email, userData.password)
+      .then((response) => {
+        console.log(response);
+        setSuccessful(true);
+      })
+      .catch((error) => {
+        console.log(error);
+        setSuccessful(false);
+      });
+
+    // call UserService endpoint to update the user record
+    // with other fields
+    // UserService.createUser(userData).then((res) => {
+    //   console.log(res);
+    // });
   };
 
-  // componentDidMount() {
-  //   UserService.getAllUsers().then((response) => {
-  //     this.setState({ users: response.data})
-  // });
-  // }
-
-  render() {
     return (
       <div className="min-h-screen flex items-center justify-center">
         <form
           className="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4"
-          onSubmit={this.handleSubmit}
+          ref={form}
+          onSubmit={handleSubmit}
         >
           <h2 className="text-2xl text-center mb-6">Registration Page</h2>
           <img
@@ -112,8 +124,8 @@ class RegisterForm extends Component {
               type="text"
               id="username"
               name="username"
-              value={this.state.username}
-              onChange={this.handleInputChange}
+              value={formData.username}
+              onChange={handleInputChange}
               required
             />
             <br />
@@ -131,8 +143,8 @@ class RegisterForm extends Component {
               type="text"
               id="firstName"
               name="firstName"
-              value={this.state.firstName}
-              onChange={this.handleInputChange}
+              value={formData.firstName}
+              onChange={handleInputChange}
               required
             />
             <br />
@@ -150,21 +162,12 @@ class RegisterForm extends Component {
               type="text"
               id="lastName"
               name="lastName"
-              value={this.state.lastName}
-              onChange={this.handleInputChange}
+              value={formData.lastName}
+              onChange={handleInputChange}
               required
             />
             <br />
           </div>
-
-          {/* <label for="username">Username:</label>
-        <input type="text" id="username" name="username" required /><br /> */}
-
-          {/* <label for="fullname">Full Name:</label>
-        <input type="text" id="fullname" name="fullname" required /><br />
-
-        <label for="lastname">Last Name:</label>
-        <input type="text" id="lastname" name="lastname" required /><br /> */}
 
           <div className="mb-4">
             <label
@@ -178,12 +181,12 @@ class RegisterForm extends Component {
               type="text"
               id="email"
               name="email"
-              value={this.state.email}
-              onChange={this.handleInputChange}
+              value={formData.email}
+              onChange={handleInputChange}
               required
             />
             <span className="text-red-500 text-xs italic error">
-              {this.state.emailError}
+              {formData.emailError}
             </span>
             <br />
             <p>
@@ -204,13 +207,13 @@ class RegisterForm extends Component {
               type="password"
               id="password"
               name="password"
-              value={this.state.password}
-              onChange={this.handleInputChange}
+              value={formData.password}
+              onChange={handleInputChange}
               minLength="8"
               required
             />
             <span className="text-red-500 text-xs italic error">
-              {this.state.passwordError}
+              {formData.passwordError}
             </span>
             <br />
           </div>
@@ -227,24 +230,15 @@ class RegisterForm extends Component {
               type="password"
               id="confirmPassword"
               name="confirmPassword"
-              value={this.state.confirmPassword}
-              onChange={this.handleInputChange}
+              value={formData.confirmPassword}
+              onChange={handleInputChange}
               required
             />
             <span className="text-red-500 text-xs italic error">
-              {this.state.confirmPasswordError}
+              {formData.confirmPasswordError}
             </span>
             <br />
           </div>
-
-          {/* <label for="email">Email:</label>
-        <input type="text" id="email" name="email "required /><br />
-
-        <label for="password">Password:(8 characters minimum):</label>
-        <input type="password" id="password" name="password" minlength="8" required /><br /> */}
-
-          {/* <label for="confirmPassword">Confirm Password:(8 characters minimum)</label>
-        <input type="password" id="confirmPassword" name="confirmPassword" minlength="8" required /><br /> */}
 
           <div className="mb-4">
             <label
@@ -257,8 +251,8 @@ class RegisterForm extends Component {
               type="date"
               id="dob"
               name="dob"
-              value={this.state.dob}
-              onChange={this.handleInputChange}
+              value={formData.dob}
+              onChange={handleInputChange}
               required
             />
             <br />
@@ -276,20 +270,13 @@ class RegisterForm extends Component {
               type="text"
               id="phone"
               name="phone"
-              value={this.state.phone}
-              onChange={this.handleInputChange}
+              value={formData.phone}
+              onChange={handleInputChange}
               required
             />
             <br />
           </div>
 
-          {/* <label for="dob">Date of Birth:</label>
-        <input type="date" id="dob" name="dob" required /><br />
-        <label for="phone">Phone Number:</label>
-        <input type="text" id="phone" name="phone" required /><br /> */}
-          {/* we need not have Preferred Movie Genres (optional): */}
-          {/* <label for="movieGenres">Preferred Movie Genres (optional):</label>
-        <input type="text" id="movieGenres" name="movieGenres" /><br /> */}
           <div className="mb-6 text-center">
             <Button
               className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
@@ -301,46 +288,15 @@ class RegisterForm extends Component {
             </Button>
           </div>
         </form>
+
+        {successful && (
+          <div>
+            <h4>You have registered successfully!</h4>
+            <a href="/login">Click here to login</a>
+          </div>
+        )}
       </div>
     );
   }
-}
-
-// need not use this as a function included the same in return.
-// function RegisterForm() {
-//   return (
-//     <form id="registrationForm">
-//       <h2>Registration Page</h2>
-//       <img src={pic_2} alt="symbol1" />
-//       <br />
-//       <label for="username">Username:</label>
-//       <input type="text" id="username" name="username" required /><br />
-
-//       <label for="fullname">Full Name:</label>
-//       <input type="text" id="fullname" name="fullname" required /><br />
-
-//       <label for="lastname">Last Name:</label>
-//       <input type="text" id="lastname" name="lastname" required /><br />
-
-//       <label for="email">Email:</label>
-//       <input type="text" id="email" name="email " required /><br />
-
-//       <label for="password">Password:(8 characters minimum):</label>
-//       <input type="password" id="password" name="password" minlength="8" required /><br />
-
-//       <label for="confirmPassword">Confirm Password:(8 characters minimum)</label>
-//       <input type="password" id="confirmPassword" name="confirmPassword" minlength="8" required /><br />
-
-//       <label for="dob">Date of Birth:</label>
-//       <input type="date" id="dob" name="dob" required /><br />
-//       <label for="phone">Phone Number:</label>
-//       <input type="text" id="phone" name="phone" required /><br />
-//       <label for="movieGenres">Preferred Movie Genres (optional):</label>
-//       <input type="text" id="movieGenres" name="movieGenres" /><br />
-//       <input type="submit" value="Register" />
-//     </form>
-
-//   );
-// }
 
 export default RegisterForm;
