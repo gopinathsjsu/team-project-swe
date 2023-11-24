@@ -7,13 +7,14 @@ import com.services.TheaterService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import javax.management.InstanceNotFoundException;
 import java.util.List;
 
 @RestController
-@CrossOrigin(origins = "http://localhost:3000")
+@CrossOrigin(origins = "http://localhost:3000", maxAge = 3600)
 @RequestMapping("/api/multiplexes")
 public class MultiplexController {
 
@@ -27,6 +28,7 @@ public class MultiplexController {
     }
 
     // get Multiplex by location id
+    @PreAuthorize("hasRole('USER') or hasRole('MEMBER') or hasRole('ADMIN')")
     @GetMapping("/get/{id}")
     public ResponseEntity<List<Multiplex>> getMultiplexesByLocationId(@PathVariable Long id) {
 
@@ -46,6 +48,7 @@ public class MultiplexController {
     }
 
     // create Multiplex
+    @PreAuthorize("hasRole('ADMIN')")
     @PostMapping("/create/{locationId}")
     public ResponseEntity<Object> createMultiplex(@PathVariable Long locationId, @RequestParam String name) {
 
@@ -59,6 +62,7 @@ public class MultiplexController {
     }
 
     // get theaters for multiplex
+    @PreAuthorize("hasRole('USER') or hasRole('MEMBER') or hasRole('ADMIN')")
     @GetMapping("/{multiplexId}/getTheaters")
     public ResponseEntity<List<Theater>> getTheatersByMultiplexId(@PathVariable Long multiplexId) throws InstanceNotFoundException {
         List<Theater> theaters = theaterService.getTheatersByMultiplexId(multiplexId);
@@ -66,6 +70,7 @@ public class MultiplexController {
     }
 
     // delete Multiplex
+    @PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping("/delete")
     public ResponseEntity<String> deleteMultiplex(@RequestParam Long id) {
         boolean success = multiplexService.deleteMultiplex(id);

@@ -7,13 +7,14 @@ import com.services.ScheduleService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Optional;
 
 @RestController
-@CrossOrigin(origins = "http://localhost:3000")
+@CrossOrigin(origins = "http://localhost:3000", maxAge = 3600)
 @RequestMapping("/api/schedules")
 public class ScheduleController {
 
@@ -26,12 +27,14 @@ public class ScheduleController {
         this.movieService = movieService;
     }
 
+    @PreAuthorize("hasRole('USER') or hasRole('MEMBER') or hasRole('ADMIN')")
     @GetMapping("/getAll")
     public ResponseEntity<List<Schedule>> getAllSchedules() {
         List<Schedule> schedules = scheduleService.getAllSchedules();
         return new ResponseEntity<>(schedules, HttpStatus.OK);
     }
 
+    @PreAuthorize("hasRole('USER') or hasRole('MEMBER') or hasRole('ADMIN')")
     @GetMapping("/{id}")
     public ResponseEntity<Schedule> getScheduleById(@PathVariable Long id) {
         Optional<Schedule> schedule = scheduleService.getScheduleById(id);
@@ -39,18 +42,21 @@ public class ScheduleController {
                 .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
 
+    @PreAuthorize("hasRole('USER') or hasRole('MEMBER') or hasRole('ADMIN')")
     @GetMapping("/multiplex/{multiplexId}")
     public ResponseEntity<List<Schedule>> getSchedulesByMultiplexId(@PathVariable Long multiplexId) {
         List<Schedule> schedules = scheduleService.getSchedulesByMultiplexId(multiplexId);
         return new ResponseEntity<>(schedules, HttpStatus.OK);
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @PostMapping
     public ResponseEntity<Schedule> createSchedule(@RequestBody Schedule schedule) {
         Schedule createdSchedule = scheduleService.saveSchedule(schedule);
         return new ResponseEntity<>(createdSchedule, HttpStatus.CREATED);
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @PutMapping("/{id}")
     public ResponseEntity<Schedule> updateSchedule(@PathVariable Long id, @RequestBody Schedule updatedSchedule) {
         Optional<Schedule> existingSchedule = scheduleService.getScheduleById(id);
@@ -68,12 +74,14 @@ public class ScheduleController {
         }
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteSchedule(@PathVariable Long id) {
         scheduleService.deleteSchedule(id);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @PostMapping("/{id}/addMovies")
     public ResponseEntity<Schedule> addMoviesToSchedule(@PathVariable Long id, @RequestBody List<Long> movieIds) {
         Optional<Schedule> existingSchedule = scheduleService.getScheduleById(id);
@@ -93,6 +101,7 @@ public class ScheduleController {
         }
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping("/{scheduleId}/movies/{movieId}")
     public ResponseEntity<Void> deleteMovieFromSchedule(
             @PathVariable Long scheduleId,

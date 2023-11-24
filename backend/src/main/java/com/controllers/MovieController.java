@@ -6,12 +6,13 @@ import com.services.MovieService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
-@CrossOrigin(origins = "http://localhost:3000")
+@CrossOrigin(origins = "http://localhost:3000", maxAge = 3600)
 @RequestMapping("/api/movies")
 public class MovieController {
 
@@ -23,29 +24,35 @@ public class MovieController {
     }
 
 
+    @PreAuthorize("hasRole('USER') or hasRole('MEMBER') or hasRole('ADMIN')")
     @GetMapping("/getAllMovieIds")
     public ResponseEntity<List<Long>> getAllMovieIds() {
         List<Long> movieIds = movieService.getAllMovieIds();
         return ResponseEntity.ok(movieIds);
     }
 
+    @PreAuthorize("hasRole('USER') or hasRole('MEMBER') or hasRole('ADMIN')")
     @GetMapping("/getShowTimes")
     public ResponseEntity<List<Showtime>> getShowTimesForMovie(@RequestParam Long movieId) {
         List<Showtime> showTimes = movieService.getShowtimesForMovie(movieId);
         return ResponseEntity.ok(showTimes);
     }
+
+    @PreAuthorize("hasRole('USER') or hasRole('MEMBER') or hasRole('ADMIN')")
     @GetMapping("/getNewReleases")
     public ResponseEntity<List<Movie>> getNewReleases() {
         List<Movie> newReleases = movieService.getNewReleases();
         return ResponseEntity.ok(newReleases);
     }
 
+    @PreAuthorize("hasRole('USER') or hasRole('MEMBER') or hasRole('ADMIN')")
     @GetMapping("/getUpcomingMovies")
     public ResponseEntity<List<Movie>> getUpcomingMovies() {
         List<Movie> upcomingMovies = movieService.getUpcomingMovies();
         return ResponseEntity.ok(upcomingMovies);
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @PostMapping("/create")
     public ResponseEntity<Movie> createMovie(@RequestBody Movie movie) {
 
@@ -68,6 +75,7 @@ public class MovieController {
 
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping("/delete")
     public ResponseEntity<String> deleteMovie(@RequestParam Long movieId) {
 

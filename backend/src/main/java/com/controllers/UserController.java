@@ -15,7 +15,7 @@ import com.services.UsersService;
 import javax.management.InstanceNotFoundException;
 
 @RestController
-@CrossOrigin(origins = "http://localhost:3000")
+@CrossOrigin(origins = "http://localhost:3000", maxAge = 3600)
 @RequestMapping("/api/users")
 public class UserController {
     
@@ -34,8 +34,6 @@ public class UserController {
             List<Users> users = usersService.getAllUsers();
             return ResponseEntity.ok(users);
         } catch (Exception e) {
-            // Log the exception
-            e.printStackTrace();
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
     }
@@ -55,6 +53,24 @@ public class UserController {
             return ResponseEntity.ok(user);
         } else {
             return ResponseEntity.notFound().build();
+        }
+    }
+
+    @PutMapping("/update")
+    public ResponseEntity<Users> updateUserByUsername(@RequestParam String username, @RequestBody Users updatedUser) {
+
+        Users user;
+
+        try {
+            user = usersService.updateUserByUsername(username, updatedUser);
+        } catch (InstanceNotFoundException e) {
+            return ResponseEntity.notFound().build();
+        }
+
+        if (user != null) {
+            return ResponseEntity.ok(user);
+        } else {
+            return ResponseEntity.badRequest().build();
         }
     }
 
@@ -84,7 +100,6 @@ public class UserController {
         } catch (InstanceNotFoundException e) {
             return ResponseEntity.notFound().build();
         }
-
 
     }
 

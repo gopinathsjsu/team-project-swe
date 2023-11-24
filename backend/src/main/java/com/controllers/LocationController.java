@@ -3,6 +3,7 @@ package com.controllers;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import com.entities.Location;
@@ -12,7 +13,7 @@ import java.util.List;
 
 
 @RestController
-@CrossOrigin(origins = "http://localhost:3000")
+@CrossOrigin(origins = "http://localhost:3000", maxAge = 3600)
 @RequestMapping("/api/locations")
 public class LocationController {
     
@@ -23,12 +24,14 @@ public class LocationController {
         this.locationService = locationService;
     }
 
+    @PreAuthorize("hasRole('USER') or hasRole('MEMBER') or hasRole('ADMIN')")
     @GetMapping("/getAll")
     public ResponseEntity<List<Location>> getAllLocations() {
         List<Location> locations = locationService.getAllLocations();
         return ResponseEntity.ok(locations);
     }
 
+    @PreAuthorize("hasRole('USER') or hasRole('MEMBER') or hasRole('ADMIN')")
     @GetMapping("/getLocation")
     public ResponseEntity<Location> getLocationById(@RequestParam Long id) { 
         
@@ -47,6 +50,7 @@ public class LocationController {
         }
     }
 
+    @PreAuthorize("hasRole('USER') or hasRole('MEMBER') or hasRole('ADMIN')")
     // get Location by locationName
     @GetMapping("/getByName/{locationName}")
     public ResponseEntity<Location> getLocationByName(@PathVariable String locationName) {
@@ -63,6 +67,7 @@ public class LocationController {
         }
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @PostMapping("/create")
     public ResponseEntity<Location> createLocation(@RequestParam String locationName) {
         Location createdLocation = locationService.createLocation(locationName);
@@ -74,6 +79,7 @@ public class LocationController {
         }
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping("/delete")
     public ResponseEntity<String> deleteLocation(@RequestParam Long locationId) {
         boolean success = locationService.deleteLocation(locationId);
