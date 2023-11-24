@@ -1,8 +1,8 @@
 package com.controllers;
 
 import com.dataTransferObjects.request.LoginRequest;
+import com.dataTransferObjects.request.SignupRequest;
 import com.dataTransferObjects.response.JwtResponse;
-import com.entities.Membership;
 import com.entities.Users;
 import com.repositories.UsersRepository;
 import com.security.jwt.JwtUtils;
@@ -48,28 +48,32 @@ public class AuthController {
         String role = userDetails.getAuthorities().toString();
 
         return ResponseEntity.ok(new JwtResponse(jwt,
-                                         userDetails.getUserId(),
-                                         userDetails.getUsername(),
-                                         userDetails.getEmail(),
-                                         role));
+                                                userDetails.getUserId(),
+                                                userDetails.getUsername(),
+                                                userDetails.getEmail(),
+                                                role,
+                                                userDetails.getFirstName(),
+                                                userDetails.getLastName(),
+                                                userDetails.getPhone(),
+                                                userDetails.getDob()));
 
     }
 
     @PostMapping("/signup")
-    public ResponseEntity<?> registerUser(@Valid @RequestBody LoginRequest signUpRequest) {
+    public ResponseEntity<?> registerUser(@Valid @RequestBody SignupRequest signUpRequest) {
         if (userRepository.existsByUsername(signUpRequest.getUsername())) {
             return ResponseEntity.badRequest().body("Error: Username is already taken!");
         }
 
-        if (userRepository.existsByEmail(signUpRequest.getUsername())) {
+        if (userRepository.existsByEmail(signUpRequest.getEmail())) {
             return ResponseEntity.badRequest().body("Error: Email is already in use!");
         }
 
         Users user = new Users(signUpRequest.getUsername(),
                              encoder.encode(signUpRequest.getPassword()),
-                             signUpRequest.getUsername());
+                             signUpRequest.getEmail());
 
-        user.setRole(Users.Role.MEMBER);
+        user.setRole(Users.Role.ROLE_MEMBER);
         userRepository.save(user);
 
         return ResponseEntity.ok("User registered successfully!");

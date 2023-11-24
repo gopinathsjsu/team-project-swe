@@ -63,7 +63,7 @@ public class Users {
         this.username = username;
         this.password = password;
         this.email = email;
-        this.role = Role.USER;
+        this.role = Role.ROLE_USER;
         this.membership = null;
     }
 
@@ -106,8 +106,8 @@ public class Users {
     public void setRewardPoints(int rewardPoints) { this.rewardPoints = rewardPoints; }
     
     public enum Role {
-        USER,
-        MEMBER,
-        ADMIN
+        ROLE_USER,
+        ROLE_MEMBER,
+        ROLE_ADMIN
     }
 }

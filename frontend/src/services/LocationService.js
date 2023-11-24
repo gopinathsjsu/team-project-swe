@@ -1,4 +1,5 @@
 import axios from 'axios';
+import authHeader from './auth/auth-header';
 
 const LOCATIONS_BASE_URL = 'http://localhost:8080/api/locations';
 
@@ -6,7 +7,7 @@ class LocationService {
 
     async getAllLocations() {
         try {
-            const response = await axios.get(`${LOCATIONS_BASE_URL}/getAll`);
+            const response = await axios.get(`${LOCATIONS_BASE_URL}/getAll`, { headers: authHeader() } );
             return response.data;
         } catch (error) {
             console.error('Error fetching all locations:', error);
@@ -16,7 +17,7 @@ class LocationService {
 
     async getLocationByName(locationName) {
         try {
-          const response = await axios.get(`${LOCATIONS_BASE_URL}/getByName/${locationName}`);
+          const response = await axios.get(`${LOCATIONS_BASE_URL}/getByName/${locationName}`, { headers: authHeader() });
           return response.data;
         } catch (error) {
           console.error('Error fetching location by name:', error);

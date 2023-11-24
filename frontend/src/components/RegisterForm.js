@@ -66,21 +66,19 @@ const RegisterForm = () => {
 
     /* collect user data to be passed to backend 
       to create a user record in the database */
-    const userData = {
-      // firstName: formData.firstName,
-      // lastName: formData.lastName,
+    const userSignUpData = {
+      firstName: formData.firstName,
+      lastName: formData.lastName,
       email: formData.email,
-      // phone: formData.phone,
-      // dob: formData.dob,
+      phone: formData.phone,
+      dob: formData.dob,
       username: formData.username,
       password: formData.password,
-
-
     };
 
     // call AuthService endpoint to post user data
     // log the result success or failure
-    AuthService.register(userData.username, userData.email, userData.password)
+    AuthService.register(userSignUpData.username, userSignUpData.email, userSignUpData.password, userSignUpData.firstName, userSignUpData.lastName, userSignUpData.dob, userSignUpData.phone)
       .then((response) => {
         console.log(response);
         setSuccessful(true);
@@ -91,8 +89,8 @@ const RegisterForm = () => {
       });
 
     // call UserService endpoint to update the user record
-    // with other fields
-    // UserService.createUser(userData).then((res) => {
+    // with remaining fields
+    // UserService.updateUser(userSignUpData.username, userSignUpData).then((res) => {
     //   console.log(res);
     // });
   };
