@@ -38,6 +38,42 @@ class UserService {
         console.log(res);        
     }
 
+    async updateUser(usernameToUpdate, userData) {
+        const { 
+            firstName,
+            lastName,
+            email,
+            phone,
+            dob,
+            username,
+            password
+        } = userData;
+
+        const res = await axios.put(USERS_BASE_URL + '/update', 
+        {
+            firstName: firstName,
+            lastName: lastName,
+            email: email,
+            phone: phone,
+            dateOfBirth: dob,
+            username: username,
+            password: password
+            }, {
+                headers: authHeader(),
+                params: {
+                    username: usernameToUpdate
+                }
+            })
+          .then(function (response) {
+            console.log(response);
+          })
+          .catch(function (error) {
+            console.log(error);
+          });
+
+        return res;
+    }
+
     async createUser(userData) {
         const { 
             firstName,

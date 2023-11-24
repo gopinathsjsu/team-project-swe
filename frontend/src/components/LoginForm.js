@@ -29,7 +29,6 @@ const LoginForm = (isAdmin) => {
 
     AuthService.login(username, password)
       .then(() => {
-        console.log()
         if (isAdmin) {
           navigate("/admin");
         } else {

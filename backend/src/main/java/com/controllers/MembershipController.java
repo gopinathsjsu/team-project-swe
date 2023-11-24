@@ -3,6 +3,7 @@ package com.controllers;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import com.dataTransferObjects.MembershipCreationRequest;
@@ -10,7 +11,7 @@ import com.entities.Membership;
 import com.services.MembershipService;
 
 @RestController
-@CrossOrigin(origins = "http://localhost:3000")
+@CrossOrigin(origins = "http://localhost:3000", maxAge = 3600)
 @RequestMapping("/api/memberships")
 public class MembershipController {
     
@@ -22,6 +23,7 @@ public class MembershipController {
     }
 
     // get via membershipId
+    @PreAuthorize("hasRole('MEMBER') or hasRole('ADMIN')")
     @GetMapping("/getMembership")
     public ResponseEntity<Membership> getMembershipById(@RequestParam Long membershipId) { 
         
@@ -37,6 +39,7 @@ public class MembershipController {
     }
 
     // get via userId
+    @PreAuthorize("hasRole('MEMBER') or hasRole('ADMIN')")
     @GetMapping("/getMembership/user")
     public ResponseEntity<Membership> getMembershipByUserId(@RequestParam Long userId) { 
         
@@ -56,6 +59,7 @@ public class MembershipController {
 
     }
 
+    @PreAuthorize("hasRole('MEMBER') or hasRole('ADMIN')")
     @PostMapping("/create")
     public ResponseEntity<Object> createMembership(@RequestParam Long userId, @RequestBody MembershipCreationRequest membershipCreationRequest) {
 
@@ -74,6 +78,8 @@ public class MembershipController {
 
     }
 
+
+    @PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping("/deleteMembership")
     public ResponseEntity<String> deleteById(@RequestParam Long membershipId) {
         try {
@@ -84,6 +90,7 @@ public class MembershipController {
         }
     }
 
+    @PreAuthorize("hasRole('MEMBER') or hasRole('ADMIN')")
     @PutMapping("/update")
     public ResponseEntity<Membership> updateMembership(@RequestParam Long userId, @RequestBody MembershipCreationRequest membershipCreationRequest) {
 

@@ -5,12 +5,13 @@ import com.entities.Theater;
 import com.services.TheaterService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
-@CrossOrigin(origins = "http://localhost:3000")
+@CrossOrigin(origins = "http://localhost:3000", maxAge = 3600)
 @RequestMapping("/api/theaters")
 public class TheaterController {
 
@@ -20,6 +21,7 @@ public class TheaterController {
         this.theaterService = theaterService;
     }
 
+    @PreAuthorize("hasRole('USER') or hasRole('MEMBER') or hasRole('ADMIN')")
     @GetMapping("/getTheaters")
     public ResponseEntity<List<Theater>> getAllTheaters() {
         try {
@@ -30,6 +32,7 @@ public class TheaterController {
         }
     }
 
+    @PreAuthorize("hasRole('USER') or hasRole('MEMBER') or hasRole('ADMIN')")
     @GetMapping("/{theaterId}/getAssignedMovie")
     public ResponseEntity<Movie> getAssignedMovie(@PathVariable Long theaterId) {
         try {
@@ -40,6 +43,8 @@ public class TheaterController {
             return ResponseEntity.badRequest().build();
         }
     }
+
+    @PreAuthorize("hasRole('ADMIN')")
     @PostMapping("/{theaterId}/assignMovie/{movieId}")
     public ResponseEntity<String> assignMovieToTheater(@PathVariable Long theaterId, @PathVariable Long movieId) {
         try {

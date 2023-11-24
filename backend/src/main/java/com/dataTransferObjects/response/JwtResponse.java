@@ -1,5 +1,6 @@
 package com.dataTransferObjects.response;
 
+import java.time.LocalDate;
 import java.util.List;
 
 public class JwtResponse {
@@ -10,12 +11,21 @@ public class JwtResponse {
     private String email;
     private String role;
 
-    public JwtResponse(String accessToken, Long id, String username, String email, String role) {
+    private String firstName;
+    private String lastName;
+    private String phone;
+    private LocalDate dob;
+
+    public JwtResponse(String accessToken, Long id, String username, String email, String role, String firstName, String lastName, String phone, LocalDate dob) {
         this.token = accessToken;
         this.id = id;
         this.username = username;
         this.email = email;
         this.role = role;
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.phone = phone;
+        this.dob = dob;
     }
 
     public String getAccessToken() {
