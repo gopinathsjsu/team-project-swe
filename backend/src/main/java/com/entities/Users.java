@@ -11,7 +11,11 @@ import jakarta.persistence.*;
 
 // NOTE: entity/table is called Users (plural) because "user" is a defined keyword in postgreSQL.
 
-@Entity(name="users")
+@Entity
+@Table(name = "users", uniqueConstraints = {
+        @UniqueConstraint(columnNames = "username"),
+        @UniqueConstraint(columnNames = "email")
+})
 public class Users {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -24,6 +28,7 @@ public class Users {
     private String phone;
     private LocalDate dateOfBirth;
 
+    @Column(unique = true, nullable = false)
     private String username;
     private String password;
 
@@ -52,6 +57,14 @@ public class Users {
         this.membership = null;
         this.tickets = new ArrayList<>();
         this.rewardPoints = 0;
+    }
+
+    public Users(String username, String password, String email) {
+        this.username = username;
+        this.password = password;
+        this.email = email;
+        this.role = Role.USER;
+        this.membership = null;
     }
 
     // default constructor

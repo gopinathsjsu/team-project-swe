@@ -1,11 +1,17 @@
 import React from 'react'
 import Button from '@mui/material/Button';
+import AuthService from '../services/auth/auth.service';
+
 const AccountInfo = () => {
+
+  const currentUser = AuthService.getCurrentUser();
+
   return (
     <div className='flex justify-between mx-10  mt-10 items-center'>
       <div>
-        <h1 className='text-2xl'>Hi, Nitya Sunkara</h1>
-        <p>nityasunkara002@gmail.com</p>
+        <h3 className='text-2xl'>Hi, {currentUser.firstName} {currentUser.lastName}!</h3>
+        <p>{currentUser.email}</p>
+        <p>Your role is currently: {currentUser.role}</p>
       </div>
       <div>
       <Button variant="contained">Select Membership</Button>
