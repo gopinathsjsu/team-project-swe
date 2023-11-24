@@ -7,13 +7,14 @@ import com.services.ShowtimeService;
 import com.services.MovieService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
 import java.util.List;
 
 @RestController
-@CrossOrigin(origins = "http://localhost:3000")
+@CrossOrigin(origins = "http://localhost:3000", maxAge = 3600)
 @RequestMapping("/api/showtimes")
 public class ShowtimeController {
 
@@ -35,12 +36,14 @@ public class ShowtimeController {
         this.multiplexRepository = multiplexRepository;
     }
 
+    @PreAuthorize("hasRole('USER') or hasRole('MEMBER') or hasRole('ADMIN')")
     @GetMapping("/getByMovie")
     public ResponseEntity<List<Showtime>> getShowTimesByMovie(@RequestParam Long movieId) {
         List<Showtime> showTimes = showtimeService.getShowtimesByMovieId(movieId);
         return ResponseEntity.ok(showTimes);
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @PostMapping("/create")
     public ResponseEntity<Showtime> createShowtime(
             @RequestParam Long movieId,

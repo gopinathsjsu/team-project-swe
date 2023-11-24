@@ -7,10 +7,12 @@ import com.services.TicketService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+@CrossOrigin(origins = "http://localhost:3000", maxAge = 3600)
 @RestController
 @RequestMapping("/api/tickets")
 public class TicketController {
@@ -23,6 +25,7 @@ public class TicketController {
         this.ticketRepository = ticketRepository;
     }
 
+    @PreAuthorize("hasRole('USER') or hasRole('MEMBER') or hasRole('ADMIN')")
     @PostMapping("/book/{userId}")
     public ResponseEntity<Ticket> bookTicket(@PathVariable Long userId, @RequestBody TicketDto ticketDto) {
         Ticket bookedTicket = ticketService.bookTicket(userId, ticketDto);
@@ -31,12 +34,14 @@ public class TicketController {
         return new ResponseEntity<>(bookedTicket, HttpStatus.CREATED);
     }
 
+    @PreAuthorize("hasRole('USER') or hasRole('MEMBER') or hasRole('ADMIN')")
     @GetMapping("/user/{userId}")
     public ResponseEntity<List<Ticket>> getUserBookedTickets(@PathVariable Long userId) {
         List<Ticket> bookedTickets = ticketService.getUserBookedTickets(userId);
         return new ResponseEntity<>(bookedTickets, HttpStatus.OK);
     }
 
+    @PreAuthorize("hasRole('USER') or hasRole('MEMBER') or hasRole('ADMIN')")
     @DeleteMapping("/cancel/{ticketId}")
     public ResponseEntity<String> cancelTicket(@PathVariable Long ticketId) {
         ticketService.cancelTicket(ticketId);

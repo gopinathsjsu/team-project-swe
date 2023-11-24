@@ -1,6 +1,5 @@
 package com.services;
 
-import com.entities.Ticket;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -12,7 +11,6 @@ import java.util.Optional;
 import com.entities.Users;
 import com.entities.Users.Role;
 import com.repositories.UsersRepository;
-import org.springframework.web.bind.annotation.PathVariable;
 
 import javax.management.InstanceNotFoundException;
 
@@ -36,12 +34,29 @@ public class UsersService {
         return userRepository.findById(id).orElse(null);
     }
 
+    // update a user
+    public Users updateUserByUsername(String username, Users updatedUser) throws InstanceNotFoundException {
+        Optional<Users> userOptional = userRepository.findByUsername(username);
+        if (userOptional.isPresent()) {
+            Users user = userOptional.get();
+            user.setFirstName(updatedUser.getFirstName());
+            user.setLastName(updatedUser.getLastName());
+            user.setDateOfBirth(updatedUser.getDateOfBirth());
+            user.setPhone(updatedUser.getPhone());
+
+            userRepository.save(user);
+            return user;
+        } else {
+            throw new InstanceNotFoundException("User not found");
+        }
+    }
+
     // create a user
     public Users createUser(String firstName, String lastName, String email, String phone, 
         LocalDate dateOfBirth, String username, String password, Role role) {
 
         if (role == null) {
-            role = Role.USER;
+            role = Role.ROLE_USER;
         }
         Users user = new Users(firstName, lastName, email, 
             phone, dateOfBirth, username, password, role);

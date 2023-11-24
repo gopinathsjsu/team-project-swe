@@ -23,7 +23,8 @@ const App = () => {
         <Route path="/payment/result" exact element={<PaymentResult />} />
         <Route path="/member" exact element={<MemberDashboard/>}/>
         <Route path="/register" exact element={<Register/>}/>
-        <Route path="/login" exact element={<Login/>}/>
+        {/* isAdmin is false by default */}
+        <Route path="/login" exact element={<Login isAdmin={false}/>}/> 
         <Route path="/memberSelection" exact element={<MemberSelection/>}/>
         <Route path='/movie/:id' exact element={<MovieBooking/>}/>
         <Route path="/schedule" exact element={<MovieSchedule/>} />
