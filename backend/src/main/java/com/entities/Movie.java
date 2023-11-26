@@ -18,6 +18,7 @@ public class Movie {
     private String duration;
 
     private String description;
+    private String poster;
 
     @OneToMany(mappedBy = "movie", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Showtime> showtimes = new ArrayList<>();
@@ -25,13 +26,14 @@ public class Movie {
     @Enumerated(EnumType.STRING)
     private Genre genre;
 
-    public Movie(String title, float rating, Date releaseDate, Genre genre, String duration, String description) {
+    public Movie(String title, float rating, Date releaseDate, Genre genre, String duration, String description, String poster) {
         this.title = title;
         this.rating = rating;
         this.releaseDate = releaseDate;
         this.genre = genre;
         this.duration = duration;
         this.description = description;
+        this.poster = poster;
     }
 
     public Movie() { }
@@ -55,6 +57,9 @@ public class Movie {
 
     public String getDescription() { return this.description; }
     public void setDescription(String description) { this.description = description; }
+
+    public String getPoster() { return this.poster; }
+    public void setPoster(String poster) { this.poster = poster; }
 
     public List<Showtime> getShowtimes() { return this.showtimes; }
 
