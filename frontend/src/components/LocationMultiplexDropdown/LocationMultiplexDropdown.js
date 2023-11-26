@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import Card from '@mui/material/Card';
-import CardContent from '@mui/material/CardContent';
+import axios from 'axios';
 import NativeSelect from '@mui/material/NativeSelect';
 import FormControl from '@mui/material/FormControl';
 
@@ -8,7 +8,9 @@ import FormControl from '@mui/material/FormControl';
 const LocationMultiplexDropdown = () => {
     const [location, setLocation] = useState('');
     const [multiplex, setMultiplex] = useState('');
-
+useEffect(()=>{
+    axios.get('http://localhost:8080/api/locations/getAll').then(res=>console.log(res)).catch(er=>console.log(er))
+})
     const handleLocationChange = (e) => {
         setLocation(e.target.value);
         setMultiplex('');
