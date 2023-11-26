@@ -64,7 +64,8 @@ public class MovieController {
                 movie.getReleaseDate(),
                 movie.getGenre(),
                 movie.getDuration(),
-                movie.getDescription()
+                movie.getDescription(),
+                movie.getPoster()
         );
 
         if (createdMovie != null) {
