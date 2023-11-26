@@ -35,6 +35,7 @@ public class AuthTokenFilter extends OncePerRequestFilter {
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
+        logger.info("Processing request: {}", request.getRequestURI());
         try {
             String jwt = parseJwt(request);
 
@@ -55,6 +56,8 @@ public class AuthTokenFilter extends OncePerRequestFilter {
         }
 
         filterChain.doFilter(request, response);
+
+        logger.info("Processing request: {}", request.getRequestURI());
     }
 
     private String parseJwt(HttpServletRequest request) {
