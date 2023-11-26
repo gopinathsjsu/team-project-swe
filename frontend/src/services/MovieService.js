@@ -7,7 +7,7 @@ class MoviesService {
 
   async fetchShowtimesByMovieId(movieId) {
     try {
-      const response = await axios.get(`${MOVIES_BASE_URL}/getShowTimes?movieId=${movieId}`, { headers: authHeader() });
+      const response = await axios.get(`${MOVIES_BASE_URL}/getShowTimes?movieId=${movieId}`);
       return response.data;
     } catch (error) {
       console.error('Error fetching showtimes:', error);

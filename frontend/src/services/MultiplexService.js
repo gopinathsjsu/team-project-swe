@@ -7,7 +7,7 @@ class MoviesService {
 
     async getMultiplexesByLocationId(locationId) {
         try {
-            const response = await axios.get(`${MULTIPLEXES_BASE_URL}/get/${locationId}`, { headers: authHeader() });
+            const response = await axios.get(`${MULTIPLEXES_BASE_URL}/get/${locationId}`);
             return response.data;
         } catch (error) {
             console.error('Error fetching multiplexes:', error);

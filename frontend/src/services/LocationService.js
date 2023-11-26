@@ -7,7 +7,7 @@ class LocationService {
 
     async getAllLocations() {
         try {
-            const response = await axios.get(`${LOCATIONS_BASE_URL}/getAll`, { headers: authHeader() } );
+            const response = await axios.get(`${LOCATIONS_BASE_URL}/getAll`);
             return response.data;
         } catch (error) {
             console.error('Error fetching all locations:', error);
@@ -17,7 +17,7 @@ class LocationService {
 
     async getLocationByName(locationName) {
         try {
-          const response = await axios.get(`${LOCATIONS_BASE_URL}/getByName/${locationName}`, { headers: authHeader() });
+          const response = await axios.get(`${LOCATIONS_BASE_URL}/getByName/${locationName}`);
           return response.data;
         } catch (error) {
           console.error('Error fetching location by name:', error);
