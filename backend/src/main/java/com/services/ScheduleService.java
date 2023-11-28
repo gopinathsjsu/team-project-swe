@@ -40,4 +40,15 @@ public class ScheduleService {
     public List<Schedule> getSchedulesByMultiplexId(Long multiplexId) {
         return scheduleRepository.findByMultiplexMultiplexId(multiplexId);
     }
+
+    public Schedule removeMovieFromSchedule(Long scheduleId, Long movieId) {
+        Schedule schedule = scheduleRepository.findById(scheduleId).orElse(null);
+        if (schedule == null) {
+            System.out.println("Schedule does not exist, movie not removed");
+            return null;
+        }
+
+        schedule.getMovies().removeIf(movie -> movie.getMovieId().equals(movieId));
+        return scheduleRepository.save(schedule);
+    }
 }

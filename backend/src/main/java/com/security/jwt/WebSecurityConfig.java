@@ -70,6 +70,7 @@ public class WebSecurityConfig {
                 .authorizeHttpRequests(auth ->
                                 auth.dispatcherTypeMatchers(DispatcherType.FORWARD, DispatcherType.ERROR).permitAll()
                                 .requestMatchers(antMatcher(HttpMethod.GET)).permitAll()
+                                .requestMatchers(antMatcher(HttpMethod.PUT)).permitAll() // TODO: remove this once DB is populated
                                 .requestMatchers(antMatcher(HttpMethod.POST)).permitAll() // TODO: remove this once DB is populated
                                 .requestMatchers("/api/auth/**").permitAll()
                                 .requestMatchers("/api/test/**").permitAll()

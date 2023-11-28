@@ -33,6 +33,17 @@ public class TheaterController {
     }
 
     @PreAuthorize("hasRole('USER') or hasRole('MEMBER') or hasRole('ADMIN')")
+    @GetMapping("/getTheaterByMovieIdAndMultiplexId/{movieId}/{multiplexId}")
+    public ResponseEntity<Theater> getTheaterByMovieIdAndMultiplexId(@PathVariable Long movieId, @PathVariable Long multiplexId) {
+        try {
+            Theater theater = theaterService.getTheaterByMovieIdAndMultiplexId(movieId, multiplexId);
+            return ResponseEntity.ok(theater);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+    }
+
+    @PreAuthorize("hasRole('USER') or hasRole('MEMBER') or hasRole('ADMIN')")
     @GetMapping("/{theaterId}/getAssignedMovie")
     public ResponseEntity<Movie> getAssignedMovie(@PathVariable Long theaterId) {
         try {
@@ -56,4 +67,14 @@ public class TheaterController {
         }
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
+    @PutMapping("/{theaterId}/updateCapacity")
+    public ResponseEntity<Theater> updateCapacity(@PathVariable Long theaterId, @RequestParam Integer capacity) {
+        try {
+            theaterService.updateCapacity(theaterId, capacity);
+            return ResponseEntity.ok().build();
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().build();
+        }
+    }
 }
