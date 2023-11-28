@@ -57,7 +57,7 @@ const LocationMultiplexDropdown = ({ isAdmin, setAdminLocation, setAdminMultiple
     const handleMultiplexChange = (e) => {
         const selectedMultiplex = multiplexOptions.find(option => option.locationName === e.target.value);
         console.log('Selected Multiplex:', selectedMultiplex);
-        setMultiplex(selectedMultiplex);
+        setMultiplex(selectedMultiplex.locationName);
 
         if (isAdmin) {
             console.log('Admin Multiplex:', selectedMultiplex);
