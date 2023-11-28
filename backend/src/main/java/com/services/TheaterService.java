@@ -41,6 +41,19 @@ public class TheaterService {
         }
     }
 
+    public Theater getTheaterByMovieIdAndMultiplexId(Long movieId, Long multiplexId) {
+        Optional<Multiplex> multiplexOptional = multiplexRepository.findById(multiplexId);
+        Optional<Movie> movieOptional = movieRepository.findById(movieId);
+
+        if (multiplexOptional.isPresent() && movieOptional.isPresent()) {
+            Multiplex multiplex = multiplexOptional.get();
+            Movie movie = movieOptional.get();
+            return theaterRepository.findByAssignedMovieAndMultiplex(movie, multiplex);
+        } else {
+            throw new EntityNotFoundException("Multiplex or Movie not found with ID: " + multiplexId + " " + movieId);
+        }
+    }
+
     public Optional<Theater> findByName(String name) {
         return theaterRepository.findByName(name);
     }
@@ -74,5 +87,16 @@ public class TheaterService {
     public Theater getTheaterById(Long theaterId) {
         return theaterRepository.findById(theaterId)
                 .orElseThrow(() -> new EntityNotFoundException("Theater not found with ID: " + theaterId));
+    }
+
+    public void updateCapacity(Long theaterId, Integer capacity) {
+        Optional<Theater> theaterOptional = theaterRepository.findById(theaterId);
+        if (theaterOptional.isPresent()) {
+            Theater theater = theaterOptional.get();
+            theater.setCapacity(capacity);
+            theaterRepository.save(theater);
+        } else {
+            throw new EntityNotFoundException("Theater not found with ID: " + theaterId);
+        }
     }
 }

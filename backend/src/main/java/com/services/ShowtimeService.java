@@ -46,4 +46,23 @@ public class ShowtimeService {
         return showtimeRepository.save(showtime);
     }
 
+    public Showtime updateShowtime(Long showtimeId, LocalDateTime startDateTime, Theater theater, Multiplex multiplex) {
+        Showtime showtime = showtimeRepository.findById(showtimeId).orElse(null);
+        if (showtime == null) {
+            System.out.println("Showtime does not exist, show time not updated");
+            return null;
+        }
+
+        showtime.setTime(startDateTime.toLocalTime());
+        showtime.setDate(startDateTime.toLocalDate());
+        showtime.setTheater(theater);
+        showtime.setMultiplex(multiplex);
+        return showtimeRepository.save(showtime);
+    }
+
+    public void deleteShowtime(Long showtimeId) {
+        movieService.getShowtimesForMovie(showtimeId).removeIf(showtime -> showtime.getShowtimeId().equals(showtimeId));
+        showtimeRepository.deleteById(showtimeId);
+    }
+
 }

@@ -1,33 +1,33 @@
 import React, { useState } from 'react';
-import {
-    Card,
-    CardContent,
-    TextField,
-    Button,
-    Typography,
-} from '@mui/material';
+import Card from '@mui/material/Card';
+import CardContent from '@mui/material/CardContent';
+import Typography from '@mui/material/Typography';
+import TextField from '@mui/material/TextField';
+import Button from '@mui/material/Button';
 
-const EditDiscountPrices = () => {
-
-    const [before6pmDiscount, setBefore6pmDiscount] = useState(2);
-    const [tuesdayDiscount, setTuesdayDiscount] = useState(4);
+const AdminDiscountPricesCard = ({ discountPrices, onUpdateDiscountPrices }) => {
+    const [before6pmDiscount, setBefore6pmDiscount] = useState(discountPrices.before6pm || 0);
+    const [tuesdayDiscount, setTuesdayDiscount] = useState(discountPrices.tuesday || 0);
 
     const handleSave = () => {
-        console.log('Before 6pm Price:', before6pmDiscount);
-        console.log('Tuesday Price:', tuesdayDiscount);
+        const updatedDiscountPrices = {
+            before6pm: before6pmDiscount,
+            tuesday: tuesdayDiscount,
+        };
 
-        // post updated prices to backend
+        onUpdateDiscountPrices(updatedDiscountPrices);
     };
 
     return (
         <Card>
             <CardContent>
-                <Typography variant="h5">Early and Tuesday Show Discounts</Typography>
+                <Typography variant="h6">Discount Prices</Typography>
                 <div>
                     <TextField
                         label="Price for shows before 6pm"
                         type="number"
                         variant="outlined"
+                        fullWidth
                         value={before6pmDiscount}
                         onChange={(e) => setBefore6pmDiscount(Number(e.target.value))}
                     />
@@ -37,6 +37,7 @@ const EditDiscountPrices = () => {
                         label="Price for Tuesday shows"
                         type="number"
                         variant="outlined"
+                        fullWidth
                         value={tuesdayDiscount}
                         onChange={(e) => setTuesdayDiscount(Number(e.target.value))}
                     />
@@ -51,4 +52,4 @@ const EditDiscountPrices = () => {
     );
 };
 
-export default EditDiscountPrices;
+export default AdminDiscountPricesCard;

@@ -123,4 +123,15 @@ public class ScheduleController {
         }
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
+    @PutMapping("/removeMovie/{scheduleId}/{movieId}")
+    public ResponseEntity<Schedule> removeMovieFromSchedule(@PathVariable Long scheduleId, @PathVariable Long movieId) {
+        Schedule schedule = scheduleService.removeMovieFromSchedule(scheduleId, movieId);
+        if (schedule != null) {
+            return ResponseEntity.ok(schedule);
+        } else {
+            return ResponseEntity.notFound().build();
+        }
+    }
+
 }

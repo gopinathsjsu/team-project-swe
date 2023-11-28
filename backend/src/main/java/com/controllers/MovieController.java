@@ -77,6 +77,31 @@ public class MovieController {
     }
 
     @PreAuthorize("hasRole('ADMIN')")
+    @PutMapping("/update")
+    public ResponseEntity<Movie> updateMovie(@RequestBody Movie movie) {
+
+        Movie updatedMovie;
+
+        updatedMovie = movieService.updateMovie(
+                movie.getMovieId(),
+                movie.getTitle(),
+                movie.getRating(),
+                movie.getReleaseDate(),
+                movie.getGenre(),
+                movie.getDuration(),
+                movie.getDescription(),
+                movie.getPoster()
+        );
+
+        if (updatedMovie != null) {
+            return ResponseEntity.ok(updatedMovie);
+        } else {
+            return ResponseEntity.badRequest().build();
+        }
+
+    }
+
+    @PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping("/delete")
     public ResponseEntity<String> deleteMovie(@RequestParam Long movieId) {
 
