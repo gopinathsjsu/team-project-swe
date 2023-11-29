@@ -46,21 +46,28 @@ const AdminDashboard = () => {
     const [isEditTheaterOpen, setEditTheaterOpen] = useState(false);
     
 
+    // methods for handling dropdown changes
+    const handleLocationChange = (location) => {
+        setSelectedMultiplex({});
+
+        console.log('Selected Location:', location);
+        setSelectedLocation(location);
+        
+    };
+
+    const handleMultiplexChange = (multiplex) => {
+        console.log('Selected Multiplex:', multiplex);
+        setSelectedMultiplex(multiplex);
+    };
+
+
+
+    // methods for handling editing of movies, theaters, and showtimes
+
     const handleEditMovie = (movie) => {
         setSelectedMovie(movie);
         setEditMovieOpen(true);
         console.log('Editing movie:', movie);
-    };
-
-    const handleRemoveMovie = (movie) => {
-        setRemoveMovieOpen(true);
-        console.log('Removing movie from schedule:', movie);
-    };
-
-    const addMovieToSchedule = (movie) => {
-        setSelectedMovie(movie);
-        setAddMovieOpen(true);
-        console.log('Adding movie to schedule:', movie);
     };
 
     const handleEditTheater = (movie, theater) => {
@@ -75,52 +82,20 @@ const AdminDashboard = () => {
         console.log('Editing showtime:', movie, showtime);
     };
 
-    const handleDeleteShowtime = (movie, showtime) => { 
-        setSelectedShowtime(showtime);
-        setRemoveShowtimeOpen(true);
-        console.log('Removing showtime:', movie, showtime);
-    };
-
-    const handleAddShowtime = (movie, showtime, theater) => {
-        setSelectedShowtime(showtime);
-        setSelectedMovie(movie);
-        setSelectedTheater(theater);
-        setAddShowtimeOpen(true);
-        console.log('Adding showtime:', movie, showtime);
-    };
-
-    const handleLocationChange = (location) => {
-        setSelectedMultiplex({});
-
-        console.log('Selected Location:', location);
-        setSelectedLocation(location);
-        
-    };
-
-    const handleMultiplexChange = (multiplex) => {
-        console.log('Selected Multiplex:', multiplex);
-        setSelectedMultiplex(multiplex);
-    };
-
     const handleDiscountPricesUpdate = (newDiscountPrices) => {
         console.log('Updating discount prices:', newDiscountPrices);
         setDIscountPricesData(newDiscountPrices);
     };
 
-    const onRemoveMovieConfirm = (movie) => {
-        console.log('Removing movie:', movie);
-        ScheduleService.removeMovieFromSchedule(movie.movieId, selectedMultiplex.multiplexId);
+
+    // methods for updating the components with edited data
+    const onUpdateMovie = (updatedMovie) => {
+        console.log('Updated movie:', updatedMovie);
+
     }
 
-    const onAddMovieConfirm = (movie) => {
-        console.log('Adding movie:', movie);
-        ScheduleService.addMovieToSchedule(movie.movieId, selectedMultiplex.multiplexId);
-    }
 
-    const onRemoveShowtimeConfirm = (showtime) => {
-        console.log('Removing showtime:', showtime);
-        ShowtimeService.removeShowtime(showtime.showtimeId);
-    }
+
 
     return (
         <div>
@@ -134,10 +109,10 @@ const AdminDashboard = () => {
                     <AdminScheduleCard 
                         multiplexId={selectedMultiplex.multiplexId} 
                         onEditMovie={handleEditMovie}
-                        onRemoveMovie={handleRemoveMovie}
+                        // onRemoveMovie={handleRemoveMovie}
                         onEditTheater={handleEditTheater}
                         onEditShowtime={handleEditShowtime}
-                        onDeleteShowtime={handleDeleteShowtime}
+                        // onDeleteShowtime={handleDeleteShowtime}
                     />
                 </Grid>
                 {/* <Grid item xs={12} sm={6} md={4}>
@@ -150,11 +125,11 @@ const AdminDashboard = () => {
                     />
                 </Grid>
             </Grid>
-            <EditMovieForm isOpen={isEditMovieOpen} onClose={() => setEditMovieOpen(false)} onSave={() => {}} movie={selectedMovie} />
+            <EditMovieForm isOpen={isEditMovieOpen} onClose={() => setEditMovieOpen(false)} onSave={onUpdateMovie} movie={selectedMovie} />
             <EditTheaterForm isOpen={isEditTheaterOpen} onClose={() => setEditTheaterOpen(false)} onSave={() => {}} theater={selectedTheater} />
             <EditShowtimeForm isOpen={isEditShowtimeOpen} onClose={() => setEditShowtimeOpen(false)} onSave={() => {}} showtime={selectedShowtime} />
-            <RemoveMovieModal isOpen={isRemoveMovieOpen} onClose={() => setRemoveMovieOpen(false)} onConfirm={onRemoveMovieConfirm} movie={selectedMovie} />
-            <RemoveShowtimeModal isOpen={isRemoveShowtimeOpen} onClose={() => {}} onConfirm={onRemoveShowtimeConfirm} showtime={selectedShowtime} />
+            {/* <RemoveMovieModal isOpen={isRemoveMovieOpen} onClose={() => setRemoveMovieOpen(false)} onConfirm={onRemoveMovieConfirm} movie={selectedMovie} />
+            <RemoveShowtimeModal isOpen={isRemoveShowtimeOpen} onClose={() => {}} onConfirm={onRemoveShowtimeConfirm} showtime={selectedShowtime} /> */}
             {/* <AddMovieForm isOpen={isAddMovieOpen} onClose={() => setAddMovieOpen(false)} onConfirm={onAddMovieConfirm} /> */}
             {/* <AddShowtimeModal isOpen={isAddShowtimeOpen}
                 onClose={() => setAddShowtimeOpen(false)} 

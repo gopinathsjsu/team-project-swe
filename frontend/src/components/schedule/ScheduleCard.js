@@ -38,7 +38,16 @@ const ScheduleCard = ({ movie,
 
     const handleEditShowtime = (showtime) => {
         <Modal>
-            <Box sx={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)', width: 400, bgcolor: 'background.paper', boxShadow: 24, p: 4 }}>
+            <Box sx={{
+          position: "absolute",
+          top: "50%",
+          left: "50%",
+          transform: "translate(-50%, -50%)",
+          width: 400,
+          bgcolor: "background.paper",
+          boxShadow: 24,
+          p: 4,
+        }}>
                 <Button onClick={() => onEditShowtime(showtime)}>Edit Showtime</Button>
                 <Button onClick={() => onDeleteShowtime(showtime)}>Delete Showtime</Button>
             </Box>
@@ -54,17 +63,20 @@ const ScheduleCard = ({ movie,
         });
 
         return sortedShowtimes.map((showtime, i) => (
-            <Button key={i} size="small" onClick={handleEditShowtime}>{convertTime(showtime.time)}</Button>
+            <Button key={i} size="small" onClick={handleEditShowtime}>
+                {convertTime(showtime.time)}
+            </Button>
         ));
     }
 
     return (
-        <div>
+        <div style={{ textAlign: "center" }}>
             {loading ? (
                 <p>Loading...</p>
             ) : (
                 <Card 
-                    variant="outlined"
+                    variant="outlined" 
+                    style={{ width: '100%', display: 'flex', flexDirection: 'column' }}
                 >
                     <CardMedia
                         component="img"
@@ -94,11 +106,14 @@ const ScheduleCard = ({ movie,
                                 </CardActions>
                             )}
                         </Typography>
-                        <Typography variant="body3" color="text.primary">
+                        <Typography variant="body3" color="text.primary" component="p" className="whitespace-pre-wrap">
                             {description}
                         </Typography>
                         <CardActions>
-                            {displayShowtimes()}
+                            <div component="p" className="whitespace-pre-wrap">
+                                {displayShowtimes()}
+                            </div>
+                            
                         </CardActions>
                         
 

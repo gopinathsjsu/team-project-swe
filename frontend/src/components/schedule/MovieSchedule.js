@@ -1,5 +1,5 @@
 import React, {useState, useEffect} from "react";
-import { Stack, Button } from "@mui/material";
+import { Stack, Box, Card } from "@mui/material";
 
 import ScheduleCard from "./ScheduleCard";
 
@@ -36,25 +36,32 @@ const MovieSchedule = ({multiplexId,
         if (movieSchedule.length > 0) {
             const movies = movieSchedule[0].movies;
             if (movies != null) {
-                return movies.map((movie, index) => (
-                    <Stack
-                        key={index}
-                        direction="row"
+                return (
+                    <div style={{ overflowY: 'auto', maxHeight: '100vh' }}>
+                      <Stack
+                        direction="column"
                         alignItems="center"
                         justifyContent="center"
-                        sx={{ minHeight: '20vh' }}
-                    >
-                        <ScheduleCard movie={movie}
-                            multiplexId={multiplexId}
-                            isAdmin={isAdmin}
-                            onEditMovie={onEditMovie}
-                            onRemoveMovie={onRemoveMovie}
-                            onEditTheater={onEditTheater}
-                            onEditShowtime={onEditShowtime}
-                            onDeleteShowtime={onDeleteShowtime}
-                         />
-                    </Stack>
-                ));
+                        spacing={2}
+                        sx={{ minHeight: '20vh', padding: '10px' }}
+                      >
+                        {movies.map((movie, index) => (
+                          <Card key={index} sx={{ minWidth: 300, maxWidth: 400 }}>
+                            <ScheduleCard
+                              movie={movie}
+                              multiplexId={multiplexId}
+                              isAdmin={isAdmin}
+                              onEditMovie={onEditMovie}
+                              onRemoveMovie={onRemoveMovie}
+                              onEditTheater={onEditTheater}
+                              onEditShowtime={onEditShowtime}
+                              onDeleteShowtime={onDeleteShowtime}
+                            />
+                          </Card>
+                        ))}
+                      </Stack>
+                    </div>
+                  );
             } else {
                 return <p>No movies for selected schedule!</p>
             }
@@ -65,9 +72,16 @@ const MovieSchedule = ({multiplexId,
 
 
     return (
-        <div>
+        <Box
+            display="flex"
+            flexDirection="column"
+            alignItems="center"
+            justifyContent="center"
+            minHeight="100vh"
+            padding={4}
+        >
             {displaySchedule()}
-        </div>
+        </Box>
     );
 }
 
