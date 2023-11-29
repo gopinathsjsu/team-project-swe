@@ -20,8 +20,12 @@ const EditMovieForm = ({ isOpen, onClose, onSave, movie }) => {
 
   const handleSave = async () => {
     try {
-      await MovieService.updateMovie(editedMovie);
-      onSave(editedMovie);
+      const res = await MovieService.updateMovie(editedMovie);
+      if (res.status === 200){
+        onSave(res.data);
+      } else {
+        console.error('Error updating movie:', res.data);
+      }
     } catch (error) {
       console.error('Error updating movie:', error);
     } finally {
