@@ -4,7 +4,7 @@ import SeatSelection from "../components/SeatSelection";
 const SeatSelect = () => {
   return (
     <>
-      <div>Please select seats</div>
+      <div>Please select at max 8 seats</div>
       <div>
         <SeatSelection />
       </div>
