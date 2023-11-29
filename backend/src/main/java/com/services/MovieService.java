@@ -91,6 +91,48 @@ public class MovieService {
 
     }
 
+    // update Movie
+    public Movie updateMovie(Long id,
+                             String title,
+                             float rating,
+                             Date releaseDate,
+                             Movie.Genre genre,
+                             String duration,
+                             String description,
+                             String poster) {
+
+        Movie movie = movieRepository.findById(id).orElse(null);
+
+        if (movie == null) {
+            logger.error("Failed to update movie, movie not found");
+            return null;
+        }
+
+        if (title != null) {
+            movie.setTitle(title);
+        }
+        if (rating != 0) {
+            movie.setRating(rating);
+        }
+        if (releaseDate != null) {
+            movie.setReleaseDate(releaseDate);
+        }
+        if (genre != null) {
+            movie.setGenre(genre);
+        }
+        if (duration != null) {
+            movie.setDuration(duration);
+        }
+        if (description != null) {
+            movie.setDescription(description);
+        }
+        if (poster != null) {
+            movie.setPoster(poster);
+        }
+
+        return movieRepository.save(movie);
+    }
+
     // delete Movie
     public boolean deleteMovie(Long id) {
         try {

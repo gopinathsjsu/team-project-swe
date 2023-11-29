@@ -14,7 +14,6 @@ import javax.management.InstanceNotFoundException;
 import java.util.List;
 
 @RestController
-@CrossOrigin(origins = "http://localhost:3000", maxAge = 3600)
 @RequestMapping("/api/multiplexes")
 public class MultiplexController {
 

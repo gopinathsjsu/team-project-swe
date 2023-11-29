@@ -11,7 +11,6 @@ import com.entities.Membership;
 import com.services.MembershipService;
 
 @RestController
-@CrossOrigin(origins = "http://localhost:3000", maxAge = 3600)
 @RequestMapping("/api/memberships")
 public class MembershipController {
     

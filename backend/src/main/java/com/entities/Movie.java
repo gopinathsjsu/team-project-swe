@@ -47,6 +47,7 @@ public class Movie {
     public void setRating(float rating) { this.rating = rating; }
 
     public Date getReleaseDate() { return this.releaseDate; }
+    public void setReleaseDate(Date releaseDate) { this.releaseDate = releaseDate; }
     public void setRating(Date releaseDate) { this.releaseDate = releaseDate; }
 
     public Genre getGenre() { return this.genre; }
