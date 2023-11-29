@@ -45,8 +45,8 @@ const MovieSchedule = ({multiplexId,
                         spacing={2}
                         sx={{ minHeight: '20vh', padding: '10px' }}
                       >
-                        {movies.map((movie, index) => (
-                          <Card key={index} sx={{ minWidth: 300, maxWidth: 400 }}>
+                        {movies.map((movie) => (
+                          <Card key={movie.movieId} sx={{ minWidth: 300, maxWidth: 400 }}>
                             <ScheduleCard
                               movie={movie}
                               multiplexId={multiplexId}

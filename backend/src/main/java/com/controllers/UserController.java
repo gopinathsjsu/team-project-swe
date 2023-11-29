@@ -15,7 +15,6 @@ import com.services.UsersService;
 import javax.management.InstanceNotFoundException;
 
 @RestController
-@CrossOrigin(origins = "http://localhost:3000", maxAge = 3600)
 @RequestMapping("/api/users")
 public class UserController {
     

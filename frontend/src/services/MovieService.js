@@ -21,17 +21,25 @@ class MoviesService {
   }
 
   async updateMovie(updatedMovie) { // TODO: add auth header
-    const {movieId, title, description, duration, rating, genre, posterUrl} = updatedMovie;
+    const {movieId, title, description, duration, rating, genre} = updatedMovie;
+
+    // get the fields that are not updated in the editMovieForm
+    const originalMovie = await axios.get(`${MOVIES_BASE_URL}/getMovieById`, {
+      params: {
+        movieId: movieId
+      }
+    });
+    const {releaseDate, poster, showtimes} = originalMovie;
     return await axios.put(MOVIES_BASE_URL + '/update', {
-        parameters: {
-            movieId,
-            title,
-            description,
-            duration,
-            rating,
-            genre,
-            posterUrl
-        }
+      movieId: movieId,
+      title: title,
+      rating: rating,
+      releaseDate: releaseDate,
+      duration: duration,
+      description: description,
+      poster: poster,
+      showtimes: showtimes,
+      genre: genre 
       }
     );
   }
