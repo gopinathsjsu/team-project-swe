@@ -14,7 +14,6 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 @RestController
-@CrossOrigin(origins = "http://localhost:3000", maxAge = 3600)
 @RequestMapping("/api/showtimes")
 public class ShowtimeController {
 
@@ -71,6 +70,25 @@ public class ShowtimeController {
         } else {
             return ResponseEntity.notFound().build();
         }
+    }
+
+    @PreAuthorize("hasRole('ADMIN')")
+    @PutMapping("/update")
+    ResponseEntity<Showtime> updateShowtime(@RequestParam Long movieId, @RequestParam LocalDateTime showDateTime, @RequestParam Long theaterId, @RequestParam Long multiplexId) {
+        Showtime updatedShowtime = showtimeService.updateShowtime(movieId, showDateTime, theaterRepository.findById(theaterId).get(), multiplexRepository.findById(multiplexId).get());
+        if (updatedShowtime != null) {
+            return ResponseEntity.ok(updatedShowtime);
+        } else {
+            return ResponseEntity.notFound().build();
+        }
+    }
+
+    // this method also disassociates the showtime from the movie
+    @PreAuthorize("hasRole('ADMIN')")
+    @DeleteMapping("/delete")
+    ResponseEntity<Void> deleteShowtime(@RequestParam Long showtimeId) {
+        showtimeService.deleteShowtime(showtimeId);
+        return ResponseEntity.noContent().build();
     }
 
     // add api endpoints...

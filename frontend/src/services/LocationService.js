@@ -1,5 +1,4 @@
 import axios from 'axios';
-import authHeader from './auth/auth-header';
 
 const LOCATIONS_BASE_URL = 'http://localhost:8080/api/locations';
 

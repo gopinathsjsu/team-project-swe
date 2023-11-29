@@ -12,7 +12,6 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@CrossOrigin(origins = "http://localhost:3000", maxAge = 3600)
 @RequestMapping("/api/movies")
 public class MovieController {
 
@@ -21,6 +20,17 @@ public class MovieController {
     @Autowired
     public MovieController(MovieService movieService) {
         this.movieService = movieService;
+    }
+
+    @PreAuthorize("hasRole('USER') or hasRole('MEMBER') or hasRole('ADMIN')")
+    @GetMapping("/getMovieById")
+    public ResponseEntity<Movie> getMovieById(@RequestParam Long movieId) {
+        Movie movie = movieService.getMovieById(movieId);
+        if (movie != null) {
+            return ResponseEntity.ok(movie);
+        } else {
+            return ResponseEntity.notFound().build();
+        }
     }
 
 
@@ -70,6 +80,31 @@ public class MovieController {
 
         if (createdMovie != null) {
             return ResponseEntity.ok(createdMovie);
+        } else {
+            return ResponseEntity.badRequest().build();
+        }
+
+    }
+
+    @PreAuthorize("hasRole('ADMIN')")
+    @PutMapping("/update")
+    public ResponseEntity<Movie> updateMovie(@RequestBody Movie movie) {
+
+        Movie updatedMovie;
+
+        updatedMovie = movieService.updateMovie(
+                movie.getMovieId(),
+                movie.getTitle(),
+                movie.getRating(),
+                movie.getReleaseDate(),
+                movie.getGenre(),
+                movie.getDuration(),
+                movie.getDescription(),
+                movie.getPoster()
+        );
+
+        if (updatedMovie != null) {
+            return ResponseEntity.ok(updatedMovie);
         } else {
             return ResponseEntity.badRequest().build();
         }

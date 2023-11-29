@@ -14,7 +14,6 @@ import java.util.List;
 import java.util.Optional;
 
 @RestController
-@CrossOrigin(origins = "http://localhost:3000", maxAge = 3600)
 @RequestMapping("/api/schedules")
 public class ScheduleController {
 
@@ -120,6 +119,17 @@ public class ScheduleController {
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         } else {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+    }
+
+    @PreAuthorize("hasRole('ADMIN')")
+    @PutMapping("/removeMovie/{scheduleId}/{movieId}")
+    public ResponseEntity<Schedule> removeMovieFromSchedule(@PathVariable Long scheduleId, @PathVariable Long movieId) {
+        Schedule schedule = scheduleService.removeMovieFromSchedule(scheduleId, movieId);
+        if (schedule != null) {
+            return ResponseEntity.ok(schedule);
+        } else {
+            return ResponseEntity.notFound().build();
         }
     }
 
