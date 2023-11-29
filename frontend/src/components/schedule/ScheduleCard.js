@@ -5,7 +5,8 @@ import MovieService from "../../services/MovieService";
 import convertTime from "../../common/convertTime";
 import TheaterService from "../../services/TheaterService";
 
-const ScheduleCard = ({ movie, 
+const ScheduleCard = ({ 
+    movie, 
     multiplexId, 
     isAdmin, 
     onEditMovie, 
@@ -39,15 +40,15 @@ const ScheduleCard = ({ movie,
     const handleEditShowtime = (showtime) => {
         <Modal>
             <Box sx={{
-          position: "absolute",
-          top: "50%",
-          left: "50%",
-          transform: "translate(-50%, -50%)",
-          width: 400,
-          bgcolor: "background.paper",
-          boxShadow: 24,
-          p: 4,
-        }}>
+                position: "absolute",
+                top: "50%",
+                left: "50%",
+                transform: "translate(-50%, -50%)",
+                width: 400,
+                bgcolor: "background.paper",
+                boxShadow: 24,
+                p: 4,
+            }}>
                 <Button onClick={() => onEditShowtime(showtime)}>Edit Showtime</Button>
                 <Button onClick={() => onDeleteShowtime(showtime)}>Delete Showtime</Button>
             </Box>
@@ -110,7 +111,7 @@ const ScheduleCard = ({ movie,
                             {description}
                         </Typography>
                         <CardActions>
-                            <div component="p" className="whitespace-pre-wrap">
+                            <div className="whitespace-pre-wrap">
                                 {displayShowtimes()}
                             </div>
                             
