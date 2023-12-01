@@ -42,9 +42,22 @@ public class MovieController {
     }
 
     @PreAuthorize("hasRole('USER') or hasRole('MEMBER') or hasRole('ADMIN')")
+    @GetMapping("/multiplex/{multiplexId}")
+    public ResponseEntity<List<Movie>> getMoviesByMultiplexId(@PathVariable Long multiplexId) {
+        List<Movie> movies = movieService.getMoviesByMultiplexId(multiplexId);
+        if (movies == null) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+        return ResponseEntity.ok(movies);
+    }
+
+    @PreAuthorize("hasRole('USER') or hasRole('MEMBER') or hasRole('ADMIN')")
     @GetMapping("/getShowTimes")
     public ResponseEntity<List<Showtime>> getShowTimesForMovie(@RequestParam Long movieId) {
         List<Showtime> showTimes = movieService.getShowtimesForMovie(movieId);
+        if (showTimes == null) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
         return ResponseEntity.ok(showTimes);
     }
 

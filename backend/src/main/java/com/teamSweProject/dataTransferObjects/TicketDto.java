@@ -9,7 +9,7 @@ public class TicketDto {
     private String seatAssignment;
     private LocalDateTime showDateTime;
     private String assignedMovieName;
-    private String theaterName;
+    private Long theaterId; // because theater name is not unique
     private String multiplexName;
 
     public String getSeatAssignment() {
@@ -37,12 +37,12 @@ public class TicketDto {
         this.assignedMovieName = assignedMovieName;
     }
 
-    public String getTheaterName() {
-        return theaterName;
+    public Long getTheaterId() {
+        return theaterId;
     }
 
-    public void setTheaterName(String theaterName) {
-        this.theaterName = theaterName;
+    public void setTheaterId(Long theaterId) {
+        this.theaterId = theaterId;
     }
 
     public String getMultiplexName() {

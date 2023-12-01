@@ -4,6 +4,7 @@ import com.teamSweProject.entities.*;
 import com.teamSweProject.repositories.*;
 import com.teamSweProject.dataTransferObjects.TicketDto;
 import jakarta.persistence.EntityNotFoundException;
+import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -18,6 +19,8 @@ import java.util.Optional;
 
 @Service
 public class TicketService {
+
+    Logger logger = org.slf4j.LoggerFactory.getLogger(TicketService.class);
 
     private final TicketRepository ticketRepository;
     private final UsersRepository usersRepository;
@@ -62,14 +65,10 @@ public class TicketService {
 
         Movie assignedMovie = movieRepository.findByTitle(ticketDto.getAssignedMovieName())
                 .orElseThrow(() -> new EntityNotFoundException("Movie not found"));
-        Theater assignedTheater = theaterRepository.findByName(ticketDto.getTheaterName())
+        Theater assignedTheater = theaterRepository.findById(ticketDto.getTheaterId())
                 .orElseThrow(() -> new EntityNotFoundException("Theater not found"));
         Multiplex assignedMultiplex = multiplexRepository.findByName(ticketDto.getMultiplexName())
                 .orElseThrow(() -> new EntityNotFoundException("Multiplex not found"));
-
-        movieRepository.save(assignedMovie);
-        theaterRepository.save(assignedTheater);
-        multiplexRepository.save(assignedMultiplex);
 
         ticket.setAssignedMovie(assignedMovie);
         ticket.setTheaterAssignment(assignedTheater);
@@ -145,4 +144,8 @@ public class TicketService {
         return price;
     }
 
+    public Ticket getTicketById(Long ticketId) {
+        return ticketRepository.findById(ticketId)
+                .orElseThrow(() -> new EntityNotFoundException("Ticket not found with ID: " + ticketId));
+    }
 }
