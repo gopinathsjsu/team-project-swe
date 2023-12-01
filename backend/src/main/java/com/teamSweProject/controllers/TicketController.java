@@ -30,6 +30,9 @@ public class TicketController {
     @GetMapping("/getTicket")
     public ResponseEntity<Ticket> getTicket(@RequestParam Long ticketId) {
         Ticket ticket = ticketService.getTicketById(ticketId);
+        if (ticket == null) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
         return ResponseEntity.ok(ticket);
     }
 

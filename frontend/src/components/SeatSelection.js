@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from "react";
 import { Button } from "@mui/material";
-import { Link, useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 
 const Seats = () => {
+  const navigate = useNavigate();
   const { id, seats } = useParams();
   const [seatDetails, setSeatDetails] = useState(generateInitialSeatDetails());
   const [selectedSeatsCount, setSelectedSeatsCount] = useState(0);
@@ -24,15 +25,19 @@ const Seats = () => {
   }
 
   const clearSelectedSeats = () => {
-    const newSeatDetails = { ...seatDetails };
-    for (let key in seatDetails) {
-      newSeatDetails[key] = newSeatDetails[key].map((seatValue) =>
-        seatValue === 2 ? 0 : seatValue
-      );
-    }
-    setSeatDetails(newSeatDetails);
-    setSelectedSeatsCount(0);
-  };
+    setSeatDetails((prevSeatDetails) => {
+        const newSeatDetails = { ...prevSeatDetails };
+        for (let key in newSeatDetails) {
+            newSeatDetails[key] = newSeatDetails[key].map((seatValue) =>
+                seatValue === 2 ? 0 : seatValue
+            );
+        }
+        return newSeatDetails;
+      });
+      setSelectedSeatsCount(0);
+    };
+
+
 
   const onSeatClick = (rowIndex, colIndex) => {
     if (
@@ -112,6 +117,10 @@ const Seats = () => {
     return <div className="ml-n30">{seatArray}</div>;
   };
 
+  const handlePay = () => {
+    navigate('/payment', { state: { purchaseTicket: true } } );
+  };
+
   const RenderPaymentButton = () => {
     const selectedSeats = [];
     for (let key in seatDetails) {
@@ -124,18 +133,8 @@ const Seats = () => {
     if (selectedSeats.length) {
       return (
         <div className="sticky bottom-10">
-          <Button variant="contained" className="bg-pink-500 !important">
-            <Link
-              to={{
-                pathname: "/payment",
-                state: {
-                  movieId: id, // Replace with your movieId logic
-                  seatDetails: JSON.stringify(seatDetails),
-                },
-              }}
-            >
-              Pay
-            </Link>
+          <Button variant="contained" className="bg-pink-500 !important" onClick={handlePay}>
+            Pay
           </Button>
         </div>
       );
