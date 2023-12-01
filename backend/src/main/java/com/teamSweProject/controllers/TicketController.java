@@ -1,6 +1,7 @@
 package com.teamSweProject.controllers;
 
 import com.teamSweProject.dataTransferObjects.TicketDto;
+import com.teamSweProject.dataTransferObjects.TicketResponseDTO;
 import com.teamSweProject.entities.Ticket;
 import com.teamSweProject.repositories.TicketRepository;
 import com.teamSweProject.services.TicketService;
@@ -24,6 +25,7 @@ public class TicketController {
         this.ticketRepository = ticketRepository;
     }
 
+<<<<<<< Updated upstream
     @PreAuthorize("hasRole('MEMBER') or hasRole('ADMIN')")
     @GetMapping("/getTicket")
     public ResponseEntity<Ticket> getTicket(@RequestParam Long ticketId) {
@@ -31,6 +33,8 @@ public class TicketController {
         return ResponseEntity.ok(ticket);
     }
 
+=======
+>>>>>>> Stashed changes
     @PreAuthorize("hasRole('USER') or hasRole('MEMBER') or hasRole('ADMIN')")
     @PostMapping("/book/{userId}")
     public ResponseEntity<Ticket> bookTicket(@PathVariable Long userId, @RequestBody TicketDto ticketDto) {
@@ -52,6 +56,35 @@ public class TicketController {
     public ResponseEntity<String> cancelTicket(@PathVariable Long ticketId) {
         ticketService.cancelTicket(ticketId);
         return new ResponseEntity<>("Ticket canceled successfully", HttpStatus.OK);
+    }
+
+    @PreAuthorize("hasRole('MEMBER') or hasRole('ADMIN')")
+    @GetMapping("/getTicket")
+    public ResponseEntity<TicketResponseDTO> getTicket(@RequestParam Long ticketId) {
+        Ticket ticket = ticketService.getTicketById(ticketId);
+        if (ticket == null) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+
+        TicketResponseDTO responseDTO = createTicketResponseDTO(ticket);
+
+        return ResponseEntity.ok(responseDTO);
+    }
+
+    private TicketResponseDTO createTicketResponseDTO(Ticket ticket) {
+        TicketResponseDTO responseDTO = new TicketResponseDTO();
+        responseDTO.setTicketId(ticket.getTicketId());
+        responseDTO.setStatus(ticket.getStatus());
+        responseDTO.setTheaterName(ticket.getTheaterAssignment().getTheaterName());
+        responseDTO.setPrice(ticket.getPrice());
+        responseDTO.setSeatAssignment(ticket.getSeatAssignment());
+        responseDTO.setMultiplexName(ticket.getMultiplex().getMultiplexName());
+
+        // Set showDate and showTime using the modified method
+        responseDTO.setShowDate(ticket.getShowtime().getDate());
+        responseDTO.setShowTime(ticket.getShowtime().getTime());
+
+        return responseDTO;
     }
 
 
