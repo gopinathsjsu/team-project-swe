@@ -5,33 +5,67 @@ import UpcomingMovies from '../components/UpcomingMovies'
 import NewReleases from '../components/NewReleases';
 // import LocationHome from '../components/LocationHome';
 import LocationMultiplexDropdown from '../components/LocationMultiplexDropdown/LocationMultiplexDropdown';
+import axios from 'axios';
+import NewReleasesService from '../services/NewReleasesService';
+import UpcomingMoviesService from '../services/UpcomingMoviesService';
 
 const HomeContainer = () => {
-    const [moviesData, SetMoviesData]=useState([]);
-    const options = {
-        method: 'GET',
-        headers: {
-          accept: 'application/json',
-          Authorization: 'Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiIxMTQ5NThhNDY2M2Y4OGFkZmI2MjhkZTI2NWJhZmZkZSIsInN1YiI6IjY1NDE0MzViNmNhOWEwMDBlYmVlODdmZCIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.UARFyhM8sMafq8wmQRvRyD1g6niYjzf36xBqImntH-o'
-        }
-      };
-      
-      useEffect(()=>{
-        fetch('https://api.themoviedb.org/3/movie/now_playing?language=en-US&page=1', options)
-        .then(response => response.json())
-        .then(response => SetMoviesData(response.results))
-        .catch(err => console.error(err));
-   
-      },[])
-    
+  const [moviesData, SetMoviesData] = useState([]);
+  const [NewReleasesData, SetNewReleasesData] = useState([]);
+  const [multiplexId, SetMultiplexId] = useState(null);
+  const [locationDataId, SetLocationDataId] = useState(null);
+  const [UpcomingMoviesDataByMultiplex, SetUpcomingMoviesDataByMultiplex] = useState([]);
+  const [UpcomingMoviesFinalData, SetUpcomingMoviesFinalData] = useState([]);
+  const fetchNewReleases = async () => {
+    try {
+      const NewReleasesData = await NewReleasesService.getAllNewReleases();
+      // console.log("Nitya", NewReleasesData);
+      SetNewReleasesData(NewReleasesData);
+    } catch (error) {
+      console.error('Error fetching new releases:', error);
+    }
+  };
+  const fetchUpcomingMovies = async () => {
+    try {
+      const UpcomingMoviesData = await UpcomingMoviesService.getAllUpcomingMovies();
+      // console.log("Nitya", UpcomingMoviesData);
+      SetMoviesData(UpcomingMoviesData);
+    } catch (error) {
+      console.error('Error fetching upcoming movies:', error);
+    }
+  };
+  useEffect(() => {
+    fetchNewReleases();
+    fetchUpcomingMovies();
+  }, [])
+
+
+
+  useEffect(() => {
+    axios.get(`http://localhost:8080/api/multiplexes/get/${locationDataId}`).then(res => SetUpcomingMoviesDataByMultiplex(res.data)).catch(er => console.log(er))
+  }, [locationDataId])
+  useEffect(() => {
+    const data = UpcomingMoviesDataByMultiplex.find(data => data.multiplexId === multiplexId.multiplexId)
+    // console.log("myMultiplexId",multiplexId)
+    // console.log(data?.theaters)
+
+  }, [multiplexId])
+  const locationMultiplexId = (multiplexId) => {
+    SetMultiplexId(multiplexId)
+  }
+  const locationId = (locationId) => {
+    SetLocationDataId(locationId)
+  }
+  // console.log("multiplexId",multiplexId)
+  // console.log("locationId",locationDataId)
   return (
     <div>
-        <NavBar/>
-        <CarouselComponent/>
-        {/* <LocationHome/> */}
-        <LocationMultiplexDropdown isAdmin={false}/>
-        <NewReleases moviesData={moviesData} seeAll={true}/>
-        <UpcomingMovies moviesData={moviesData} seeAll={true}/>
+      <NavBar />
+      <CarouselComponent />
+      {/* <LocationHome/> */}
+      <LocationMultiplexDropdown multiplexIdFunction={locationMultiplexId} isHome={true} locationIdFunction={locationId} isAdmin={false} />
+      <NewReleases moviesData={NewReleasesData} seeAll={true} />
+      <UpcomingMovies moviesData={moviesData} seeAll={true} />
     </div>
   )
 }

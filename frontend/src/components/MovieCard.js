@@ -2,7 +2,8 @@ import React from 'react'
 import ScheduleCard from "./schedule/ScheduleCard";
 
 // TODO: pass in movieId instead of MovieName
-const MovieCard = ({thumbnail,MovieName}) => {
+const MovieCard = ({thumbnail, MovieName}) => {
+  // console.log(movieData)
 
     // // TODO: get movie by id (axios call)
     // // TODO: get title and other properties from movie object retrieved

@@ -16,11 +16,12 @@ const NewReleases = ({moviesData,seeAll}) => {
             {seeAll && <Button onClick={handleSeeAll} variant="outlined" size="medium">See All</Button>}
         </div>
         <div className='grid grid-cols-5 gap-[10px] px-[50px] '>
-            {moviesData.map((data) =>
-                <Link to={{pathname:'/movie/'+data.id}}>
-                <MovieCard
-                    thumbnail="https://assets-in.bmscdn.com/iedb/movies/images/mobile/thumbnail/xlarge/five-nights-at-freddy-s-et00363275-1693810842.jpg"
-                    MovieName={data.original_title}
+            {moviesData.slice(0,seeAll?10:undefined).map((data) =>
+                <Link to={{pathname:'/movie/'+"getNewReleases"+"/"+data.movieId}}>
+                <MovieCard key={data.movieId}
+                    // Movietype="newReleases"
+                    thumbnail={data.poster}
+                    MovieName={data.title}
                 />
             </Link>)}
         </div>

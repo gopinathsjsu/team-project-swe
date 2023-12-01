@@ -1,9 +1,17 @@
 import React, { useEffect, useMemo, useState } from 'react'
 import { useParams } from 'react-router-dom'
 import NavBar from '../components/NavBar'
-import Button from '@mui/material/Button';
+
+import Rating from '@mui/material/Rating';
 import ConfirmationNumberRoundedIcon from '@mui/icons-material/ConfirmationNumberRounded';
 import ScheduleCard from "../components/schedule/ScheduleCard";
+import axios from 'axios';
+import { Button, ButtonGroup, Container, Typography } from '@mui/material';
+import Chip from '@mui/material/Chip';
+
+
+import Box from '@mui/material/Box';
+import MovieService from '../services/MovieService';
 
 // TODO: book a SINGLE movie (that which is being displayed on this page)
 const MovieBooking = ({ movieId }) => {
@@ -26,28 +34,33 @@ const MovieBooking = ({ movieId }) => {
     description: "lorem ipsum",
   };
 
-  const { id } = useParams();
+  const { id, type } = useParams();
   const [moviesData, SetMoviesData] = useState([]);
   const [movieInformation, SetMovieInformation] = useState([]);
-  const options = {
-    method: 'GET',
-    headers: {
-      accept: 'application/json',
-      Authorization: 'Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiIxMTQ5NThhNDY2M2Y4OGFkZmI2MjhkZTI2NWJhZmZkZSIsInN1YiI6IjY1NDE0MzViNmNhOWEwMDBlYmVlODdmZCIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.UARFyhM8sMafq8wmQRvRyD1g6niYjzf36xBqImntH-o'
+  const [showtimes, Setshowtimes] = useState([])
+  useEffect(() => {
+    axios.get(`http://localhost:8080/api/movies/${type}`).then(res => SetMoviesData(res.data)).catch(er => console.log(er))
+    fetchShowtimesByMovieId();
+  }, [])
+
+  useEffect(() => {
+    SetMovieInformation(moviesData.find(data => data.movieId == id))
+    // fetchShowtimesByMovieId();
+    // Setshowtimes(movieInformation.showtimes)
+  }, [moviesData])
+  const fetchShowtimesByMovieId = async () => {
+    try {
+      const showTimes = await MovieService.fetchShowtimesByMovieId(id);
+      console.log("Nitya", showTimes);
+      Setshowtimes(showTimes);
+    } catch (error) {
+      console.error('Error fetching show times:', error);
     }
   };
-
-  useEffect(() => {
-    fetch('https://api.themoviedb.org/3/movie/now_playing?language=en-US&page=1', options)
-      .then(response => response.json())
-      .then(response => SetMoviesData(response.results))
-      .catch(err => console.error(err));
-
-  }, [])
-  useEffect(() => {
-    SetMovieInformation(moviesData.filter(data => data.id == id)[0])
-  }, [moviesData])
-  console.log(movieInformation)
+  // console.log(movieInformation)
+  const handleButtonClick = (day, time) => {
+    console.log(`Button clicked for ${day} at ${time}`);
+  };
 
   return (
     <div>
@@ -56,16 +69,40 @@ const MovieBooking = ({ movieId }) => {
         <div className='bg-[#0F0F0F]'>
           <div className='flex  pt-[100px]'>
             <div className='w-1/4 ml-[40px] '>
-              <img src='https://assets-in.bmscdn.com/iedb/movies/images/mobile/thumbnail/xlarge/five-nights-at-freddy-s-et00363275-1693810842.jpg' />
+              <img src={movieInformation.poster} />
             </div>
             <div className='w-2/3 text-white mr-[40px]'>
               <h1 className='text-4xl font-bold'>{movieInformation.title}</h1>
-              <h3>{movieInformation.overview}</h3>
-              <Button startIcon={<ConfirmationNumberRoundedIcon />} variant='outlined' color="success">Book Tickets</Button>
-              <ScheduleCard movie={movie} />
+              <h3>{movieInformation.description}</h3>
+              <h5>{movieInformation.releaseDate}</h5>
+              {/* <Button startIcon={<ConfirmationNumberRoundedIcon />} variant='outlined' color="success">Book Tickets</Button> */}
+              {/* <ScheduleCard movie={movie} /> */}
+              <Rating
+                name="simple-controlled"
+                value={movieInformation.rating}
+                readOnly
+
+              />
+              <h5>{movieInformation.duration}</h5>
+              <Chip label={movieInformation.genre} color="primary" variant="outlined" />
+              <Container>
+                <Typography variant="h4" gutterBottom>
+                  Movie Schedule
+                </Typography>
+                <ButtonGroup style={{flexWrap:"wrap",gap:"5px"}} variant="contained" aria-label="movie schedule">
+                  {showtimes.map(({ date, time, showtimeId }) => (
+                    <Button key={showtimeId} onClick={() => handleButtonClick(date, time)}>
+                      <div>
+                        <Typography variant="h6">{date}</Typography>
+                        <Typography variant="subtitle1">{time}</Typography>
+                      </div>
+                    </Button>
+                  ))}
+                </ButtonGroup>
+              </Container>
             </div>
           </div>
-          <iframe width="560" height="315" src="https://www.youtube.com/embed/iGKqbWal8UQ?si=tAJLTnWo4kQKvcp1" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+
         </div>
 
       }
