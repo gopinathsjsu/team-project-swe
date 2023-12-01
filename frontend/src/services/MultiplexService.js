@@ -3,7 +3,7 @@ import authHeader from './auth/auth-header';
 
 const MULTIPLEXES_BASE_URL = 'http://localhost:8080/api/multiplexes';
 
-class MoviesService {
+class MultiplexService {
 
     async getMultiplexesByLocationId(locationId) {
         try {
@@ -17,4 +17,4 @@ class MoviesService {
 
 }
 
-export default new MoviesService();
+export default new MultiplexService();
