@@ -5,7 +5,7 @@ import Button from "@mui/material/Button";
 
 import AuthService from "../services/auth/auth.service";
 
-const LoginForm = (isAdmin) => {
+const LoginForm = () => {
 
   const form = useRef();
   let navigate = useNavigate();
@@ -23,16 +23,17 @@ const LoginForm = (isAdmin) => {
     setPassword(password);
   };
 
-
   const handleLogin = (e) => {
     e.preventDefault();
-
+  
     AuthService.login(username, password)
-      .then(() => {
-        if (isAdmin) {
-          navigate("/admin");
+      .then((loginResponse) => {
+        const userRole = loginResponse.role;
+  
+        if (userRole === 'ROLE_ADMIN') {
+          navigate('/admin', { replace: true });
         } else {
-          navigate("/member");
+          navigate('/member', { replace: true });
         }
         window.location.reload();
       })
@@ -40,6 +41,7 @@ const LoginForm = (isAdmin) => {
         console.log(error);
       });
   };
+
 
     return (
       <div className="min-h-screen flex items-center justify-center">

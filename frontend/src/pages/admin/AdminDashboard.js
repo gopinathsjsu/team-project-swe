@@ -13,12 +13,6 @@ import LocationMultiplexDropdown from '../../components/LocationMultiplexDropdow
 import EditMovieForm from '../../components/admin/movie/EditMovieForm';
 import EditTheaterForm from '../../components/admin/theater/EditTheaterForm';
 import EditShowtimeForm from '../../components/admin/showtime/EditShowtimeForm';
-import RemoveMovieModal from '../../components/admin/movie/RemoveMovieModal';
-
-import ScheduleService from '../../services/ScheduleService';
-import RemoveShowtimeModal from '../../components/admin/showtime/RemoveShowtimeModal';
-import ShowtimeService from '../../services/ShowtimeService';
-import AddShowtimeModal from '../../components/admin/showtime/AddShowtimeForm';
 
 const AdminDashboard = () => {
     
