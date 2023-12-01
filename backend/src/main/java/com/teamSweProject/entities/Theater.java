@@ -11,6 +11,9 @@ public class Theater {
     private String name; // i.e. screen #
     private int capacity;
 
+    @Column(name = "occupancy")
+    private int occupancy = 0;
+
     @ManyToOne
     @JoinColumn(name = "movie_id")
     private Movie assignedMovie;
@@ -38,5 +41,8 @@ public class Theater {
 
     public Movie getAssignedMovie() { return this.assignedMovie; }
     public void setAssignedMovie(Movie movie) { this.assignedMovie = movie; }
+
+    public int getOccupancy() { return this.occupancy; }
+    public void setOccupancy(int occupancy) { this.occupancy = occupancy; }
 
 }

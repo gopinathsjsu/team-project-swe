@@ -3,6 +3,7 @@ package com.teamSweProject.controllers;
 import com.teamSweProject.entities.Movie;
 import com.teamSweProject.entities.Theater;
 import com.teamSweProject.services.TheaterService;
+import jakarta.persistence.EntityNotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -74,6 +75,38 @@ public class TheaterController {
             return ResponseEntity.ok().build();
         } catch (Exception e) {
             return ResponseEntity.badRequest().build();
+        }
+    }
+
+    @PreAuthorize("hasRole('ADMIN')")
+    @GetMapping("/{theaterId}/occupancyByLocation")
+    public ResponseEntity<Integer> getOccupancyForLastNDaysByLocation(
+            @PathVariable Long theaterId,
+            @RequestParam int days) {
+
+        int occupancy = theaterService.getOccupancyForLastNDaysByLocation(theaterId, days);
+        return ResponseEntity.ok(occupancy);
+    }
+
+    @GetMapping("/occupancyByMovie")
+    public ResponseEntity<Integer> getOccupancyForLastNDaysByMovie(
+            @RequestParam Long movieId,
+            @RequestParam int days) {
+
+        int occupancy = theaterService.getOccupancyForLastNDaysByMovie(movieId, days);
+        return ResponseEntity.ok(occupancy);
+    }
+
+    @PutMapping("/{theaterId}/updateOccupancy")
+    public ResponseEntity<String> updateOccupancy(@PathVariable Long theaterId) {
+
+        try {
+            theaterService.updateOccupancy(theaterId);
+            return ResponseEntity.ok("Occupancy updated successfully");
+        } catch (EntityNotFoundException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
 }
