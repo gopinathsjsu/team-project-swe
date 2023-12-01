@@ -2,9 +2,11 @@ package com.teamSweProject.controllers;
 
 import com.teamSweProject.dataTransferObjects.TicketDto;
 import com.teamSweProject.dataTransferObjects.TicketResponseDTO;
+import com.teamSweProject.entities.Movie;
 import com.teamSweProject.entities.Ticket;
 import com.teamSweProject.repositories.TicketRepository;
 import com.teamSweProject.services.TicketService;
+import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -75,6 +77,16 @@ public class TicketController {
         responseDTO.setShowTime(ticket.getShowtime().getTime());
 
         return responseDTO;
+    }
+
+    @GetMapping("/watched/{userId}")
+    public ResponseEntity<List<Movie>> getMoviesWatchedInLast30Days(@PathVariable Long userId) {
+        try {
+            List<Movie> watchedMovies = ticketService.getMoviesWatchedInLast30Days(userId);
+            return new ResponseEntity<>(watchedMovies, HttpStatus.OK);
+        } catch (EntityNotFoundException e) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
     }
 
 

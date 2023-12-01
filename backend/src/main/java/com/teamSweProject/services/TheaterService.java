@@ -3,14 +3,17 @@ package com.teamSweProject.services;
 import com.teamSweProject.entities.Movie;
 import com.teamSweProject.entities.Multiplex;
 import com.teamSweProject.entities.Theater;
+import com.teamSweProject.entities.Ticket;
 import com.teamSweProject.repositories.MovieRepository;
 import com.teamSweProject.repositories.MultiplexRepository;
 import com.teamSweProject.repositories.TheaterRepository;
+import com.teamSweProject.repositories.TicketRepository;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.management.InstanceNotFoundException;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -19,15 +22,18 @@ public class TheaterService {
     private final TheaterRepository theaterRepository;
     private final MultiplexRepository multiplexRepository;
     private final MovieRepository movieRepository;
+    private final TicketRepository ticketRepository;
 
     @Autowired
     public TheaterService(TheaterRepository theaterRepository,
                           MultiplexRepository multiplexRepository,
-                          MovieRepository movieRepository) {
+                          MovieRepository movieRepository,
+                          TicketRepository ticketRepository) {
 
         this.theaterRepository = theaterRepository;
         this.multiplexRepository = multiplexRepository;
         this.movieRepository = movieRepository;
+        this.ticketRepository = ticketRepository;
     }
 
     public List<Theater> getTheatersByMultiplexId(Long multiplexId) throws InstanceNotFoundException {
@@ -99,4 +105,37 @@ public class TheaterService {
             throw new EntityNotFoundException("Theater not found with ID: " + theaterId);
         }
     }
+
+    public void updateOccupancy(Long theaterId) {
+        Optional<Theater> theaterOptional = theaterRepository.findById(theaterId);
+        if (theaterOptional.isPresent()) {
+            Theater theater = theaterOptional.get();
+
+            int purchasedTickets = ticketRepository.countByTheaterAssignmentTheaterIdAndStatus(theaterId, Ticket.TicketStatus.BOOKED);
+
+            if (purchasedTickets <= theater.getCapacity()) {
+                theater.setOccupancy(purchasedTickets);
+                theaterRepository.save(theater);
+            } else {
+                throw new IllegalArgumentException("Purchased tickets exceed theater capacity");
+            }
+        } else {
+            throw new EntityNotFoundException("Theater not found with ID: " + theaterId);
+        }
+    }
+
+
+    public int getOccupancyForLastNDaysByLocation(Long theaterId, int days) {
+        LocalDateTime startDate = LocalDateTime.now().minusDays(days);
+        return ticketRepository.countByTheaterAssignmentTheaterIdAndBookingDateAfter(theaterId, startDate);
+    }
+
+    public int getOccupancyForLastNDaysByMovie(Long movieId, int days) {
+        // Assuming you have a method in TicketRepository for counting tickets by movie and status
+        LocalDateTime startDate = LocalDateTime.now().minusDays(days);
+        return ticketRepository.countByAssignedMovieMovieIdAndBookingDateAfterAndStatus(movieId, startDate, Ticket.TicketStatus.BOOKED);
+    }
+
+
+
 }
