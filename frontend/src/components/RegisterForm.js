@@ -1,15 +1,13 @@
 import React, {useState, useRef} from "react";
-import pic_2 from "../assets/pic_2.png";
-import UserService from "../services/UserService";
-import AuthService from "../services/auth/auth.service";
 import Button from "@mui/material/Button";
 
+import pic_2 from "../assets/pic_2.png";
+import AuthService from "../services/auth/auth.service";
 
 const RegisterForm = () => {
 
   const form = useRef();
   const [successful, setSuccessful] = useState(false);
-
 
   const [formData, setFormData] = useState({
     email: '',
@@ -88,11 +86,6 @@ const RegisterForm = () => {
         setSuccessful(false);
       });
 
-    // call UserService endpoint to update the user record
-    // with remaining fields
-    // UserService.updateUser(userSignUpData.username, userSignUpData).then((res) => {
-    //   console.log(res);
-    // });
   };
 
     return (
