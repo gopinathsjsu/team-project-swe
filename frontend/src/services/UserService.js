@@ -35,7 +35,17 @@ class UserService {
             }
         });
 
-        console.log(res);        
+        return res;        
+    }
+
+    async getUserByUsername(username) {
+        const res = await axios.get(USERS_BASE_URL + '/getUserByUsername', {
+            params: {
+                username: username
+            }
+        });
+
+        return res;   
     }
 
     async updateUser(usernameToUpdate, userData) {

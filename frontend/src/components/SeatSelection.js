@@ -1,34 +1,27 @@
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Button } from "@mui/material";
-import Head from "next/head";
-import Link from "next/link";
-import { useRouter } from "next/router";
-import styles from "./Seats.module.scss";
+import { Link, useParams } from "react-router-dom";
 
 const Seats = () => {
-  const router = useRouter();
-  const { id, seats } = router.query;
-  const screenConfig =
-    id === "1" ? { rows: 8, cols: 8 } : { rows: 10, cols: 10 };
-  const [seatDetails, setSeatDetails] = useState(
-    generateInitialSeatDetails(screenConfig)
-  );
+  const { id, seats } = useParams();
+  const [seatDetails, setSeatDetails] = useState(generateInitialSeatDetails());
   const [selectedSeatsCount, setSelectedSeatsCount] = useState(0);
 
   useEffect(() => {
     if (!seats) {
       clearSelectedSeats();
     }
-  }, []);
+  }, [seats]);
 
-  const generateInitialSeatDetails = ({ rows, cols }) => {
+  function generateInitialSeatDetails() {
+    const screenConfig = { rows: 8, cols: 10 };
     const initialSeatDetails = {};
-    for (let i = 1; i <= rows; i++) {
+    for (let i = 1; i <= screenConfig.rows; i++) {
       const rowKey = `Row ${String.fromCharCode(65 + i - 1)}`;
-      initialSeatDetails[rowKey] = Array(cols).fill(0);
+      initialSeatDetails[rowKey] = Array(screenConfig.cols).fill(0);
     }
     return initialSeatDetails;
-  };
+  }
 
   const clearSelectedSeats = () => {
     const newSeatDetails = { ...seatDetails };
@@ -43,6 +36,14 @@ const Seats = () => {
 
   const onSeatClick = (rowIndex, colIndex) => {
     if (
+      selectedSeatsCount >= 8 ||
+      seatDetails[`Row ${String.fromCharCode(65 + rowIndex)}`][colIndex] === 1
+    ) {
+      // Ignore click if already booked or reached the maximum limit
+      return;
+    }
+
+    if (
       seatDetails[`Row ${String.fromCharCode(65 + rowIndex)}`][colIndex] === 2
     ) {
       setSeatDetails((prevSeatDetails) => {
@@ -53,7 +54,7 @@ const Seats = () => {
         return newSeatDetails;
       });
       setSelectedSeatsCount((prevCount) => prevCount - 1);
-    } else if (selectedSeatsCount < 8) {
+    } else {
       setSeatDetails((prevSeatDetails) => {
         const newSeatDetails = { ...prevSeatDetails };
         newSeatDetails[`Row ${String.fromCharCode(65 + rowIndex)}`][
@@ -66,17 +67,21 @@ const Seats = () => {
   };
 
   const getClassNameForSeats = (seatValue) => {
-    let dynamicClass;
+    let styleseats, dynamicClass;
+    styleseats =
+      "select-none cursor-pointer text-gray-700 text-sm font-bold px-3 py-2 rounded-md shadow-md";
+
     if (seatValue === 0) {
-      dynamicClass = styles.seatNotBooked;
+      dynamicClass = "bg-gray-200 cursor-default text-gray-800 shadow-none";
     } else if (seatValue === 1) {
-      dynamicClass = styles.seatBooked;
+      dynamicClass = "bg-gray-500 bg-opacity-40 cursor-default";
     } else if (seatValue === 2) {
-      dynamicClass = styles.seatSelected;
+      dynamicClass = "text-white !important bg-green-500";
     } else {
-      dynamicClass = styles.seatBlocked;
+      dynamicClass = "cursor-default text-white !important shadow-none";
     }
-    return `${styles.seats} ${dynamicClass}`;
+
+    return `${styleseats} ${dynamicClass}`;
   };
 
   const RenderSeats = () => {
@@ -84,8 +89,10 @@ const Seats = () => {
     for (let key in seatDetails) {
       const rowIndex = key.charCodeAt(4) - 65;
       let colValue = seatDetails[key].map((seatValue, colIndex) => (
-        <span key={`${key}.${colIndex}`} className={styles.seatsHolder}>
-          {colIndex === 0 && <span className={styles.colName}>{key}</span>}
+        <span key={`${key}.${colIndex}`} className="m-10">
+          {colIndex === 0 && (
+            <span className="text-gray-700 font-bold mr-2">{key}</span>
+          )}
           <span
             className={getClassNameForSeats(seatValue)}
             onClick={() => onSeatClick(rowIndex, colIndex)}
@@ -102,7 +109,7 @@ const Seats = () => {
       ));
       seatArray.push(colValue);
     }
-    return <div className={styles.seatsLeafContainer}>{seatArray}</div>;
+    return <div className="ml-n30">{seatArray}</div>;
   };
 
   const RenderPaymentButton = () => {
@@ -116,23 +123,21 @@ const Seats = () => {
     }
     if (selectedSeats.length) {
       return (
-        <Link
-          href={{
-            pathname: "/payment",
-            query: { movieId: id, seatDetails: JSON.stringify(seatDetails) },
-          }}
-        >
-          <div className={styles.paymentButtonContainer}>
-            <Button
-              variant="contained"
-              href="#contained-buttons"
-              className={styles.paymentButton}
+        <div className="sticky bottom-10">
+          <Button variant="contained" className="bg-pink-500 !important">
+            <Link
+              to={{
+                pathname: "/payment",
+                state: {
+                  movieId: id, // Replace with your movieId logic
+                  seatDetails: JSON.stringify(seatDetails),
+                },
+              }}
             >
-              Pay Rs.{selectedSeats.length * 100}{" "}
-              {/* Assuming ticket cost is 100, you can adjust accordingly */}
-            </Button>
-          </div>
-        </Link>
+              Pay
+            </Link>
+          </Button>
+        </div>
       );
     } else {
       return <></>;
@@ -141,13 +146,10 @@ const Seats = () => {
 
   return (
     <>
-      <Head>
-        <title>Seats</title>
-      </Head>
-      <div className={styles.seatsContainer}>
+      <div className="text-center">
         <h1>Movie Title</h1>
-        {seatDetails && <RenderSeats />}
-        <RenderPaymentButton />
+        {RenderSeats()}
+        {RenderPaymentButton()}
       </div>
     </>
   );
