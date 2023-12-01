@@ -1,8 +1,10 @@
 import React from "react";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 
+import AuthService from "./services/auth/auth.service";
+
 import Home from "./pages/Home";
-import Payment from "./pages/payment";
+import Payment from "./pages/PaymentPage";
 import PaymentResult from "./pages/PaymentResult";
 import MemberDashboard from "./pages/MemberDashboard";
 import Register from "./pages/Register";
@@ -15,16 +17,19 @@ import NewReleasesPage from "./pages/NewReleasesPage";
 import UpcomingMoviesPage from "./pages/UpcomingMoviesPage";
 import SeatSelect from "./pages/SeatSelect";
 const App = () => {
+  const currentUser = AuthService.getCurrentUser();
+  const isAdmin = currentUser && currentUser.role === 'ROLE_ADMIN';
+
   return (
     <BrowserRouter>
       <Routes>
         <Route path="/" exact element={<Home />} />
         <Route path="/payment" exact element={<Payment />} />
+        {/* isAdmin is false by default */}
+        <Route path="/login" exact element={<Login />} />
         <Route path="/payment/result" exact element={<PaymentResult />} />
         <Route path="/member" exact element={<MemberDashboard />} />
         <Route path="/register" exact element={<Register />} />
-        {/* isAdmin is false by default */}
-        <Route path="/login" exact element={<Login isAdmin={false} />} />
         <Route path="/memberSelection" exact element={<MemberSelection />} />
         <Route path="/movie/:id" exact element={<MovieBooking />} />
         <Route path="/schedule" exact element={<MovieSchedule />} />
