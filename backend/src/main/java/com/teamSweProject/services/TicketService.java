@@ -16,6 +16,7 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class TicketService {
@@ -147,5 +148,17 @@ public class TicketService {
     public Ticket getTicketById(Long ticketId) {
         return ticketRepository.findById(ticketId)
                 .orElseThrow(() -> new EntityNotFoundException("Ticket not found with ID: " + ticketId));
+    }
+
+    public List<Movie> getMoviesWatchedInLast30Days(Long userId) {
+        Users user = usersRepository.findById(userId)
+                .orElseThrow(() -> new EntityNotFoundException("User not found"));
+
+        LocalDateTime startDate = LocalDateTime.now().minusDays(30);
+        List<Ticket> userTicketsInLast30Days = ticketRepository.findByUserAndBookingDateAfter(user, startDate);
+
+        return userTicketsInLast30Days.stream()
+                .map(Ticket::getAssignedMovie)
+                .collect(Collectors.toList());
     }
 }
