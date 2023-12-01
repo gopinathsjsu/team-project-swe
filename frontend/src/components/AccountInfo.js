@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import Button from '@mui/material/Button';
 import AuthService from '../services/auth/auth.service';
 import MembershipService from '../services/MembershipService';
+import { useState } from 'react';
 
 const initialState = {
   currentUser: AuthService.getCurrentUser(),
@@ -24,6 +25,9 @@ const reducer = (state, action) => {
 const AccountInfo = () => {
   const navigate = useNavigate();
   const [state, dispatch] = useReducer(reducer, initialState);
+  const [showCancelTicketPopup, setShowCancelTicketPopup] = useState(false);
+  const [showTicketCanceledPopup, setshowTicketCanceledPopup] = useState(false);
+  
 
   useEffect(() => {
     const fetchMembership = async () => {
@@ -47,8 +51,16 @@ const AccountInfo = () => {
     navigate('/memberSelection');
   };
 
+  const handleCancelTicket = () => {
+    setShowCancelTicketPopup(true);
+  }
+
+  const handleCloseCanceledTicketPopup = () => {
+    setshowTicketCanceledPopup(true);
+  }
+
   return (
-    <div className='flex justify-between mx-10  mt-10 items-center'>
+    <div className='flex justify-between mx-10 mt-10 items-center'>
       <div>
         <h3 className='text-2xl'>Hi, {state.currentUser?.firstName} {state.currentUser?.lastName}!</h3>
         <p>{state.currentUser?.email}</p>
@@ -65,6 +77,44 @@ const AccountInfo = () => {
           </Button>
         ) : null}
       </div>
+
+
+      {showCancelTicketPopup && (
+        <div className="popup">
+          <div className="popup-content">
+            <h2>Cancel Ticket</h2>
+            <p>Are you sure you want to cancel the ticket?</p>
+            <Button
+              variant="contained"
+              color="secondary"
+              onClick={handleCancelTicket}
+            >
+              Confirm Cancel
+            </Button>
+            <Button
+              variant="contained"
+              onClick={handleCloseCanceledTicketPopup}
+            >
+              Close
+            </Button>
+          </div>
+        </div>
+      )}
+
+      {showTicketCanceledPopup && (
+        <div className="popup">
+          <div className="popup-content">
+            <h2>Ticket Canceled</h2>
+            <p>Your ticket has been successfully canceled.</p>
+            <Button
+              variant="contained"
+              onClick={handleCloseCanceledTicketPopup}
+            >
+              Close
+            </Button>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
