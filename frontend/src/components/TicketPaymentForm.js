@@ -1,26 +1,51 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import * as validator from 'validator';
 
 import AuthService from '../services/auth/auth.service';
-import MembershipService from '../services/MembershipService';
+import TicketService from '../services/TicketService';
 
-const MembershipPaymentForm = () => {
+const TicketPaymentForm = ({ ticketId }) => {
     const navigate = useNavigate();
+
     const [creditCardError, setCreditCardError] = useState(null);
     const [showPopup, setShowPopup] = useState(false);
     const [formattedCreditCard, setFormattedCreditCard] = useState('');
     const [expirationMonth, setExpirationMonth] = useState('');
     const [expirationYear, setExpirationYear] = useState('');
 
-    const paymentTotal = "15.00";
+    const [paymentTotal, setPaymentTotal] = useState("0.00");
+
+    useEffect(() => {
+        async function getTicket() {
+                
+            const ticket = await TicketService.getTicket(ticketId=5); // TODO: get ticketId from URL params
+            const {
+                price, 
+                seatAssignment, 
+                assignedMovie, 
+                bookingDate, 
+                showtime, 
+                theaterAssignment, 
+                multiplex 
+            } = ticket;
+
+            setPaymentTotal(price.toString());
+        };
+        try {  
+            getTicket();
+        } catch (e) {
+            console.log(e.message);
+        }
+    }, []);
+
 
     const validateCreditCard = (creditCardNumber) => {
         return validator.isCreditCard(creditCardNumber);
     };
 
 
-    const handleSubmit = async (e) => {
+    const handleSubmitTicketPayment = async (e) => {
         e.preventDefault();
 
         const { id } = AuthService.getCurrentUser();
@@ -32,13 +57,6 @@ const MembershipPaymentForm = () => {
         }
 
         try {
-            const currentMembership = await MembershipService.getMembership(id);
-
-            MembershipService.updateMembership(id, {
-                expirationDate: currentMembership.expirationDate,
-                membershipType: 'PREMIUM_MEMBER',
-            });
-
             setShowPopup(true);
 
             setTimeout(() => {
@@ -54,7 +72,7 @@ const MembershipPaymentForm = () => {
         <div>
             <form 
                 className="max-w-sm mx-auto mt-8 p-6 bg-white rounded-lg shadow-md"
-                onSubmit={handleSubmit}
+                onSubmit={handleSubmitTicketPayment}
             >
                 <div className="mb-4 text-xl font-bold">You owe ${paymentTotal}</div>
 
@@ -149,7 +167,7 @@ const MembershipPaymentForm = () => {
                 <div className="fixed inset-0 flex items-center justify-center bg-gray-700 bg-opacity-50">
                     <div className="bg-white p-8 rounded-md shadow-md">
                         <p className="text-lg font-semibold mb-4">Payment Submitted Successfully!</p>
-                        <p>Your membership has been updated.</p>
+                        <p>You'll now be redirected to the member page where you can view your tickets.</p>
                     </div>
                 </div>
             )}
@@ -158,4 +176,4 @@ const MembershipPaymentForm = () => {
     );
 };
 
-export default MembershipPaymentForm;
+export default TicketPaymentForm;

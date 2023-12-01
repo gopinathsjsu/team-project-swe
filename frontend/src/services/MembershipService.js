@@ -47,14 +47,21 @@ class MembershipService {
             membershipType
         } = membershipData;
 
-        const res = await axios.put(MEMBERSHIP_BASE_URL + '/update', {
-            userId: userId,
-            expirationDate: expirationDate,
-            membershipType: membershipType
-        }, 
-        // { headers: authHeader() } TODO: uncomment
-        );
-    }
+        const res = await axios.put(`${MEMBERSHIP_BASE_URL}/update`,
+          {
+              expirationDate: expirationDate,
+              membershipType: membershipType
+          },
+          {
+              params: {
+                  userId: userId
+              }
+              // headers: authHeader() // TODO: uncomment
+          }
+      );
+  
+      return res.data;
+  }
 
 }
 

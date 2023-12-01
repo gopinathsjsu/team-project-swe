@@ -1,21 +1,21 @@
 import React from "react";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 
+import Home from './pages/Home';
+import Payment from './pages/PaymentPage';
+import PaymentResult from './pages/PaymentResult'
+import MemberDashboard from './pages/MemberDashboard';
+import Register from './pages/Register';
+import Login from './pages/Login';
+import MemberSelection from './pages/MemberSelection';
+import MovieBooking from './pages/MovieBooking';
+import MovieSchedule from './components/schedule/MovieSchedule';
+import AdminDashboard from './pages/admin/AdminDashboard';
+import NewReleasesPage from './pages/NewReleasesPage';
+import UpcomingMoviesPage from './pages/UpcomingMoviesPage';
 import AuthService from "./services/auth/auth.service";
-
-import Home from "./pages/Home";
-import Payment from "./pages/PaymentPage";
-import PaymentResult from "./pages/PaymentResult";
-import MemberDashboard from "./pages/MemberDashboard";
-import Register from "./pages/Register";
-import Login from "./pages/Login";
-import MemberSelection from "./pages/MemberSelection";
-import MovieBooking from "./pages/MovieBooking";
-import MovieSchedule from "./components/schedule/MovieSchedule";
-import AdminDashboard from "./pages/admin/AdminDashboard";
-import NewReleasesPage from "./pages/NewReleasesPage";
-import UpcomingMoviesPage from "./pages/UpcomingMoviesPage";
 import SeatSelect from "./pages/SeatSelect";
+
 const App = () => {
   const currentUser = AuthService.getCurrentUser();
   const isAdmin = currentUser && currentUser.role === 'ROLE_ADMIN';
