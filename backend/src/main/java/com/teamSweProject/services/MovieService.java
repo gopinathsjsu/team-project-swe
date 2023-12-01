@@ -32,6 +32,11 @@ public class MovieService {
         return ids;
     }
 
+    // get movies playing at specific multiplex
+    public List<Movie> getMoviesByMultiplexId(Long multiplexId) {
+        return movieRepository.findByMultiplexId(multiplexId);
+    }
+
     // get movie by id
     public Movie getMovieById(Long movieId) {
 

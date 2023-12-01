@@ -15,6 +15,10 @@ public interface MovieRepository extends JpaRepository<Movie, Long> {
     @Query("SELECT s FROM showtime s WHERE s.movie.movieId = :movieId")
     List<Showtime> findShowtimesByMovieId(@Param("movieId") Long movieId);
 
+    @Query("SELECT m FROM movie m INNER JOIN m.showtimes s INNER JOIN s.theater t " +
+            "WHERE t.multiplex.multiplexId = :multiplexId")
+    List<Movie> findByMultiplexId(@Param("multiplexId") Long multiplexId);
+
     Optional<Movie> findByTitle(String title);
 
 }

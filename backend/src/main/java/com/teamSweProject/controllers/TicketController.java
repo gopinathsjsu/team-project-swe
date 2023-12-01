@@ -24,6 +24,13 @@ public class TicketController {
         this.ticketRepository = ticketRepository;
     }
 
+    @PreAuthorize("hasRole('MEMBER') or hasRole('ADMIN')")
+    @GetMapping("/getTicket")
+    public ResponseEntity<Ticket> getTicket(@RequestParam Long ticketId) {
+        Ticket ticket = ticketService.getTicketById(ticketId);
+        return ResponseEntity.ok(ticket);
+    }
+
     @PreAuthorize("hasRole('USER') or hasRole('MEMBER') or hasRole('ADMIN')")
     @PostMapping("/book/{userId}")
     public ResponseEntity<Ticket> bookTicket(@PathVariable Long userId, @RequestBody TicketDto ticketDto) {
