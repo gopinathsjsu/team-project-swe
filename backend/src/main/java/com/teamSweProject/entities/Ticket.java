@@ -21,7 +21,6 @@ public class Ticket {
 
     @ManyToOne
     @JoinColumn(name = "user_id")
-    @JsonIgnore
     private Users user;
 
     @ManyToOne(cascade = { CascadeType.MERGE, CascadeType.REFRESH })
