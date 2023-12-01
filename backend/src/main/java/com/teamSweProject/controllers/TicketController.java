@@ -25,19 +25,6 @@ public class TicketController {
         this.ticketRepository = ticketRepository;
     }
 
-<<<<<<< Updated upstream
-    @PreAuthorize("hasRole('MEMBER') or hasRole('ADMIN')")
-    @GetMapping("/getTicket")
-    public ResponseEntity<Ticket> getTicket(@RequestParam Long ticketId) {
-        Ticket ticket = ticketService.getTicketById(ticketId);
-        if (ticket == null) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
-        }
-        return ResponseEntity.ok(ticket);
-    }
-
-=======
->>>>>>> Stashed changes
     @PreAuthorize("hasRole('USER') or hasRole('MEMBER') or hasRole('ADMIN')")
     @PostMapping("/book/{userId}")
     public ResponseEntity<Ticket> bookTicket(@PathVariable Long userId, @RequestBody TicketDto ticketDto) {
