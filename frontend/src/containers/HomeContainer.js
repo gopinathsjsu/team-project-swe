@@ -3,32 +3,41 @@ import NavBar from '../components/NavBar'
 import CarouselComponent from '../components/Carousel'
 import UpcomingMovies from '../components/UpcomingMovies'
 import NewReleases from '../components/NewReleases';
-// import LocationHome from '../components/LocationHome';
 import LocationMultiplexDropdown from '../components/LocationMultiplexDropdown/LocationMultiplexDropdown';
-import axios from 'axios';
 import NewReleasesService from '../services/NewReleasesService';
 import UpcomingMoviesService from '../services/UpcomingMoviesService';
+import MoviesByMultiplexService from '../services/MoviesByMultiplexService';
 
 const HomeContainer = () => {
   const [moviesData, SetMoviesData] = useState([]);
   const [NewReleasesData, SetNewReleasesData] = useState([]);
   const [multiplexId, SetMultiplexId] = useState(null);
   const [locationDataId, SetLocationDataId] = useState(null);
-  const [UpcomingMoviesDataByMultiplex, SetUpcomingMoviesDataByMultiplex] = useState([]);
-  const [UpcomingMoviesFinalData, SetUpcomingMoviesFinalData] = useState([]);
+  const [multiplexMovies, SetmultiplexMovies] = useState([]);
   const fetchNewReleases = async () => {
     try {
       const NewReleasesData = await NewReleasesService.getAllNewReleases();
-      // console.log("Nitya", NewReleasesData);
       SetNewReleasesData(NewReleasesData);
     } catch (error) {
       console.error('Error fetching new releases:', error);
     }
   };
+  const fetchMoviesByMultiplex = async (multiplexId) => {
+    try {
+      const MoviesByMultiplex = await MoviesByMultiplexService.getMoviesByMultiplex(multiplexId);
+      SetmultiplexMovies(MoviesByMultiplex);
+    } catch (error) {
+      console.error('Error fetching all movies:', error);
+    }
+  };
+  const today = new Date();
+  useEffect(() => {
+    SetMoviesData(multiplexMovies.filter(movie => new Date(movie.releaseDate) > today))
+    SetNewReleasesData(multiplexMovies.filter(movie => new Date(movie.releaseDate) <= today))
+  }, [multiplexMovies])
   const fetchUpcomingMovies = async () => {
     try {
       const UpcomingMoviesData = await UpcomingMoviesService.getAllUpcomingMovies();
-      // console.log("Nitya", UpcomingMoviesData);
       SetMoviesData(UpcomingMoviesData);
     } catch (error) {
       console.error('Error fetching upcoming movies:', error);
@@ -38,31 +47,21 @@ const HomeContainer = () => {
     fetchNewReleases();
     fetchUpcomingMovies();
   }, [])
-
-
-
   useEffect(() => {
-    axios.get(`http://localhost:8080/api/multiplexes/get/${locationDataId}`).then(res => SetUpcomingMoviesDataByMultiplex(res.data)).catch(er => console.log(er))
-  }, [locationDataId])
-  useEffect(() => {
-    const data = UpcomingMoviesDataByMultiplex.find(data => data.multiplexId === multiplexId.multiplexId)
-    // console.log("myMultiplexId",multiplexId)
-    // console.log(data?.theaters)
-
+    fetchMoviesByMultiplex(multiplexId)
   }, [multiplexId])
+  console.log(multiplexMovies)
   const locationMultiplexId = (multiplexId) => {
-    SetMultiplexId(multiplexId)
+    SetMultiplexId(multiplexId.multiplexId)
   }
   const locationId = (locationId) => {
     SetLocationDataId(locationId)
   }
-  // console.log("multiplexId",multiplexId)
-  // console.log("locationId",locationDataId)
+
   return (
     <div>
       <NavBar />
       <CarouselComponent />
-      {/* <LocationHome/> */}
       <LocationMultiplexDropdown multiplexIdFunction={locationMultiplexId} isHome={true} locationIdFunction={locationId} isAdmin={false} />
       <NewReleases moviesData={NewReleasesData} seeAll={true} />
       <UpcomingMovies moviesData={moviesData} seeAll={true} />

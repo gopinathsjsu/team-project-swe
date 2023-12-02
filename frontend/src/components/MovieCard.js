@@ -1,35 +1,32 @@
 import React from 'react'
-import ScheduleCard from "./schedule/ScheduleCard";
+import Card from '@mui/material/Card';
+import CardContent from '@mui/material/CardContent';
+import CardMedia from '@mui/material/CardMedia';
+import Typography from '@mui/material/Typography';
+import Rating from '@mui/material/Rating';
 
-// TODO: pass in movieId instead of MovieName
-const MovieCard = ({thumbnail, MovieName}) => {
-  // console.log(movieData)
-
-    // // TODO: get movie by id (axios call)
-    // // TODO: get title and other properties from movie object retrieved
-    //
-    // // dummy movie object to be passed to ScheduleCard
-    // const movie = {
-    //     title: "Movie Title",
-    //     rating: "3",
-    //     duration: "1h",
-    //     times: [
-    //         "1:00pm",
-    //         "2:00pm",
-    //         "3:00pm",
-    //         "7:30pm"
-    //     ],
-    //     genre: "Action",
-    //     description: "lorem ipsum",
-    // };
+const MovieCard = ({ movieData }) => {
+  const { title, poster, rating } = movieData;
 
   return (
-    <div >
-        <img alt='movieThumbnail' src={thumbnail}/>
-        <h5 className='text-white py-[5px]'>{MovieName}</h5>
-        {/*<ScheduleCard movie={movie} />*/}
-
-    </div>
+    <Card sx={{
+      maxWidth: 240, maxHeight: 390, backgroundColor: '#0F0F0F', border: '1px solid grey', transition: 'box-shadow 0.3s',
+      '&:hover': {
+        boxShadow: '0px 0px 7px skyblue',
+      },
+    }}>
+      <CardMedia
+        sx={{ height: 300 }}
+        image={poster}
+        title={title}
+      />
+      <CardContent>
+        <Typography fontSize={'18px'} color={'white'} mt={0} gutterBottom variant="h6" component="">
+          {title}
+        </Typography>
+        <Rating name="read-only" precision={0.5} size='small' value={rating} readOnly />
+      </CardContent>
+    </Card>
   )
 }
 
