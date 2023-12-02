@@ -9,7 +9,7 @@ const LocationMultiplexDropdown = ({ isAdmin, isHome, setAdminLocation, setAdmin
     const [multiplexOptions, setMultiplexOptions] = useState([]);
     const [locationName, setLocationName] = useState('');
     const [multiplex, setMultiplex] = useState({});
-
+console.log(multiplex)
     const fetchLocationOptions = async () => {
         try {
             const locationData = await LocationService.getAllLocations();
@@ -87,7 +87,7 @@ const LocationMultiplexDropdown = ({ isAdmin, isHome, setAdminLocation, setAdmin
             </FormControl>
             <FormControl sx={{ marginBottom: '0rem' }}>
                 <NativeSelect
-                    value={multiplex}
+                    value={multiplex.locationName}
                     onChange={handleMultiplexChange}
                     inputProps={{
                         name: 'multiplex',
