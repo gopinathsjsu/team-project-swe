@@ -33,6 +33,10 @@ const App = () => {
         <Route path="/memberSelection" exact element={<MemberSelection />} />
         <Route path="/movie/:id" exact element={<MovieBooking />} />
         <Route path="/schedule" exact element={<MovieSchedule />} />
+        <Route path="/login" exact element={<Login isAdmin={false}/>}/> 
+        <Route path="/memberSelection" exact element={<MemberSelection/>}/>
+        <Route path='/movie/:type/:id' exact element={<MovieBooking/>}/>
+        <Route path="/schedule" exact element={<MovieSchedule/>} />
         <Route path="/admin" exact element={<AdminDashboard />} />
         <Route path="/newreleases" exact element={<NewReleasesPage />} />
         <Route path="/upcomingmovies" exact element={<UpcomingMoviesPage />} />
