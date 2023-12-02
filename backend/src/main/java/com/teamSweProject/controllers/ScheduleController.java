@@ -81,6 +81,26 @@ public class ScheduleController {
     }
 
     @PreAuthorize("hasRole('ADMIN')")
+    @PostMapping("/{id}/addMovie/{movieId}")
+    public ResponseEntity<Schedule> addMovieToSchedule(@PathVariable Long id, @PathVariable Long movieId) {
+        Optional<Schedule> existingSchedule = scheduleService.getScheduleById(id);
+
+        if (existingSchedule.isPresent()) {
+            Schedule scheduleToUpdate = existingSchedule.get();
+
+            Movie movieToAdd = movieService.getMovieById(movieId);
+
+            scheduleToUpdate.getMovies().add(movieToAdd);
+
+            Schedule savedSchedule = scheduleService.saveSchedule(scheduleToUpdate);
+
+            return new ResponseEntity<>(savedSchedule, HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+    }
+
+    @PreAuthorize("hasRole('ADMIN')")
     @PostMapping("/{id}/addMovies")
     public ResponseEntity<Schedule> addMoviesToSchedule(@PathVariable Long id, @RequestBody List<Long> movieIds) {
         Optional<Schedule> existingSchedule = scheduleService.getScheduleById(id);
@@ -119,17 +139,6 @@ public class ScheduleController {
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         } else {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
-    }
-
-    @PreAuthorize("hasRole('ADMIN')")
-    @PutMapping("/removeMovie/{scheduleId}/{movieId}")
-    public ResponseEntity<Schedule> removeMovieFromSchedule(@PathVariable Long scheduleId, @PathVariable Long movieId) {
-        Schedule schedule = scheduleService.removeMovieFromSchedule(scheduleId, movieId);
-        if (schedule != null) {
-            return ResponseEntity.ok(schedule);
-        } else {
-            return ResponseEntity.notFound().build();
         }
     }
 

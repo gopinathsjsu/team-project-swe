@@ -71,7 +71,7 @@ public class WebSecurityConfig {
     CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
         configuration.addAllowedOrigin("http://localhost:3000");
-        configuration.setAllowedMethods(Arrays.asList("GET","POST", "PUT", "OPTIONS"));
+        configuration.setAllowedMethods(Arrays.asList("GET","POST", "PUT", "DELETE", "OPTIONS"));
 
         configuration.setAllowedHeaders(Arrays.asList("Content-Type", "Authorization"));
         configuration.setExposedHeaders(Arrays.asList("Authorization"));
@@ -93,6 +93,7 @@ public class WebSecurityConfig {
                                 .requestMatchers(antMatcher(HttpMethod.GET)).permitAll()
                                 .requestMatchers(antMatcher(HttpMethod.PUT)).permitAll() // TODO: remove this once DB is populated
                                 .requestMatchers(antMatcher(HttpMethod.POST)).permitAll() // TODO: remove this once DB is populated
+                                .requestMatchers(antMatcher(HttpMethod.DELETE)).permitAll()
                                 .requestMatchers("/api/auth/**").permitAll()
                                 .requestMatchers("/api/test/**").permitAll()
                                 .anyRequest().authenticated()

@@ -1,5 +1,6 @@
 package com.teamSweProject.services;
 
+import com.teamSweProject.dataTransferObjects.MultiplexResponseDTO;
 import com.teamSweProject.entities.Location;
 import com.teamSweProject.entities.Multiplex;
 import com.teamSweProject.repositories.MultiplexRepository;
@@ -51,4 +52,12 @@ public class MultiplexService {
         }
     }
 
+    public List<MultiplexResponseDTO> getMultiplexesByLocationId(Long id) {
+        try {
+            return multiplexRepository.getMultiplexesByLocationLocationId(id);
+        } catch (Exception e) {
+            logger.error("Failed to get multiplexes", e);
+            return null;
+        }
+    }
 }
