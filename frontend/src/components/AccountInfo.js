@@ -69,6 +69,7 @@ const AccountInfo = () => {
           Hi, {state.currentUser?.firstName} {state.currentUser?.lastName}!
         </h3>
         <p>{state.currentUser?.email}</p>
+        <p>Reward points accumulated : {state.currentUser?.rewardPoints}</p>
         <p>Your role is currently: {state.currentUser?.role}</p>
         <p>
           <strong>Token:</strong>{" "}
@@ -77,13 +78,11 @@ const AccountInfo = () => {
             state.currentUser?.accessToken?.length - 20
           )}
         </p>
-
+        {/* <p>You have accumulated these reward points : </p> */}
         <Link to={{ pathname: "/" }}></Link>
-
         <Button variant="contained" onClick={handleMemberTicketBooking}>
           Book tickets here
         </Button>
-
         <Outlet />
       </div>
 
