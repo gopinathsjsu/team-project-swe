@@ -15,8 +15,8 @@ import SeatSelect from "./pages/SeatSelect";
 import TicketInformation from "./pages/TicketInformation";
 import UpcomingMoviesPage from "./pages/UpcomingMoviesPage";
 import AdminDashboard from "./pages/admin/AdminDashboard";
+import MovieSelection from "./pages/movieSelection";
 import AuthService from "./services/auth/auth.service";
-
 const App = () => {
   const currentUser = AuthService.getCurrentUser();
   const isAdmin = currentUser && currentUser.role === "ROLE_ADMIN";
@@ -39,6 +39,7 @@ const App = () => {
         <Route path="/upcomingmovies" exact element={<UpcomingMoviesPage />} />
         <Route path="/seatselect" exact element={<SeatSelect />} />
         <Route path="/TicketInfo" exact element={<TicketInformation />} />
+        <Route path="/movieSelection" exact element={<MovieSelection />} />
       </Routes>
     </BrowserRouter>
   );
