@@ -1,73 +1,103 @@
 import React, { useEffect, useMemo, useState } from 'react'
 import { useParams } from 'react-router-dom'
 import NavBar from '../components/NavBar'
-import Button from '@mui/material/Button';
+import Rating from '@mui/material/Rating';
 import ConfirmationNumberRoundedIcon from '@mui/icons-material/ConfirmationNumberRounded';
 import ScheduleCard from "../components/schedule/ScheduleCard";
+import axios from 'axios';
+import { Button, ButtonGroup, Container, Typography } from '@mui/material';
+import Chip from '@mui/material/Chip';
+import Box from '@mui/material/Box';
+import MovieService from '../services/MovieService';
+import { useNavigate } from "react-router-dom";
+import Grid from '@mui/material/Grid';
 
-// TODO: book a SINGLE movie (that which is being displayed on this page)
+
 const MovieBooking = ({ movieId }) => {
-
-  // TODO: get movie by id (axios call)
-  // TODO: get title and other properties from movie object retrieved
-
-  // dummy movie object to be passed to ScheduleCard
-  const movie = {
-    title: "Movie Title",
-    rating: "3",
-    duration: "1h",
-    times: [
-      "1:00pm",
-      "2:00pm",
-      "3:00pm",
-      "7:30pm"
-    ],
-    genre: "Action",
-    description: "lorem ipsum",
-  };
-
-  const { id } = useParams();
+  const navigate = useNavigate();
+  const { id, type } = useParams();
   const [moviesData, SetMoviesData] = useState([]);
-  const [movieInformation, SetMovieInformation] = useState([]);
-  const options = {
-    method: 'GET',
-    headers: {
-      accept: 'application/json',
-      Authorization: 'Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiIxMTQ5NThhNDY2M2Y4OGFkZmI2MjhkZTI2NWJhZmZkZSIsInN1YiI6IjY1NDE0MzViNmNhOWEwMDBlYmVlODdmZCIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.UARFyhM8sMafq8wmQRvRyD1g6niYjzf36xBqImntH-o'
+  const [movieInformation, SetMovieInformation] = useState({});
+  const [showtimes, Setshowtimes] = useState([]);
+  const [releaseDate, SetReleaseDate] = useState("");
+  useEffect(() => {
+    axios.get(`http://localhost:8080/api/movies/${type}`).then(res => SetMoviesData(res.data)).catch(er => console.log(er))
+    fetchShowtimesByMovieId();
+  }, [])
+
+  useEffect(() => {
+    SetMovieInformation(moviesData.find(data => data.movieId == id))
+  }, [moviesData])
+  const fetchShowtimesByMovieId = async () => {
+    try {
+      const showTimes = await MovieService.fetchShowtimesByMovieId(id);
+      Setshowtimes(showTimes);
+    } catch (error) {
+      console.error('Error fetching show times:', error);
     }
   };
 
+  const handleButtonClick = () => {
+    navigate("/seatselect");
+  };
   useEffect(() => {
-    fetch('https://api.themoviedb.org/3/movie/now_playing?language=en-US&page=1', options)
-      .then(response => response.json())
-      .then(response => SetMoviesData(response.results))
-      .catch(err => console.error(err));
-
-  }, [])
-  useEffect(() => {
-    SetMovieInformation(moviesData.filter(data => data.id == id)[0])
-  }, [moviesData])
-  console.log(movieInformation)
+    if (movieInformation && movieInformation.releaseDate) {
+      SetReleaseDate(movieInformation.releaseDate);
+    }
+  }, [movieInformation]);
 
   return (
     <div>
       <NavBar />
       {movieInformation &&
-        <div className='bg-[#0F0F0F]'>
-          <div className='flex  pt-[100px]'>
-            <div className='w-1/4 ml-[40px] '>
-              <img src='https://assets-in.bmscdn.com/iedb/movies/images/mobile/thumbnail/xlarge/five-nights-at-freddy-s-et00363275-1693810842.jpg' />
-            </div>
-            <div className='w-2/3 text-white mr-[40px]'>
-              <h1 className='text-4xl font-bold'>{movieInformation.title}</h1>
-              <h3>{movieInformation.overview}</h3>
-              <Button startIcon={<ConfirmationNumberRoundedIcon />} variant='outlined' color="success">Book Tickets</Button>
-              <ScheduleCard movie={movie} />
-            </div>
-          </div>
-          <iframe width="560" height="315" src="https://www.youtube.com/embed/iGKqbWal8UQ?si=tAJLTnWo4kQKvcp1" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
-        </div>
+        <Box pt={5} sx={{ flexGrow: 1, bgcolor: '#0F0F0F', height: '100vh' }}>
+          <Grid container spacing={2}>
+            <Grid item xs={4} sx={{ display: 'flex', justifyContent: 'center' }}>
+              <img style={{ height: '450px' }} src={movieInformation.poster} />
+            </Grid>
+            <Grid item xs={8} >
+              <Typography marginBottom={'5px'} fontSize={'35px'} fontWeight={'600'} color={'white'} variant="h6">{movieInformation.title}</Typography>
+              <Box sx={{ display: 'flex', alignItems: 'center', margin: '6px 0px' }} >
+                <Rating
+                  name="simple-controlled"
+                  value={movieInformation.rating}
+                  readOnly
+                  precision={0.5}
 
+                />
+                <Typography variant='h6' fontWeight={'600'} fontSize={'22px'} color={'white'}>
+                  {movieInformation.rating} / 5
+                </Typography>
+              </Box>
+              <Chip label={movieInformation.genre} color="primary" variant="outlined" />
+              <Typography marginTop={'7px'} marginLeft={'5px'} variant='h6'  fontSize={'18px'} color={'white'}>
+                {movieInformation.duration}
+              </Typography>
+              <Typography variant='h6' marginTop={'3px'} marginLeft={'5px'} marginBottom={'25px'} fontSize={'18px'} color={'white'}>
+                {releaseDate.slice(0, 10)}
+              </Typography>
+
+              <Typography fontWeight={'600'} fontSize={'22px'} marginLeft={'5px'} color={'white'} variant="h6" gutterBottom>
+                Book Tickets
+              </Typography>
+              <ButtonGroup  style={{ flexWrap: "wrap", gap: "5px",marginLeft:'5px' }} variant="contained" aria-label="movie schedule">
+                {showtimes.map(({ date, time, showtimeId }) => (
+                  <Button variant='outlined' key={showtimeId} onClick={() => handleButtonClick()}>
+                    <div>
+                      <Typography fontSize={'14px'} variant="h6">{date}</Typography>
+                      <Typography variant="subtitle1">{time}</Typography>
+                    </div>
+                  </Button>
+                ))}
+              </ButtonGroup>
+
+            </Grid>
+          </Grid>
+          <Grid sx={{padding:'5px 20px',padding:'60px 80px'}} xs={12}>
+          <Typography color={'white'} marginBottom={'12px'} fontSize={'26px'} fontWeight={'600'} variant="h2">About the Movie</Typography>
+          <Typography color={'white'} fontSize={'17px'} variant="p">{movieInformation.description}</Typography>
+          </Grid>
+        </Box>
       }
 
     </div>

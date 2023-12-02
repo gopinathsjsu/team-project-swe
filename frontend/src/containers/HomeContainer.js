@@ -3,35 +3,77 @@ import NavBar from '../components/NavBar'
 import CarouselComponent from '../components/Carousel'
 import UpcomingMovies from '../components/UpcomingMovies'
 import NewReleases from '../components/NewReleases';
-// import LocationHome from '../components/LocationHome';
 import LocationMultiplexDropdown from '../components/LocationMultiplexDropdown/LocationMultiplexDropdown';
+import NewReleasesService from '../services/NewReleasesService';
+import UpcomingMoviesService from '../services/UpcomingMoviesService';
+import MoviesByMultiplexService from '../services/MoviesByMultiplexService';
 
 const HomeContainer = () => {
-    const [moviesData, SetMoviesData]=useState([]);
-    const options = {
-        method: 'GET',
-        headers: {
-          accept: 'application/json',
-          Authorization: 'Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiIxMTQ5NThhNDY2M2Y4OGFkZmI2MjhkZTI2NWJhZmZkZSIsInN1YiI6IjY1NDE0MzViNmNhOWEwMDBlYmVlODdmZCIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.UARFyhM8sMafq8wmQRvRyD1g6niYjzf36xBqImntH-o'
-        }
-      };
-      
-      useEffect(()=>{
-        fetch('https://api.themoviedb.org/3/movie/now_playing?language=en-US&page=1', options)
-        .then(response => response.json())
-        .then(response => SetMoviesData(response.results))
-        .catch(err => console.error(err));
-   
-      },[])
-    
+  const [moviesData, SetMoviesData] = useState([]);
+  const [NewReleasesData, SetNewReleasesData] = useState([]);
+  const [multiplex, setMultiplex] = useState({});
+  const [location, setLocation] = useState('');
+  const [multiplexMovies, SetmultiplexMovies] = useState([]);
+  
+  const fetchNewReleases = async () => {
+    try {
+      const NewReleasesData = await NewReleasesService.getAllNewReleases();
+      SetNewReleasesData(NewReleasesData);
+    } catch (error) {
+      console.error('Error fetching new releases:', error);
+    }
+  };
+
+  const fetchMoviesByMultiplex = async (multiplexId) => {
+    try {
+      const MoviesByMultiplex = await MoviesByMultiplexService.getMoviesByMultiplex(multiplexId);
+      console.log(MoviesByMultiplex);
+      SetmultiplexMovies(MoviesByMultiplex);
+    } catch (error) {
+      console.error('Error fetching all movies:', error);
+    }
+  };
+
+  const today = new Date();
+  useEffect(() => {
+    SetMoviesData(multiplexMovies.filter(movie => new Date(movie.releaseDate) > today))
+    SetNewReleasesData(multiplexMovies.filter(movie => new Date(movie.releaseDate) <= today))
+  }, [multiplexMovies]);
+
+  const fetchUpcomingMovies = async () => {
+    try {
+      const UpcomingMoviesData = await UpcomingMoviesService.getAllUpcomingMovies();
+      SetMoviesData(UpcomingMoviesData);
+    } catch (error) {
+      console.error('Error fetching upcoming movies:', error);
+    }
+  };
+
+  useEffect(() => {
+    fetchNewReleases();
+    fetchUpcomingMovies();
+  }, [])
+
+  useEffect(() => {
+    fetchMoviesByMultiplex(multiplex.multiplexId)
+  }, [multiplex.multiplexId])
+  console.log(multiplexMovies)
+
+  const handleSetMultiplex = (multiplex) => {
+    setMultiplex(multiplex);
+  }
+
+  const handleSetLocation = (location) => {
+    setLocation(location);
+  }
+
   return (
     <div>
-        <NavBar/>
-        <CarouselComponent/>
-        {/* <LocationHome/> */}
-        <LocationMultiplexDropdown isAdmin={false}/>
-        <NewReleases moviesData={moviesData} seeAll={true}/>
-        <UpcomingMovies moviesData={moviesData} seeAll={true}/>
+      <NavBar />
+      <CarouselComponent />
+      <LocationMultiplexDropdown onSelectLocation={handleSetLocation} onSelectMultiplex={handleSetMultiplex} />
+      <NewReleases moviesData={NewReleasesData} seeAll={true} />
+      <UpcomingMovies moviesData={moviesData} seeAll={true} />
     </div>
   )
 }
