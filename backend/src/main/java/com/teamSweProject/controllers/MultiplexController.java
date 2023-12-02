@@ -1,5 +1,6 @@
 package com.teamSweProject.controllers;
 
+import com.teamSweProject.dataTransferObjects.MultiplexResponseDTO;
 import com.teamSweProject.entities.Theater;
 import com.teamSweProject.entities.Multiplex;
 import com.teamSweProject.services.MultiplexService;
@@ -29,21 +30,23 @@ public class MultiplexController {
     // get Multiplex by location id
     @PreAuthorize("hasRole('USER') or hasRole('MEMBER') or hasRole('ADMIN')")
     @GetMapping("/get/{id}")
-    public ResponseEntity<List<Multiplex>> getMultiplexesByLocationId(@PathVariable Long id) {
+    public ResponseEntity<List<MultiplexResponseDTO>> getMultiplexesByLocationId(@PathVariable Long id) {
+        List<MultiplexResponseDTO> multiplexes = multiplexService.getMultiplexesByLocationId(id);
+        return new ResponseEntity<>(multiplexes, HttpStatus.OK);
 
-        List<Multiplex> multiplexes;
-
-        try {
-            multiplexes = multiplexService.findByLocationId(id);
-        } catch (Exception e) {
-            return ResponseEntity.internalServerError().build();
-        }
-
-        if (multiplexes != null) {
-            return ResponseEntity.ok(multiplexes);
-        } else {
-            return ResponseEntity.notFound().build();
-        }
+//        List<Multiplex> multiplexes;
+//
+//        try {
+//            multiplexes = multiplexService.findByLocationId(id);
+//        } catch (Exception e) {
+//            return ResponseEntity.internalServerError().build();
+//        }
+//
+//        if (multiplexes != null) {
+//            return ResponseEntity.ok(multiplexes);
+//        } else {
+//            return ResponseEntity.notFound().build();
+//        }
     }
 
     // create Multiplex
