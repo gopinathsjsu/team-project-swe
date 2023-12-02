@@ -5,7 +5,7 @@ import MultiplexService from '../../services/MultiplexService';
 import LocationService from '../../services/LocationService';
 
 
-const LocationMultiplexDropdown = ({ isAdmin, setAdminLocation, setAdminMultiplex }) => {
+const LocationMultiplexDropdown = ({ onSelectLocation, onSelectMultiplex }) => {
     const [locations, setLocations] = useState([]);
     const [multiplexOptions, setMultiplexOptions] = useState([]);
     const [locationName, setLocationName] = useState('');
@@ -48,21 +48,14 @@ const LocationMultiplexDropdown = ({ isAdmin, setAdminLocation, setAdminMultiple
         
         fetchMultiplexOptions(e.target.value);
 
-        if (isAdmin) {
-            setAdminLocation(e.target.value);
-            setAdminMultiplex({});
-        }
+        onSelectLocation(e.target.value);
     };
 
     const handleMultiplexChange = (e) => {
         const selectedMultiplex = multiplexOptions.find(option => option.locationName === e.target.value);
         console.log('Selected Multiplex:', selectedMultiplex);
         setMultiplex(selectedMultiplex.locationName);
-
-        if (isAdmin) {
-            console.log('Admin Multiplex:', selectedMultiplex);
-            setAdminMultiplex(selectedMultiplex);
-        }
+        onSelectMultiplex(selectedMultiplex);
     };
 
     useEffect(() => {

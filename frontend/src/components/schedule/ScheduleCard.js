@@ -10,10 +10,7 @@ const ScheduleCard = ({
     multiplexId, 
     isAdmin, 
     onEditMovie, 
-    onRemoveMovie,
-    onEditTheater,
-    onEditShowtime,
-    onDeleteShowtime
+    
 }) => {
 
     const { movieId, title, rating, duration, genre, description } = movie;
@@ -49,8 +46,8 @@ const ScheduleCard = ({
                 boxShadow: 24,
                 p: 4,
             }}>
-                <Button onClick={() => onEditShowtime(showtime)}>Edit Showtime</Button>
-                <Button onClick={() => onDeleteShowtime(showtime)}>Delete Showtime</Button>
+                <Button>Edit Showtime</Button>
+                <Button>Delete Showtime</Button>
             </Box>
         </Modal>
     }
@@ -95,7 +92,7 @@ const ScheduleCard = ({
                         {isAdmin && (
                             <CardActions>
                                 <Button size="small" onClick={() => onEditMovie(movie)}>Edit Movie</Button>
-                                <Button size="small" onClick={() => onRemoveMovie(movieId)}>Remove Movie from Schedule</Button>
+                                <Button>Remove Movie</Button>
                             </CardActions>
                         )}
                         <Typography variant="body2" color="text.secondary">
@@ -103,7 +100,7 @@ const ScheduleCard = ({
                             Theater Capacity: {assignedTheater.capacity}
                             {isAdmin && (
                                 <CardActions>
-                                    <Button size="small" onClick={() => onEditTheater(assignedTheater)}>Edit Theater Assignment</Button>
+                                    <Button size="small">Edit Theater Assignment</Button>
                                 </CardActions>
                             )}
                         </Typography>

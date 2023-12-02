@@ -33,6 +33,13 @@ public class MovieController {
         }
     }
 
+    @PreAuthorize("hasRole('USER') or hasRole('MEMBER') or hasRole('ADMIN')")
+    @GetMapping("/getAllMovies")
+    public ResponseEntity<List<Movie>> getAllMovies() {
+        List<Movie> movies = movieService.getAllMovies();
+        return ResponseEntity.ok(movies);
+    }
+
 
     @PreAuthorize("hasRole('USER') or hasRole('MEMBER') or hasRole('ADMIN')")
     @GetMapping("/getAllMovieIds")
