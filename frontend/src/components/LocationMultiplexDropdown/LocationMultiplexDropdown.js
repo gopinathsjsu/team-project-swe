@@ -27,10 +27,9 @@ const LocationMultiplexDropdown = ({ onSelectLocation, onSelectMultiplex }) => {
     const fetchMultiplexOptions = async (locationName) => {
         try {
             const locationNameData = await LocationService.getLocationByName(locationName);
-
             const locationId = locationNameData.locationId;
+            // locationIdFunction(locationId);
             const multiplexes = await MultiplexService.getMultiplexesByLocationId(locationId);
-
             const options = multiplexes.map((multiplex) => ({
                 multiplexId: multiplex.multiplexId,
                 location: locationNameData.location,
@@ -45,7 +44,6 @@ const LocationMultiplexDropdown = ({ onSelectLocation, onSelectMultiplex }) => {
     const handleLocationChange = (e) => {
         setLocationName(e.target.value);
         setMultiplex({});
-        
         fetchMultiplexOptions(e.target.value);
 
         onSelectLocation(e.target.value);
@@ -53,7 +51,6 @@ const LocationMultiplexDropdown = ({ onSelectLocation, onSelectMultiplex }) => {
 
     const handleMultiplexChange = (e) => {
         const selectedMultiplex = multiplexOptions.find(option => option.locationName === e.target.value);
-        console.log('Selected Multiplex:', selectedMultiplex);
         setMultiplex(selectedMultiplex.locationName);
         onSelectMultiplex(selectedMultiplex);
     };
@@ -82,10 +79,9 @@ const LocationMultiplexDropdown = ({ onSelectLocation, onSelectMultiplex }) => {
                     ))}
                 </NativeSelect>
             </FormControl>
-
             <FormControl sx={{ marginBottom: '0rem' }}>
                 <NativeSelect
-                    value={multiplex}
+                    value={multiplex.locationName}
                     onChange={handleMultiplexChange}
                     inputProps={{
                         name: 'multiplex',

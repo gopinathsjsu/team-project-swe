@@ -35,6 +35,13 @@ class ShowtimesService {
     );
   }
 
+  async removeShowtimeFromMovie(movieId, showtimeId) {
+    return await axios.delete(SHOWTIMES_BASE_URL + `${movieId}/deleteShowtime`, {
+      params: {
+        showtimeId: showtimeId
+      }
+    });
+  }
 
   // TODO: add auth header
   async deleteShowtime(showtimeId) {
