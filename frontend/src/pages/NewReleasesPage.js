@@ -1,10 +1,19 @@
 import React, { useEffect, useState } from 'react'
 import NewReleases from '../components/NewReleases';
-import axios from 'axios';
+import NewReleasesService from '../services/NewReleasesService';
+
 const NewReleasesPage = () => {
     const [moviesData, SetMoviesData]=useState([]);
+    const fetchNewReleases = async () => {
+      try {
+        const NewReleasesData = await NewReleasesService.getAllNewReleases();
+        SetMoviesData(NewReleasesData);
+      } catch (error) {
+        console.error('Error fetching new releases:', error);
+      }
+    };
     useEffect(() => {
-      axios.get("http://localhost:8080/api/movies/getNewReleases").then(res => SetMoviesData(res.data)).catch(er => console.log(er))
+      fetchNewReleases();
     }, [])
   return (
     <div>
