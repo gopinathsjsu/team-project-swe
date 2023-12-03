@@ -47,6 +47,7 @@ const App = () => {
         <Route path="/membershipPage" exact element={<MembershipPage />} />
         <Route path="/TicketInfo" exact element={<TicketInformation />} />
         <Route path="/movieSelection" exact element={<MovieSelection />} />
+        
       </Routes>
     </BrowserRouter>
   );
