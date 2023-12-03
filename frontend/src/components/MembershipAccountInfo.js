@@ -5,7 +5,7 @@ const BASE_URL = 'http://localhost:8080/api/users';
 const MembershipAccountInfo = {
   getUser: async (id) => {
     try {
-      const response = await axios.get(`${BASE_URL}/getUsers`, {
+      const response = await axios.get(`${BASE_URL}/getUser`, {
         params: {
           userId: id,
         },
@@ -32,28 +32,31 @@ const MembershipAccountInfo = {
       }
   },
 
-  getTicketData: async () => {
+  getTicketData: async (ticketId) => {
     try {
-      const response = await axios.get(`http://localhost:8080/api/tickets/user/{userId}`);
+      const response = await axios.get(`http://localhost:8080/api/tickets/getTicket`, {
+        params: {
+          ticketId:ticketId,
+        },
+      });
       return response.data;
     } catch (error) {
       console.error("Error fetching ticket data:", error);
     }
   },
   
-
   getMoviesWatched: async (userId) => {
     try {
-      const response = await axios.get('http://localhost:8080/api/tickets/watched/{userId}'); 
+      const response = await axios.get(`http://localhost:8080/api/tickets/watched/${userId}`); 
       return response.data;
     } catch (error) {
       console.error("Error fetching movie data:", error);
     }
   },
 
-  getRewardPoints: async () => {
+  getRewardPoints: async (userId) => {
     try {
-      const response = await axios.get(`http://localhost:8080/api/users/{userId}/getRewardPoints`);  
+      const response = await axios.get(`http://localhost:8080/api/users/${userId}/getRewardPoints`);  
         return response.data;
       } catch (error) {
         console.error('Error fetching reward points:', error);
