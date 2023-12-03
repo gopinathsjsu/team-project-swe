@@ -131,7 +131,6 @@ public class TheaterService {
     }
 
     public int getOccupancyForLastNDaysByMovie(Long movieId, int days) {
-        // Assuming you have a method in TicketRepository for counting tickets by movie and status
         LocalDateTime startDate = LocalDateTime.now().minusDays(days);
         return ticketRepository.countByAssignedMovieMovieIdAndBookingDateAfterAndStatus(movieId, startDate, Ticket.TicketStatus.BOOKED);
     }

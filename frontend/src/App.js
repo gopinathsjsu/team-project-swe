@@ -15,6 +15,7 @@ import SeatSelect from "./pages/SeatSelect";
 import TicketInformation from "./pages/TicketInformation";
 import UpcomingMoviesPage from "./pages/UpcomingMoviesPage";
 import AdminDashboard from "./pages/admin/AdminDashboard";
+import AnalyticsDashboard from "./pages/admin/AnalyticsDashboard";
 import MovieSelection from "./pages/movieSelection";
 import AuthService from "./services/auth/auth.service";
 const App = () => {
@@ -39,6 +40,7 @@ const App = () => {
         <Route path='/movie/:type/:id' exact element={<MovieBooking/>}/>
         <Route path="/schedule" exact element={<MovieSchedule/>} />
         <Route path="/admin" exact element={<AdminDashboard />} />
+        <Route path="/admin/analytics" exact element={<AnalyticsDashboard />} />
         <Route path="/newreleases" exact element={<NewReleasesPage />} />
         <Route path="/upcomingmovies" exact element={<UpcomingMoviesPage />} />
         <Route path="/seatselect" exact element={<SeatSelect />} />
