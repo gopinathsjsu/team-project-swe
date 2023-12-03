@@ -5,35 +5,33 @@ import AuthService from '../services/auth/auth.service';
 import axios from 'axios';
 
 const MembershipPage = () => {
-const [membershipInfo, setMembershipInfo] = useState(null);
-  const [moviesWatched, setMoviesWatched] = useState([]);
-  const [rewardPoints, setRewardPoints] = useState(null);
-  const [userInfo, setUserInfo] = useState(null);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState(null);
+  const [membershipInfo, setMembershipInfo] = useState(null);
+  const [moviesWatched, setMoviesWatched] = useState([]);
+  const [rewardPoints, setRewardPoints] = useState(null);
+  const [userInfo, setUserInfo] = useState(null);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
 
-  const {userId}  = AuthService.getCurrentUser();
+
+  const { id } = AuthService.getCurrentUser();
 
   useEffect(() => {
+    console.log("USERID" + id);
     const fetchData = async () => {
-  setLoading(true);
-        const res = await axios.get(`http://localhost:8080/api/users/getUser?id=${parseInt("48")}`);
-      console.log("USER INFO:", res.data);
-      setUserInfo(res.data);
-setLoading(false);
-    };
-  
-    try{
-      fetchData();
-    } catch (error) {
-      console.error(error);
-      // setError(error.message || 'Error fetching information');
-      // setLoading(false);
-    }
+      setLoading(true);
+      const res = await axios.get(`http://localhost:8080/api/users/getUser?id=${id}`);
+      console.log("USER INFO:", res.data);
+      setUserInfo(res.data);
+      setLoading(false);
+    };
 
-    
-
-  }, [userId]);
+    try{
+      fetchData();
+    } catch (error) {
+      console.log(error);
+      setLoading(false);  
+    } 
+  }, [id]);
 
 // const MembershipPage = () => {
 //   const [membershipInfo, setMembershipInfo] = useState(null);
@@ -81,7 +79,19 @@ setLoading(false);
           <div className="mb-8">
             <h2 className="text-2xl font-bold mb-2">Membership Information</h2>
             <p>
-              {/* <strong>Name:</strong> {membershipInfo.username} */}
+              <strong>Name:</strong> {userInfo.firstName} {userInfo.lastName}
+            </p>
+            <p>
+              <strong>Username:</strong> {userInfo.username}
+            </p>
+            <p>
+              <strong>Date of Birth:</strong> {userInfo.dob}
+            </p>
+            <p>
+              <strong>Email:</strong> {userInfo.email}
+            </p>
+            <p>
+              <strong>Phone:</strong> {userInfo.phone? userInfo.phone : "N/A"}
             </p>
             {/* Display other membership information... */}
           </div>
@@ -90,7 +100,7 @@ setLoading(false);
           <div className="mb-8">
             <h2 className="text-2xl font-bold mb-2">User Information</h2>
             <p>
-              <strong>Username:</strong> {userInfo.username}
+              {/* <strong>Username:</strong> {userInfo.username} */}
             </p>
             {/* Display other user information... */}
           </div>
