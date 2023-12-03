@@ -6,6 +6,7 @@ import com.teamSweProject.entities.Movie;
 import com.teamSweProject.entities.Ticket;
 import com.teamSweProject.repositories.TicketRepository;
 import com.teamSweProject.services.TicketService;
+import com.teamSweProject.services.UsersService;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -13,6 +14,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+import javax.management.InstanceNotFoundException;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.List;
 
 @RestController
@@ -20,19 +24,28 @@ import java.util.List;
 public class TicketController {
     private final TicketService ticketService;
     private final TicketRepository ticketRepository;
+    private final UsersService usersService;
 
     @Autowired
-    public TicketController(TicketService ticketService, TicketRepository ticketRepository) {
+    public TicketController(TicketService ticketService, TicketRepository ticketRepository, UsersService usersService) {
         this.ticketService = ticketService;
         this.ticketRepository = ticketRepository;
+        this.usersService = usersService;
     }
 
     @PreAuthorize("hasRole('USER') or hasRole('MEMBER') or hasRole('ADMIN')")
     @PostMapping("/book/{userId}")
-    public ResponseEntity<Ticket> bookTicket(@PathVariable Long userId, @RequestBody TicketDto ticketDto) {
+    public ResponseEntity<Ticket> bookTicket(@PathVariable Long userId, @RequestBody TicketDto ticketDto) throws InstanceNotFoundException {
         Ticket bookedTicket = ticketService.bookTicket(userId, ticketDto);
         bookedTicket.setStatus(Ticket.TicketStatus.BOOKED);
         ticketRepository.save(bookedTicket);
+
+        BigDecimal price = bookedTicket.getPrice();
+        price = price.setScale(0, RoundingMode.UP);
+
+
+        usersService.incrementUserRewardPoints(userId, price.intValue());
+
         return new ResponseEntity<>(bookedTicket, HttpStatus.CREATED);
     }
 
