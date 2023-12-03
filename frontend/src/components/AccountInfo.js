@@ -51,9 +51,25 @@ const AccountInfo = () => {
     navigate('/memberSelection');
   };
 
-  const handleCancelTicket = () => {
-    setShowCancelTicketPopup(true);
-  }
+  
+  const handleCancelTicket = async () => {
+    try {
+      // for Rashmi to complete with logic 
+      const ticketPrice = state.membership?.ticketPrice || 'unknown';
+      const confirmationMessage = `Your ticket has been successfully canceled. 
+        A refund of ${ticketPrice} will be processed back to your payment method 
+        within 3-5 business days.`;
+
+      // Show the confirmation message
+      alert(confirmationMessage);
+
+      // Rashmi double check this 
+      navigate('/cancellationConfirmation');
+    } catch (error) {
+      console.error(error);
+      // Handle cancellation error if needed
+    }
+  };
 
   const handleCloseCanceledTicketPopup = () => {
     setshowTicketCanceledPopup(true);

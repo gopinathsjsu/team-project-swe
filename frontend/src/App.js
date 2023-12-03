@@ -15,6 +15,7 @@ import NewReleasesPage from './pages/NewReleasesPage';
 import UpcomingMoviesPage from './pages/UpcomingMoviesPage';
 import AuthService from "./services/auth/auth.service";
 import SeatSelect from "./pages/SeatSelect";
+import MembershipPage from "./pages/MembershipPage"
 
 const App = () => {
   const currentUser = AuthService.getCurrentUser();
@@ -37,6 +38,7 @@ const App = () => {
         <Route path="/newreleases" exact element={<NewReleasesPage />} />
         <Route path="/upcomingmovies" exact element={<UpcomingMoviesPage />} />
         <Route path="/seatselect" exact element={<SeatSelect />} />
+        <Route path="/membershipPage" exact element={<MembershipPage />} />
       </Routes>
     </BrowserRouter>
   );
