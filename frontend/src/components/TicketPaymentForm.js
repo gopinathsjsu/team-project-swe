@@ -13,45 +13,44 @@ const TicketPaymentForm = ({ ticketId }) => {
     const [formattedCreditCard, setFormattedCreditCard] = useState('');
     const [expirationMonth, setExpirationMonth] = useState('');
     const [expirationYear, setExpirationYear] = useState('');
+    const [useRewardPoints, setUseRewardPoints] = useState(false);
 
     const [paymentTotal, setPaymentTotal] = useState("0.00");
 
     useEffect(() => {
         async function getTicket() {
-                
-            const ticket = await TicketService.getTicket(ticketId=5); // TODO: get ticketId from URL params
-            const {
-                price, 
-                seatAssignment, 
-                assignedMovie, 
-                bookingDate, 
-                showtime, 
-                theaterAssignment, 
-                multiplex 
-            } = ticket;
+            try {
+                const ticket = await TicketService.getTicket(ticketId); // TODO: get ticketId from URL params
+                const {
+                    price,
+                    seatAssignment,
+                    assignedMovie,
+                    bookingDate,
+                    showtime,
+                    theaterAssignment,
+                    multiplex
+                } = ticket;
 
-            setPaymentTotal(price.toString());
+                setPaymentTotal(price.toString());
+            } catch (e) {
+                console.log(e.message);
+            }
         };
-        try {  
-            getTicket();
-        } catch (e) {
-            console.log(e.message);
-        }
-    }, []);
 
+        getTicket();
+    }, [ticketId]);
 
     const validateCreditCard = (creditCardNumber) => {
         return validator.isCreditCard(creditCardNumber);
     };
 
-
     const handleSubmitTicketPayment = async (e) => {
         e.preventDefault();
 
         const { id } = AuthService.getCurrentUser();
-        const creditCardNumber = e.target.elements.creditCard.value; 
+        const creditCardNumber = e.target.elements.creditCard.value;
 
-        if (!validateCreditCard(creditCardNumber)) {
+        if (!validateCreditCard(creditCardNumber) && !useRewardPoints) {
             setCreditCardError('Invalid credit card number');
             return;
         }
@@ -62,7 +61,7 @@ const TicketPaymentForm = ({ ticketId }) => {
             setTimeout(() => {
                 setShowPopup(false);
                 navigate('/member');
-            }, 3000); 
+            }, 3000);
         } catch (e) {
             console.log(e.message);
         }
@@ -70,7 +69,7 @@ const TicketPaymentForm = ({ ticketId }) => {
 
     return (
         <div>
-            <form 
+            <form
                 className="max-w-sm mx-auto mt-8 p-6 bg-white rounded-lg shadow-md"
                 onSubmit={handleSubmitTicketPayment}
             >
@@ -110,7 +109,7 @@ const TicketPaymentForm = ({ ticketId }) => {
                 )}
 
                 <label htmlFor="expirationDate" className="block text-sm font-medium text-gray-600">
-                        Expiration Date:
+                    Expiration Date:
                 </label>
                 <div className="flex">
                     <select
@@ -148,11 +147,23 @@ const TicketPaymentForm = ({ ticketId }) => {
                         maxLength="3"
                         onChange={(e) => {
                             const inputCVV = e.target.value.replace(/\D/g, '');
-                            // Use inputCVV here or remove the declaration if not needed
                         }}
                         className="mt-1 p-2 border rounded-md w-full"
                     />
+                </div>
 
+                <div className="mb-6">
+                    <label htmlFor="useRewardPoints" className="block text-sm font-medium text-gray-600">
+                        Use Reward Points:
+                    </label>
+                    <input
+                        type="checkbox"
+                        id="useRewardPoints"
+                        name="useRewardPoints"
+                        checked={useRewardPoints}
+                        onChange={() => setUseRewardPoints(!useRewardPoints)}
+                        className="mt-1 p-2 border rounded-md"
+                    />
                 </div>
 
                 <button
@@ -172,7 +183,6 @@ const TicketPaymentForm = ({ ticketId }) => {
                 </div>
             )}
         </div>
-
     );
 };
 
