@@ -1,23 +1,31 @@
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import MembershipAccountInfo from '../components/MembershipAccountInfo';
 import TicketInfoPage from '../components/TicketInfo';
 import AuthService from '../services/auth/auth.service';
 import axios from 'axios';
 
 const MembershipPage = () => {
-  const [membershipInfo, setMembershipInfo] = useState(null);
+  const navigate = useNavigate();
+
+  const [membershipInfo, setMembershipInfo] = useState([]);
   const [moviesWatched, setMoviesWatched] = useState([]);
   const [rewardPoints, setRewardPoints] = useState(null);
-  const [userInfo, setUserInfo] = useState(null);
+  const [userInfo, setUserInfo] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
-  const [tickets, setTicketInfo] = useState(null);
+  const [tickets, setTicketInfo] = useState([]);
 
 
   const { id } = AuthService.getCurrentUser();
   console.log("USERID: " + id); // Add this line to log the id
 
   useEffect(() => {
+    // redirect to login if no id is provided
+    if (!id) {
+      navigate('/login', { replace: true });
+    }
+
     console.log("USERID" + id);
     const fetchData = async () => {
       setLoading(true);
@@ -25,27 +33,27 @@ const MembershipPage = () => {
       console.log("USER INFO:", userRes.data);
       setUserInfo(userRes.data);
       console.log("Updated userInfo:", userInfo); 
-      setLoading(false);
+      // setLoading(false);
 
-      setLoading(true);
-      const membershipRes = await axios.get(`http://localhost:8080/api/memberships/getMembership/user`);
+      // setLoading(true);
+      const membershipRes = await axios.get(`http://localhost:8080/api/memberships/getMembership/user?userId=${id}`);
       console.log("MEMBERSHIP INFO:", membershipRes.data);
       setMembershipInfo(membershipRes.data);
-      setLoading(false);
+      // setLoading(false);
 
-      setLoading(true);
-      const ticketRes = await axios.get(`http://localhost:8080/api/tickets/getTicket`);
+      // setLoading(true);
+      const ticketRes = await axios.get(`http://localhost:8080/api/tickets/user/${id}`);
       console.log("TICKET INFO:", ticketRes.data);
       setTicketInfo(ticketRes.data);
-      setLoading(false);
+      // setLoading(false);
 
-      setLoading(true);
+      // setLoading(true);
       const moviesWatchedRes = await axios.get(`http://localhost:8080/api/tickets/watched/${id}`);
       console.log("MOVIES WATCHED - 30 DAYS :", moviesWatchedRes.data);
       setMoviesWatched(moviesWatchedRes.data);
       setLoading(false);
 
-      setLoading(true);
+      // setLoading(true);
       const rewardPointsRes = await axios.get(`http://localhost:8080/api/users/${id}/getRewardPoints`);
       console.log("REWARD POINT INFO :", rewardPointsRes.data);
       setRewardPoints(rewardPointsRes.data);
@@ -60,7 +68,7 @@ const MembershipPage = () => {
     } 
 
    
-  }, [id, userInfo]);
+  }, [id]);
 
 
 return (
@@ -103,24 +111,24 @@ return (
         {/* Display Movies Watched */}
         <div className="mb-8">
         <h2 className="text-2xl font-bold mb-2">Movies Watched</h2>
-  {moviesWatched.length > 0 ? (
-    <ul>
-      {moviesWatched.map((movie) => (
-        <li key={movie.id}>
-          <p>
-            <strong>Title:</strong> {movie.title}
-          </p>
-          <p>
-            <strong>Genre:</strong> {movie.genre}
-          </p>
-          {/* Add more movie information as needed */}
-        </li>
-      ))}
-    </ul>
-  ) : (
-    'No movies watched.'
-  )}
-</div>
+        {moviesWatched.length > 0 ? (
+          <ul>
+            {moviesWatched.map((movie) => (
+              <li key={movie.id}>
+                <p>
+                  <strong>Title:</strong> {movie.title}
+                </p>
+                <p>
+                  <strong>Genre:</strong> {movie.genre}
+                </p>
+                {/* Add more movie information as needed */}
+              </li>
+            ))}
+          </ul>
+        ) : (
+          'No movies watched.'
+        )}
+      </div>
 
         {/* Other sections specific to MembershipPage */}
       </div>
