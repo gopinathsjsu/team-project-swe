@@ -1,4 +1,4 @@
-import React from "react";
+import React, {useState} from "react";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 
 import MovieSchedule from "./components/schedule/MovieSchedule";
@@ -20,12 +20,17 @@ import MovieSelection from "./pages/movieSelection";
 import AuthService from "./services/auth/auth.service";
 const App = () => {
   const currentUser = AuthService.getCurrentUser();
-  const isAdmin = currentUser && currentUser.role === "ROLE_ADMIN";
+  let isAdmin = false;
+  if (currentUser) {
+    if (currentUser.role.includes("ROLE_ADMIN")) {
+      isAdmin = true;
+    }
+  }
 
   return (
     <BrowserRouter>
       <Routes>
-        <Route path="/" exact element={<Home />} />
+        <Route path="/" exact element={<Home isAdmin={isAdmin}/>} />
         <Route path="/payment" exact element={<Payment />} />
         {/* isAdmin is false by default */}
         <Route path="/login" exact element={<Login />} />

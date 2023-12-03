@@ -3,7 +3,7 @@ import Button from '@mui/material/Button';
 import { Link, Outlet } from 'react-router-dom';
 import { useNavigate } from "react-router-dom";
 
-const NavBar = () => {
+const NavBar = ({ isAdmin }) => {
   const navigate = useNavigate();
   const handleRegister = () =>{
     navigate("/register")
@@ -17,6 +17,9 @@ const NavBar = () => {
         <div className='flex gap-[40px] mr-[40px] '>
             <Button onClick={handleRegister} color="warning">Register</Button>
             <Button onClick={handleLogin} color="warning">Login</Button>
+            {isAdmin && (
+              <Button component={Link} to="/admin" color="warning">Admin Dashboard</Button>
+            )}
         </div>
         <Outlet/>
     </div>
