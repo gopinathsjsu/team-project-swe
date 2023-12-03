@@ -5,7 +5,7 @@
 
 // set discount prices for shows before 6pm and for Tuesday shows
 
-import React, {useState, useEffect} from 'react';
+import React, {useState, useEffect, useCallback} from 'react';
 import dayjs from 'dayjs';
 import LocationMultiplexDropdown from '../../components/LocationMultiplexDropdown/LocationMultiplexDropdown';
 import EditMovieModal from '../../components/admin/movie/EditMovieModal';
@@ -22,6 +22,7 @@ import MovieService from '../../services/MovieService';
 import ScheduleService from '../../services/ScheduleService';
 import ShowtimeService from '../../services/ShowtimeService';
 import convertTime from '../../common/convertTime';
+import { Movie } from '@mui/icons-material';
 
 
 const AdminDashboard = () => {
@@ -31,97 +32,70 @@ const AdminDashboard = () => {
     const [selectedMultiplex, setSelectedMultiplex] = useState({});
 
     const [selectedMovie, setSelectedMovie] = useState({});
+    const [selectedTheater, setSelectedTheater] = useState({});
 
     const [movieSchedule, setMovieSchedule] = useState([]);
-    const [showtimes, setShowtimes] = useState([]);
     const [loading, setLoading] = useState(false);
-    const [loadingShowtimes, setLoadingShowtimes] = useState(false)
+
+    const [showtimes, setShowtimes] = useState([]);
+    
+
+    // const fetchTheaterInfo = async (movieId, multiplexId) => {
+    //     try {
+    //         const response = await axios.get(`http://localhost:8080/api/theaters/getTheaterByMovieIdAndMultiplexId/${movieId}/${multiplexId}`);
+    //         console.log("Theater Info:", response.data);
+    //         setSelectedTheater(response.data);
+    //     } catch (error) {
+    //         console.error('Error fetching theater information:', error);
+    //         return null;
+    //     }
+    // };
 
     // fetch movie schedule for selected multiplex
     // then fetch showtimes for each movie in schedule
-    useEffect(() => {
-        const fetchMovieData = async () => {
-            try {
-                setLoading(true);
 
-                
-                const movieScheduleResponse = await axios.get(`http://localhost:8080/api/schedules/multiplex/${selectedMultiplex.multiplexId}`);
-                setMovieSchedule(movieScheduleResponse.data);
-
-                console.log('Movie Schedule:', movieScheduleResponse.data);
-
-                
-                const allShowtimes = [];
-
-                for (const schedule of movieScheduleResponse.data) {
-                    for (const movie of schedule.movies) {
-                        const showtimesResponse = await MovieService.fetchShowtimesByMovieId(movie.movieId);
-                        allShowtimes.push(...showtimesResponse);
-                    }
-                }
-
-                console.log("All Showtimes:", allShowtimes);
-
-                setShowtimes(allShowtimes);
-
-                setLoading(false);
-            } catch (error) {
-                console.error('Error fetching movie data:', error);
-                setLoading(false);
-            }
-        };
-
-        // Fetch movie data when selectedMultiplex changes
-        if (selectedMultiplex.multiplexId !== undefined) {
-            fetchMovieData();
+    const fetchMovieData = useCallback(async () => {
+        try {
+            setLoading(true);
+    
+            const movieScheduleResponse = await axios.get(`http://localhost:8080/api/schedules/multiplex/${selectedMultiplex.multiplexId}`);
+            setMovieSchedule(movieScheduleResponse.data);
+    
+            console.log('Movie Schedule:', movieScheduleResponse.data);
+    
+            // Fetch showtimes and theater details for each movie in the schedule
+            const movieDetailsPromises = movieScheduleResponse.data[0].movies.map(async (movie) => {
+                const showtimeResponse = await MovieService.fetchShowtimesByMovieId(movie.movieId);
+                // const theaterDetailsResponse = await axios.get(`http://localhost:8080/api/theaters/getTheaterByMovieIdAndMultiplexId/${movie.movieId}/${selectedMultiplex.multiplexId}`);
+    
+                return {
+                    movieId: movie.movieId,
+                    showtimes: showtimeResponse,
+                    // theaterDetails: theaterDetailsResponse.data,
+                };
+            });
+    
+            const movieDetailsData = await Promise.all(movieDetailsPromises);
+    
+            // Update the states
+            setShowtimes(movieDetailsData);
+            // setMovieTheaterDetails(movieDetailsData.reduce((acc, movie) => {
+            //     acc[movie.movieId] = movie.theaterDetails;
+            //     return acc;
+            // }, {}));
+    
+            setLoading(false);
+        } catch (error) {
+            console.error('Error fetching movie data:', error);
+            setLoading(false);
         }
     }, [selectedMultiplex]);
 
-
-    // const fetchShowtimesByMovieId = async () => {
-    //     try {
-    //       setLoadingShowtimes(true);
-  
-    //       if (selectedMovie) {
-    //         const showtimesData = await MovieService.fetchShowtimesByMovieId(
-    //           selectedMovie.movieId
-    //         );
-    //         console.log("SHOWTIMES:", showtimesData);
-    //         setShowtimes(showtimesData);
-    //       }
-  
-    //       setLoadingShowtimes(false);
-    //     } catch (error) {
-    //       console.error('Error fetching showtimes:', error);
-    //       setLoadingShowtimes(false);
-    //     }
-    // };
-    // fetch showtimes for each movie in schedule
-    // useEffect(() => {
-    //     const fetchShowtimesByMovieId = async () => {
-    //       try {
-    //         setLoadingShowtimes(true);
-    
-    //         if (selectedMovie) {
-    //           const showtimesData = await MovieService.fetchShowtimesByMovieId(
-    //             selectedMovie.movieId
-    //           );
-    //           console.log("SHOWTIMES:", showtimesData);
-    //           setShowtimes(showtimesData);
-    //         }
-    
-    //         setLoadingShowtimes(false);
-    //       } catch (error) {
-    //         console.error('Error fetching showtimes:', error);
-    //         setLoadingShowtimes(false);
-    //       }
-    //     };
-    //     fetchShowtimesByMovieId();
-
-    //     // if (selectedMovie) {
-            
-    //     // }
-    //   }, [selectedMovie]);
+    useEffect(() => {
+        if (selectedMultiplex && Object.keys(selectedMultiplex).length > 0) {
+            fetchMovieData();
+        }
+    }, [fetchMovieData, selectedMultiplex]);
     
     // callback to set multiplex and location from dropdown
     const handleMultiplexSelect = (multiplex) => {
@@ -241,44 +215,60 @@ const AdminDashboard = () => {
 
       const handleUpdateShowtime = async (updatedShowtime) => {
         try {
-          setLoading(true);
+            setLoading(true);
+            const response = await ShowtimeService.updateShowtime(selectedMovie.movieId, updatedShowtime);
+            console.log(response.data);
 
-          const response = await ShowtimeService.updateShowtime(selectedMovie?.movieId, updatedShowtime);
-    
-          console.log(response.data);
-    
+            setShowtimes((prevMovieShowtimes) => {
+                const movieIndex = prevMovieShowtimes.findIndex((data) => data.movieId === selectedMovie.movieId);
+                if (movieIndex !== -1) {
+                    const updatedMovieShowtimes = [...prevMovieShowtimes];
+                    updatedMovieShowtimes[movieIndex].showtimes = updatedMovieShowtimes[movieIndex].showtimes.map((showtime) =>
+                        showtime.showtimeId === updatedShowtime.showtimeId ? updatedShowtime : showtime
+                    );
+                    return updatedMovieShowtimes;
+                }
+                return prevMovieShowtimes;
+            });
 
-          if (selectedMovie.movieId) {
-            const updatedShowtimes = await MovieService.fetchShowtimesByMovieId(selectedMovie?.movieId);
-            setShowtimes(updatedShowtimes);
-          }
-    
-          setLoading(false);
+            setIsEditShowtimeOpen(false);
+            setLoading(false);
+
+            fetchMovieData();
         } catch (error) {
-          console.error('Error updating showtime:', error);
-          setLoading(false);
+            console.error('Error updating showtime:', error);
+            setLoading(false);
         }
-      };
-
-      const handleRemoveShowtime = async (showtimeToRemove) => {
+    };
+    
+    const handleRemoveShowtime = async (showtime) => {
         try {
-          setLoading(true);
+            setLoading(true);
+    
+            const response = await MovieService.removeShowtimeFromMovie(selectedMovie.movieId, showtime.showtimeId);
+            console.log(response.data);
 
-          const response = await ShowtimeService.removeShowtimeFromMovie(selectedMovie?.movieId, showtimeToRemove.showtimeId);
+            setShowtimes((prevMovieShowtimes) => {
+                const movieIndex = prevMovieShowtimes.findIndex((data) => data.movieId === selectedMovie.movieId);
+                if (movieIndex !== -1) {
+                    const updatedMovieShowtimes = [...prevMovieShowtimes];
+                    updatedMovieShowtimes[movieIndex].showtimes = updatedMovieShowtimes[movieIndex].showtimes.filter(
+                        (st) => st.showtimeId !== showtime.showtimeId
+                    );
+                    return updatedMovieShowtimes;
+                }
+                return prevMovieShowtimes;
+            });
     
-          console.log(response.data);
-    
-          if (selectedMovie.movieId) {
-            const updatedShowtimes = await MovieService.fetchShowtimesByMovieId(selectedMovie?.movieId);
-            setShowtimes(updatedShowtimes);
-          }
-    
-          setLoading(false);
+            setIsEditShowtimeOpen(false);
+            setLoading(false);
+
+            fetchMovieData();
         } catch (error) {
-          console.error('Error removing showtime:', error);
-          setLoading(false);
+            console.error('Error removing showtime:', error);
+            setLoading(false);
         }
-      };
+    };
     
 
 
@@ -303,12 +293,25 @@ const AdminDashboard = () => {
                         <p>Duration: {movie.duration}</p>
                         <p>Description: {movie.description}</p>
 
+                        
+                           
                         <p>Showtimes:</p>
-                        {showtimes.map((showtime) => (
-                            <button key={showtime.showtimeId} onClick={() => handleShowtimeClick(movie, showtime)}>
-                                {convertTime(showtime.time)}
-                            </button>
-                        ))}
+                        {Array.isArray(showtimes) && showtimes.length > 0 ? (
+                        showtimes
+                            .filter((data) => data.movieId === movie.movieId)
+                            .map((movieShowtimes) =>
+                                movieShowtimes.showtimes.map((showtime) => (
+                                    <button key={showtime.showtimeId} onClick={() => handleShowtimeClick(movie, showtime)}>
+                                        {convertTime(showtime.time)}
+                                    </button>
+                                ))
+                                )
+                            ) : (
+                            <h2>No showtimes found</h2>
+                        )}
+                           
+                     
+                        
 
 
                         {/* Implement CRUD operations for movie update and removal */}
@@ -346,23 +349,13 @@ const AdminDashboard = () => {
                         movie={selectedRemoveMovie}
                     />
 
-                    {selectedMovie && selectedMovie.movieId && (
-                        <EditShowtimeModal
-                            open={isEditShowtimeOpen}
-                            onClose={() => setIsEditShowtimeOpen(false)}
-                            onSave={handleUpdateShowtime}
-                            onRemove={handleRemoveShowtime}
-                            showtime={selectedShowtime}
-                        />
-                    )}
-
-                    {/* <EditShowtimeModal
+                    <EditShowtimeModal
                         open={isEditShowtimeOpen}
                         onClose={() => setIsEditShowtimeOpen(false)}
                         onSave={handleUpdateShowtime}
                         onRemove={handleRemoveShowtime}
                         showtime={selectedShowtime}
-                    /> */}
+                    />
                 </div>
             )}
         </div>

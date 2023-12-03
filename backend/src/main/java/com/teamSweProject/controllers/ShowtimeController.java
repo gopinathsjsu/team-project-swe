@@ -74,8 +74,8 @@ public class ShowtimeController {
 
     @PreAuthorize("hasRole('ADMIN')")
     @PutMapping("/update")
-    ResponseEntity<Showtime> updateShowtime(@RequestParam Long movieId, @RequestParam LocalDateTime showDateTime, @RequestParam Long theaterId, @RequestParam Long multiplexId) {
-        Showtime updatedShowtime = showtimeService.updateShowtime(movieId, showDateTime, theaterRepository.findById(theaterId).get(), multiplexRepository.findById(multiplexId).get());
+    ResponseEntity<Showtime> updateShowtime(@RequestParam Long movieId, @RequestParam LocalDateTime showDateTime) {
+        Showtime updatedShowtime = showtimeService.updateShowtime(movieId, showDateTime);
         if (updatedShowtime != null) {
             return ResponseEntity.ok(updatedShowtime);
         } else {
