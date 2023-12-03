@@ -11,17 +11,44 @@ const MembershipPage = () => {
   const [userInfo, setUserInfo] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
+  const [tickets, setTicketInfo] = useState(null);
 
 
   const { id } = AuthService.getCurrentUser();
+  console.log("USERID: " + id); // Add this line to log the id
 
   useEffect(() => {
     console.log("USERID" + id);
     const fetchData = async () => {
       setLoading(true);
-      const res = await axios.get(`http://localhost:8080/api/users/getUser?id=${id}`);
-      console.log("USER INFO:", res.data);
-      setUserInfo(res.data);
+      const userRes = await axios.get(`http://localhost:8080/api/users/getUser?id=${id}`);
+      console.log("USER INFO:", userRes.data);
+      setUserInfo(userRes.data);
+      console.log("Updated userInfo:", userInfo); 
+      setLoading(false);
+
+      setLoading(true);
+      const membershipRes = await axios.get(`http://localhost:8080/api/memberships/getMembership/user`);
+      console.log("MEMBERSHIP INFO:", membershipRes.data);
+      setMembershipInfo(membershipRes.data);
+      setLoading(false);
+
+      setLoading(true);
+      const ticketRes = await axios.get(`http://localhost:8080/api/tickets/getTicket`);
+      console.log("TICKET INFO:", ticketRes.data);
+      setTicketInfo(ticketRes.data);
+      setLoading(false);
+
+      setLoading(true);
+      const moviesWatchedRes = await axios.get(`http://localhost:8080/api/tickets/watched/${id}`);
+      console.log("MOVIES WATCHED - 30 DAYS :", moviesWatchedRes.data);
+      setMoviesWatched(moviesWatchedRes.data);
+      setLoading(false);
+
+      setLoading(true);
+      const rewardPointsRes = await axios.get(`http://localhost:8080/api/users/${id}/getRewardPoints`);
+      console.log("REWARD POINT INFO :", rewardPointsRes.data);
+      setRewardPoints(rewardPointsRes.data);
       setLoading(false);
     };
 
@@ -31,56 +58,23 @@ const MembershipPage = () => {
       console.log(error);
       setLoading(false);  
     } 
-  }, [id]);
 
-// const MembershipPage = () => {
-//   const [membershipInfo, setMembershipInfo] = useState(null);
-//   const [moviesWatched, setMoviesWatched] = useState([]);
-//   const [rewardPoints, setRewardPoints] = useState(null);
-//   const [userInfo, setUserInfo] = useState(null);
-//   const [loading, setLoading] = useState(true);
-//   const [error, setError] = useState(null);
-//   const {userId}  = AuthService.getCurrentUser();
+   
+  }, [id, userInfo]);
 
-//   useEffect(() => {
-//     const fetchData = async (userId) => {
-//       try {
-//         // Fetch information using MembershipAccountInfo
-//         const userData = await MembershipAccountInfo.getUser(userId);
-//         const membershipData = await MembershipAccountInfo.getMembership(userId);
-//         const ticketData = await MembershipAccountInfo.getTicketData(userData.ticketId);
-//         const moviesWatchedData = await MembershipAccountInfo.getMoviesWatched(userId);
-//         const rewardPointsData = await MembershipAccountInfo.getRewardPoints(userId);
 
-//         setMembershipInfo(membershipData);
-//         setMoviesWatched(moviesWatchedData);
-//         setRewardPoints(rewardPointsData);
-//         setUserInfo(userData);
+return (
+  <div className="container mx-auto mt-8 p-6 bg-white rounded-lg shadow-md">
+    {loading && <p className="text-center">Loading...</p>}
+    {error && <p className="text-center text-red-500">Error: {error}</p>}
+    {!loading && !error && (
+      <div>
+        <h1 className="text-3xl font-bold mb-4">View Members Page</h1>
 
-//         setLoading(false);
-//       } catch (error) {
-//         setError(error.message || 'Error fetching information');
-//         setLoading(false);
-//       }
-//     };
-
-//     fetchData();
-//   }, []);
-
-  return (
-    <div className="container mx-auto mt-8 p-6 bg-white rounded-lg shadow-md">
-      {loading && <p className="text-center">Loading...</p>}
-      {error && <p className="text-center text-red-500">Error: {error}</p>}
-      {!loading && !error && (
-        <div>
-          <h1 className="text-3xl font-bold mb-4">View Members Page</h1>
-
-          {/* Display Membership Information */}
-          <div className="mb-8">
-            <h2 className="text-2xl font-bold mb-2">Membership Information</h2>
-            <p>
-              <strong>Name:</strong> {userInfo.firstName} {userInfo.lastName}
-            </p>
+        {/* Display Membership Information */}
+        <div className="mb-8">
+          <h2 className="text-2xl font-bold mb-2">Membership Information</h2>
+           <strong>Name:</strong> {userInfo.firstName} {userInfo.lastName} 
             <p>
               <strong>Username:</strong> {userInfo.username}
             </p>
@@ -93,56 +87,49 @@ const MembershipPage = () => {
             <p>
               <strong>Phone:</strong> {userInfo.phone? userInfo.phone : "N/A"}
             </p>
-            {/* Display other membership information... */}
-          </div>
-
-          {/* Display User Information */}
-          <div className="mb-8">
-            <h2 className="text-2xl font-bold mb-2">User Information</h2>
-            <p>
-              {/* <strong>Username:</strong> {userInfo.username} */}
-            </p>
-            {/* Display other user information... */}
-          </div>
-
-          {/* Display other information */}
-          <div className="mb-8">
-            <p>
-              <strong>Reward Points:</strong> {rewardPoints !== null ? rewardPoints : 'Loading...'}
-            </p>
-            <p>
-              {/* <strong>Movies Watched:</strong>
-              {moviesWatched.length > 0 ? (
-                <ul>
-                  {moviesWatched.map((movie) => (
-                    <li key={movie.id}>{movie.title}</li>
-                  ))}
-                </ul>
-              ) : (
-                'No movies watched.'
-              )} */}
-            </p>
-          </div>
-
-          {/* Movie Tickets Purchased */}
-          <div className="mb-8">
-            <h2 className="text-2xl font-bold mb-2">Movie Tickets Purchased</h2>
-            {/* {moviesWatched.length > 0 ? (
-              <ul>
-                {moviesWatched.map((ticket) => (
-                  <li key={ticket.id}>{ticket.movieName}</li>
-                ))}
-              </ul>
-            ) : (
-              'No movie tickets purchased.'
-            )} */}
-          </div>
-
-          {/* Other sections specific to MembershipPage */}
+            {/* <p>
+              <strong>Membership Type:</strong> {userInfo.phone? userInfo.phone : "N/A"}
+            </p> */}
         </div>
-      )}
-    </div>
-  );
+
+        {/* Display Reward Points */}
+        <div className="mb-8">
+          <h2 className="text-2xl font-bold mb-2">Reward Points</h2>
+          <p>
+            <strong>Reward Points:</strong> {rewardPoints !== null ? rewardPoints : 'Loading...'}
+          </p>
+        </div>
+
+        {/* Display Movies Watched */}
+        <div className="mb-8">
+        <h2 className="text-2xl font-bold mb-2">Movies Watched</h2>
+  {moviesWatched.length > 0 ? (
+    <ul>
+      {moviesWatched.map((movie) => (
+        <li key={movie.id}>
+          <p>
+            <strong>Title:</strong> {movie.title}
+          </p>
+          <p>
+            <strong>Genre:</strong> {movie.genre}
+          </p>
+          {/* Add more movie information as needed */}
+        </li>
+      ))}
+    </ul>
+  ) : (
+    'No movies watched.'
+  )}
+</div>
+
+        {/* Other sections specific to MembershipPage */}
+      </div>
+    )} 
+  </div> 
+);
 };
 
-export default MembershipPage;
+export default MembershipPage; 
+
+
+
