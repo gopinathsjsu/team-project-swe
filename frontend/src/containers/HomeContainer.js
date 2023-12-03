@@ -8,7 +8,7 @@ import NewReleasesService from '../services/NewReleasesService';
 import UpcomingMoviesService from '../services/UpcomingMoviesService';
 import MoviesByMultiplexService from '../services/MoviesByMultiplexService';
 
-const HomeContainer = () => {
+const HomeContainer = ({ isAdmin }) => {
   const [moviesData, SetMoviesData] = useState([]);
   const [NewReleasesData, SetNewReleasesData] = useState([]);
   const [multiplex, setMultiplex] = useState({});
@@ -33,9 +33,9 @@ const HomeContainer = () => {
       console.error('Error fetching all movies:', error);
     }
   };
-
-  const today = new Date();
+  
   useEffect(() => {
+    const today = new Date();
     SetMoviesData(multiplexMovies.filter(movie => new Date(movie.releaseDate) > today))
     SetNewReleasesData(multiplexMovies.filter(movie => new Date(movie.releaseDate) <= today))
   }, [multiplexMovies]);
@@ -55,7 +55,9 @@ const HomeContainer = () => {
   }, [])
 
   useEffect(() => {
-    fetchMoviesByMultiplex(multiplex.multiplexId)
+    if (multiplex.multiplexId) {
+      fetchMoviesByMultiplex(multiplex.multiplexId)
+    }
   }, [multiplex.multiplexId])
   console.log(multiplexMovies)
 
@@ -69,7 +71,7 @@ const HomeContainer = () => {
 
   return (
     <div>
-      <NavBar />
+      <NavBar isAdmin={isAdmin} />
       <CarouselComponent />
       <LocationMultiplexDropdown onSelectLocation={handleSetLocation} onSelectMultiplex={handleSetMultiplex} />
       <NewReleases moviesData={NewReleasesData} seeAll={true} />

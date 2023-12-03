@@ -6,6 +6,7 @@
 // set discount prices for shows before 6pm and for Tuesday shows
 
 import React, {useState, useEffect, useCallback} from 'react';
+import { useNavigate } from 'react-router-dom';
 import dayjs from 'dayjs';
 import LocationMultiplexDropdown from '../../components/LocationMultiplexDropdown/LocationMultiplexDropdown';
 import EditMovieModal from '../../components/admin/movie/EditMovieModal';
@@ -26,6 +27,8 @@ import { Movie } from '@mui/icons-material';
 
 
 const AdminDashboard = () => {
+
+    const navigate = useNavigate();
     
     // states for dropdown
     const [selectedLocation, setSelectedLocation] = useState('');
@@ -274,6 +277,7 @@ const AdminDashboard = () => {
 
     return (
         <div>
+            <Button onClick={() => navigate('/admin/analytics')}>Analytics Dashboard</Button>
             <LocationMultiplexDropdown 
                 onSelectLocation={handleLocationSelect}
                 onSelectMultiplex={handleMultiplexSelect}
