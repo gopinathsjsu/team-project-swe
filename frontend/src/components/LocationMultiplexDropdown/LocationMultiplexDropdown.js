@@ -4,13 +4,12 @@ import NativeSelect from '@mui/material/NativeSelect';
 import MultiplexService from '../../services/MultiplexService';
 import LocationService from '../../services/LocationService';
 
-
-const LocationMultiplexDropdown = ({ isAdmin, setAdminLocation, setAdminMultiplex }) => {
+const LocationMultiplexDropdown = ({ isAdmin, isHome, setAdminLocation, setAdminMultiplex, multiplexIdFunction, locationIdFunction }) => {
     const [locations, setLocations] = useState([]);
     const [multiplexOptions, setMultiplexOptions] = useState([]);
     const [locationName, setLocationName] = useState('');
     const [multiplex, setMultiplex] = useState({});
-
+console.log(multiplex)
     const fetchLocationOptions = async () => {
         try {
             const locationData = await LocationService.getAllLocations();
@@ -27,10 +26,9 @@ const LocationMultiplexDropdown = ({ isAdmin, setAdminLocation, setAdminMultiple
     const fetchMultiplexOptions = async (locationName) => {
         try {
             const locationNameData = await LocationService.getLocationByName(locationName);
-
             const locationId = locationNameData.locationId;
+            locationIdFunction(locationId);
             const multiplexes = await MultiplexService.getMultiplexesByLocationId(locationId);
-
             const options = multiplexes.map((multiplex) => ({
                 multiplexId: multiplex.multiplexId,
                 location: locationNameData.location,
@@ -45,9 +43,7 @@ const LocationMultiplexDropdown = ({ isAdmin, setAdminLocation, setAdminMultiple
     const handleLocationChange = (e) => {
         setLocationName(e.target.value);
         setMultiplex({});
-        
         fetchMultiplexOptions(e.target.value);
-
         if (isAdmin) {
             setAdminLocation(e.target.value);
             setAdminMultiplex({});
@@ -56,9 +52,9 @@ const LocationMultiplexDropdown = ({ isAdmin, setAdminLocation, setAdminMultiple
 
     const handleMultiplexChange = (e) => {
         const selectedMultiplex = multiplexOptions.find(option => option.locationName === e.target.value);
-        console.log('Selected Multiplex:', selectedMultiplex);
         setMultiplex(selectedMultiplex.locationName);
-
+        setMultiplex(selectedMultiplex);
+        multiplexIdFunction(selectedMultiplex);
         if (isAdmin) {
             console.log('Admin Multiplex:', selectedMultiplex);
             setAdminMultiplex(selectedMultiplex);
@@ -89,10 +85,9 @@ const LocationMultiplexDropdown = ({ isAdmin, setAdminLocation, setAdminMultiple
                     ))}
                 </NativeSelect>
             </FormControl>
-
             <FormControl sx={{ marginBottom: '0rem' }}>
                 <NativeSelect
-                    value={multiplex}
+                    value={multiplex.locationName}
                     onChange={handleMultiplexChange}
                     inputProps={{
                         name: 'multiplex',

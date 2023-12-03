@@ -1,22 +1,20 @@
 import React, { useEffect, useState } from 'react'
 import UpcomingMovies from '../components/UpcomingMovies';
+import UpcomingMoviesService from '../services/UpcomingMoviesService';
+
 const UpcomingMoviesPage = () => {
     const [moviesData, SetMoviesData]=useState([]);
-    const options = {
-        method: 'GET',
-        headers: {
-          accept: 'application/json',
-          Authorization: 'Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiIxMTQ5NThhNDY2M2Y4OGFkZmI2MjhkZTI2NWJhZmZkZSIsInN1YiI6IjY1NDE0MzViNmNhOWEwMDBlYmVlODdmZCIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.UARFyhM8sMafq8wmQRvRyD1g6niYjzf36xBqImntH-o'
-        }
-      };
-      
-      useEffect(()=>{
-        fetch('https://api.themoviedb.org/3/movie/now_playing?language=en-US&page=1', options)
-        .then(response => response.json())
-        .then(response => SetMoviesData(response.results))
-        .catch(err => console.error(err));
-   
-      },[])
+    const fetchUpcomingMovies = async () => {
+      try {
+        const UpcomingMoviesData = await UpcomingMoviesService.getAllUpcomingMovies();
+        SetMoviesData(UpcomingMoviesData);
+      } catch (error) {
+        console.error('Error fetching upcoming movies:', error);
+      }
+    };
+    useEffect(() => {
+      fetchUpcomingMovies();
+    }, [])
   return (
     <div>
         <UpcomingMovies moviesData={moviesData} seeAll={false}/>
