@@ -78,6 +78,10 @@ class MoviesService {
     }
   }
 
+  async removeShowtimeFromMovie(movieId, showtimeId) {
+    return await axios.delete(`${MOVIES_BASE_URL}/${movieId}/deleteShowtime?showTimeId=${showtimeId}`);
+  }
+
 }
 
 
