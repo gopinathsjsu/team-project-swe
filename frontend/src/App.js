@@ -12,11 +12,8 @@ import Payment from "./pages/PaymentPage";
 import PaymentResult from "./pages/PaymentResult";
 import Register from "./pages/Register";
 import SeatSelect from "./pages/SeatSelect";
-<<<<<<< HEAD
 import MembershipPage from "./pages/MembershipPage"
 
-=======
->>>>>>> origin
 import TicketInformation from "./pages/TicketInformation";
 import UpcomingMoviesPage from "./pages/UpcomingMoviesPage";
 import AdminDashboard from "./pages/admin/AdminDashboard";
@@ -47,15 +44,10 @@ const App = () => {
         <Route path="/newreleases" exact element={<NewReleasesPage />} />
         <Route path="/upcomingmovies" exact element={<UpcomingMoviesPage />} />
         <Route path="/seatselect" exact element={<SeatSelect />} />
-<<<<<<< HEAD
         <Route path="/membershipPage" exact element={<MembershipPage />} />
         <Route path="/TicketInfo" exact element={<TicketInformation />} />
         <Route path="/movieSelection" exact element={<MovieSelection />} />
         
-=======
-        <Route path="/TicketInfo" exact element={<TicketInformation />} />
-        <Route path="/movieSelection" exact element={<MovieSelection />} />
->>>>>>> origin
       </Routes>
     </BrowserRouter>
   );
