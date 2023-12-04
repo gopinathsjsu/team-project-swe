@@ -5,7 +5,7 @@ import MultiplexService from '../../services/MultiplexService';
 import LocationService from '../../services/LocationService';
 
 
-const LocationMultiplexDropdown = ({ onSelectLocation, onSelectMultiplex }) => {
+const LocationMultiplexDropdown = ({ onSelectLocation, onSelectMultiplex, onGetMultiplexes }) => {
     const [locations, setLocations] = useState([]);
     const [multiplexOptions, setMultiplexOptions] = useState([]);
     const [locationName, setLocationName] = useState('');
@@ -29,13 +29,15 @@ const LocationMultiplexDropdown = ({ onSelectLocation, onSelectMultiplex }) => {
             const locationNameData = await LocationService.getLocationByName(locationName);
             const locationId = locationNameData.locationId;
             // locationIdFunction(locationId);
-            const multiplexes = await MultiplexService.getMultiplexesByLocationId(locationId);
-            const options = multiplexes.map((multiplex) => ({
+            const multiplexData = await MultiplexService.getMultiplexesByLocationId(locationId);
+            const options = multiplexData.map((multiplex) => ({
                 multiplexId: multiplex.multiplexId,
                 location: locationNameData.location,
                 locationName: multiplex.multiplexName,
             }));
             setMultiplexOptions(options);
+            // for admin dashboard
+            onGetMultiplexes(multiplexData);
         } catch (error) {
             console.error('Error fetching multiplex options:', error);
         }
@@ -48,6 +50,7 @@ const LocationMultiplexDropdown = ({ onSelectLocation, onSelectMultiplex }) => {
 
         onSelectLocation(e.target.value);
     };
+
 
     const handleMultiplexChange = (e) => {
         const selectedMultiplex = multiplexOptions.find(option => option.locationName === e.target.value);

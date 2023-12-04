@@ -13,6 +13,9 @@ import {
     Box,
     CircularProgress,
     Typography,
+    Card,
+    Snackbar,
+    Alert,
 } from '@mui/material';
 
 import LocationMultiplexDropdown from '../../components/LocationMultiplexDropdown/LocationMultiplexDropdown';
@@ -21,10 +24,13 @@ import AddMovieModal from '../../components/admin/movie/AddMovieModal';
 import CreateMovieModal from '../../components/admin/movie/CreateMovieModal';
 import RemoveMovieModal from '../../components/admin/movie/RemoveMovieModal';
 import EditShowtimeModal from '../../components/admin/showtime/EditShowtimeModal';
+import TicketPricingCard from '../../components/admin/ticketPricing/TicketPricingCard';
+
 import MovieService from '../../services/MovieService';
 import ScheduleService from '../../services/ScheduleService';
 import ShowtimeService from '../../services/ShowtimeService';
 import convertTime from '../../common/convertTime';
+import formatReleaseDate from '../../common/convertDate';
 
 
 const AdminDashboard = () => {
@@ -35,6 +41,16 @@ const AdminDashboard = () => {
     const [selectedLocation, setSelectedLocation] = useState('');
     const [selectedMultiplex, setSelectedMultiplex] = useState({});
 
+    // states for ticket pricing
+    const [ticketPricing, setTicketPricing] = useState({});
+    const [multiplexes, setMultiplexes] = useState([]);
+
+    const [regularPrice, setRegularPrice] = useState(12);
+    const [tuesdayDiscountedPrice, setTuesdayDiscountedPrice] = useState(6);
+    const [before6pmDiscountedPrice, setBefore6pmDiscountedPrice] = useState(10);
+
+
+    // states for schedule
     const [selectedMovie, setSelectedMovie] = useState({});
     const [selectedTheater, setSelectedTheater] = useState({});
 
@@ -130,6 +146,48 @@ const AdminDashboard = () => {
 
     const handleLocationSelect = (location) => {
         setSelectedLocation(location);
+    };
+
+    const handleGetMultiplexes = (multiplexList) => {
+        const multiplexesWithPricing = multiplexList.map((multiplex) => ({
+            ...multiplex,
+            ticketPricing: {
+                regularPrice: 10, // Default values, you can set them as needed
+                tuesdayDiscountedPrice: 8,
+                before6pmDiscountedPrice: 9,
+            },
+        }));
+
+        setMultiplexes(multiplexesWithPricing);
+    };
+
+    const [showAlert, setShowAlert] = useState(false);
+    const [alertMessage, setAlertMessage] = useState('');
+
+    const handleSaveTicketPricing = (newPrices) => {
+        const selectedMultiplexId = selectedMultiplex.multiplexId;
+
+        const updatedMultiplexes = multiplexes.map((multiplex) =>
+            multiplex.multiplexId === selectedMultiplexId
+                ? {
+                    ...multiplex,
+                    ticketPricing: {
+                        regularPrice,
+                        tuesdayDiscountedPrice,
+                        before6pmDiscountedPrice,
+                    },
+                }
+                : multiplex
+        );
+
+        setMultiplexes(updatedMultiplexes);
+
+        setAlertMessage(`Successfully saved ticket pricing details for ${selectedMultiplex.locationName}.`);
+        setShowAlert(true);
+
+        setTimeout(() => {
+            setShowAlert(false);
+        }, 3000);
     };
 
     // states for modals
@@ -299,47 +357,39 @@ const AdminDashboard = () => {
 
 
     return (
-        <div>
-            <Box m={2}>
-                <Button onClick={() => navigate('/admin/analytics')} variant="outlined" color="primary">
-                    Analytics Dashboard
-                </Button>
-            </Box>
+        <div className="flex">
+            <div className="flex-3">
+                <div className='flex-4'>
+                    <Typography variant="h4" className="mb-4">
+                        Admin Dashboard
+                    </Typography>
+                    <Button variant='outlined' onClick={() => navigate('/admin/analytics')}>Analytics Dashboard</Button>
+                </div>
+                <Card maxWidth={'50vw'}>
+                    <LocationMultiplexDropdown
+                        onSelectLocation={handleLocationSelect}
+                        onSelectMultiplex={handleMultiplexSelect}
+                        onGetMultiplexes={handleGetMultiplexes}
+                    />
+                </Card>
+                
+                <Box style={{maxHeight: '75vh', overflow: 'auto'}} m={2} maxWidth={'50vw'}>
+                    <Typography variant="h5">Movie Schedule for {selectedMultiplex.locationName}</Typography>
 
-            <Box m={2}>
-                <LocationMultiplexDropdown
-                    onSelectLocation={handleLocationSelect}
-                    onSelectMultiplex={handleMultiplexSelect}
-                />
-            </Box>
+                    {loading ? <CircularProgress /> : null}
 
-            <Box m={2}>
-                <Button onClick={() => setIsCreateMovieOpen(true)} variant="contained" color="primary">
-                    Create Movie
-                </Button>
-            </Box>
+                    {Object.keys(movieSchedule).length > 0 &&
+                        movieSchedule[0].movies?.map((movie) => (
+                            <Card key={movie.movieId} className="mb-4">
+                                <Typography variant="h6">{movie.title}</Typography>
+                                <Typography variant='body1' style={{ fontWeight: 'bold' }}>Rating: {movie.rating}</Typography>
+                                <Typography variant='body1' style={{ fontStyle: 'italic' }}>Release Date: {formatReleaseDate(movie.releaseDate)}</Typography>
+                                <Typography variant='body1'>Genre: {movie.genre}</Typography>
+                                <Typography variant='body1'>Duration: {movie.duration}</Typography>
+                                <Typography variant='body1' style={{ color: 'gray' }}>Description: {movie.description}</Typography>
 
-            {selectedMultiplex && (
-                <Box m={2}>
-                    <div>
-                        <Typography variant="h5">
-                            Movie Schedule for {selectedMultiplex.locationName}
-                        </Typography>
 
-                        {loading && <CircularProgress />}
-
-                        {Object.keys(movieSchedule).length > 0 && movieSchedule[0].movies?.map((movie) => (
-                            <Box key={movie.movieId} mt={3} p={3} border={1} borderColor="grey.300" borderRadius={4}>
-                                <Typography variant="h6">
-                                    {movie.title}
-                                </Typography>
-
-                                {/* ... (other movie details) */}
-
-                                <Typography variant="h6">
-                                    Showtimes:
-                                </Typography>
-
+                                <p>Showtimes:</p>
                                 {Array.isArray(showtimes) && showtimes.length > 0 ? (
                                     showtimes
                                         .filter((data) => data.movieId === movie.movieId)
@@ -347,8 +397,6 @@ const AdminDashboard = () => {
                                             movieShowtimes.showtimes.map((showtime) => (
                                                 <Button
                                                     key={showtime.showtimeId}
-                                                    variant="outlined"
-                                                    color="primary"
                                                     onClick={() => handleShowtimeClick(movie, showtime)}
                                                 >
                                                     {convertTime(showtime.time)}
@@ -362,78 +410,86 @@ const AdminDashboard = () => {
                                 {theaters.map((theater) => {
                                     if (theater.movieId === movie.movieId) {
                                         return (
-                                            <Box key={theater.theaterInfo.theaterId} mt={2}>
-                                                <Typography variant="subtitle1">
-                                                    Theater: {theater.theaterInfo.theaterName}
-                                                </Typography>
-                                                <Typography variant="subtitle1">
-                                                    Theater Capacity: {theater.theaterInfo.capacity}
-                                                </Typography>
-                                            </Box>
+                                            <div key={theater.theaterInfo.theaterId}>
+                                                <p>Theater: {theater.theaterInfo.theaterName}</p>
+                                                <p>Theater Capacity: {theater.theaterInfo.capacity}</p>
+                                            </div>
                                         );
                                     }
                                     return null;
                                 })}
 
-                                <Box mt={2}>
-                                    <Button onClick={() => handleEditMovie(movie)} variant="outlined" color="primary">
-                                        Edit Movie
-                                    </Button>
-
-                                    <Button onClick={() => handleRemoveMovie(movie)} variant="outlined" color="secondary">
-                                        Remove Movie
-                                    </Button>
-                                </Box>
-                            </Box>
+                                <Button variant='outlined' color='success' onClick={() => handleEditMovie(movie)}>Edit Movie</Button>
+                                <Button variant='outlined' color='warning' onClick={() => handleRemoveMovie(movie)}>Remove Movie</Button>
+                            </Card>
                         ))}
 
-                        {Object.keys(movieSchedule).length > 0 && (
-                            <Box mt={2}>
-                                <Button onClick={() => setIsAddMovieOpen(true)} variant="contained" color="primary">
-                                    Add Movie to Schedule
-                                </Button>
-                            </Box>
-                        )}
-                    </div>
+                    <EditMovieModal open={isEditMovieOpen} onClose={handleCloseEditMovie} onSave={handleUpdateMovie} movie={selectedMovie} />
+                    <AddMovieModal
+                        open={isAddMovieOpen}
+                        onClose={() => setIsAddMovieOpen(false)}
+                        onAddMovie={handleAddMovie}
+                        selectedMultiplexId={selectedMultiplex.multiplexId}
+                        schedule={movieSchedule[0]?.movies || []}
+                    />
+                    <CreateMovieModal open={isCreateMovieOpen} onClose={() => setIsCreateMovieOpen(false)} onCreateMovie={handleCreateMovie} />
+                    <RemoveMovieModal
+                        open={isRemoveMovieOpen}
+                        onClose={() => setIsRemoveMovieOpen(false)}
+                        onConfirmRemove={handleConfirmRemoveMovie}
+                        movie={selectedRemoveMovie}
+                    />
+
+                    <EditShowtimeModal
+                        open={isEditShowtimeOpen}
+                        onClose={() => setIsEditShowtimeOpen(false)}
+                        onSave={handleUpdateShowtime}
+                        onRemove={handleRemoveShowtime}
+                        showtime={selectedShowtime}
+                    />
                 </Box>
-            )}
+                {Object.keys(movieSchedule).length > 0 && (
+                    <Button variant='outlined' onClick={() => setIsAddMovieOpen(true)}>Add Movie to Schedule</Button>
+                )}
+            </div>
 
-            {selectedMovie && (
-                <EditMovieModal
-                    open={isEditMovieOpen}
-                    onClose={handleCloseEditMovie}
-                    onSave={handleUpdateMovie}
-                    movie={selectedMovie}
-                />
-            )}
-            <AddMovieModal
-                open={isAddMovieOpen}
-                onClose={() => setIsAddMovieOpen(false)}
-                onAddMovie={handleAddMovie}
-                selectedMultiplexId={selectedMultiplex.multiplexId}
-                schedule={movieSchedule[0]?.movies || []}
-            />
-            <CreateMovieModal
-                open={isCreateMovieOpen}
-                onClose={() => setIsCreateMovieOpen(false)}
-                onCreateMovie={handleCreateMovie}
-            />
-            <RemoveMovieModal
-                open={isRemoveMovieOpen}
-                onClose={() => setIsRemoveMovieOpen(false)}
-                onConfirmRemove={handleConfirmRemoveMovie}
-                movie={selectedRemoveMovie}
-            />
+            <div className="flex-1 ml-4">
+                {selectedMultiplex.multiplexId ? (
+                    <Box mt={3} maxWidth={'25vw'}>
+                        {multiplexes.map((multiplex) => {
+                            if (multiplex.multiplexId === selectedMultiplex.multiplexId) {
+                                return (
+                                    <TicketPricingCard
+                                        key={multiplex.multiplexId}
+                                        regularPrice={multiplex.ticketPricing.regularPrice}
+                                        tuesdayDiscountedPrice={multiplex.ticketPricing.tuesdayDiscountedPrice}
+                                        before6pmDiscountedPrice={multiplex.ticketPricing.before6pmDiscountedPrice}
+                                        onSave={handleSaveTicketPricing}
+                                    />
+                                );
+                            }
+                            return null;
+                        })}
+                    </Box>
+                ) : (
+                    <Box mt={3} maxWidth={'30vw'}>
+                        <Typography variant="h5">Ticket Pricing for {selectedMultiplex.locationName}</Typography>
+                        <Card mt={3}>
+                            <Typography>Please select a multiplex to view/edit movie schedule.</Typography>
+                        </Card>
+                    </Box>
+                )}
 
-            <EditShowtimeModal
-                open={isEditShowtimeOpen}
-                onClose={() => setIsEditShowtimeOpen(false)}
-                onSave={handleUpdateShowtime}
-                onRemove={handleRemoveShowtime}
-                showtime={selectedShowtime}
-            />
+                {showAlert && (
+                    <Snackbar open={showAlert} autoHideDuration={3000} onClose={() => setShowAlert(false)}>
+                        <Alert onClose={() => setShowAlert(false)} severity="success">
+                            {alertMessage}
+                        </Alert>
+                    </Snackbar>
+                )}
+            </div>
         </div>
-    )
+    );
 };
 
 export default AdminDashboard;
