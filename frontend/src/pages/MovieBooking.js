@@ -48,7 +48,7 @@ const MovieBooking = ({ movieId }) => {
 
   return (
     <div>
-      <NavBar />
+      
       {movieInformation &&
         <Box pt={5} sx={{ flexGrow: 1, bgcolor: '#0F0F0F', height: '100vh' }}>
           <Grid container spacing={2}>
