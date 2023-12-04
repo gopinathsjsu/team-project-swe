@@ -35,7 +35,6 @@ const LoginForm = () => {
         } else {
           navigate('/membershipPage', { replace: true });
         }
-        window.location.reload();
       })
       .catch((error) => {
         console.log(error);
