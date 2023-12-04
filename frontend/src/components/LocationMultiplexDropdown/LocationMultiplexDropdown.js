@@ -4,12 +4,13 @@ import NativeSelect from '@mui/material/NativeSelect';
 import MultiplexService from '../../services/MultiplexService';
 import LocationService from '../../services/LocationService';
 
-const LocationMultiplexDropdown = ({ isAdmin, isHome, setAdminLocation, setAdminMultiplex, multiplexIdFunction, locationIdFunction }) => {
+
+const LocationMultiplexDropdown = ({ onSelectLocation, onSelectMultiplex, onGetMultiplexes }) => {
     const [locations, setLocations] = useState([]);
     const [multiplexOptions, setMultiplexOptions] = useState([]);
     const [locationName, setLocationName] = useState('');
     const [multiplex, setMultiplex] = useState({});
-console.log(multiplex)
+
     const fetchLocationOptions = async () => {
         try {
             const locationData = await LocationService.getAllLocations();
@@ -27,14 +28,16 @@ console.log(multiplex)
         try {
             const locationNameData = await LocationService.getLocationByName(locationName);
             const locationId = locationNameData.locationId;
-            locationIdFunction(locationId);
-            const multiplexes = await MultiplexService.getMultiplexesByLocationId(locationId);
-            const options = multiplexes.map((multiplex) => ({
+            // locationIdFunction(locationId);
+            const multiplexData = await MultiplexService.getMultiplexesByLocationId(locationId);
+            const options = multiplexData.map((multiplex) => ({
                 multiplexId: multiplex.multiplexId,
                 location: locationNameData.location,
                 locationName: multiplex.multiplexName,
             }));
             setMultiplexOptions(options);
+            // for admin dashboard
+            onGetMultiplexes(multiplexData);
         } catch (error) {
             console.error('Error fetching multiplex options:', error);
         }
@@ -44,21 +47,15 @@ console.log(multiplex)
         setLocationName(e.target.value);
         setMultiplex({});
         fetchMultiplexOptions(e.target.value);
-        if (isAdmin) {
-            setAdminLocation(e.target.value);
-            setAdminMultiplex({});
-        }
+
+        onSelectLocation(e.target.value);
     };
+
 
     const handleMultiplexChange = (e) => {
         const selectedMultiplex = multiplexOptions.find(option => option.locationName === e.target.value);
         setMultiplex(selectedMultiplex.locationName);
-        setMultiplex(selectedMultiplex);
-        multiplexIdFunction(selectedMultiplex);
-        if (isAdmin) {
-            console.log('Admin Multiplex:', selectedMultiplex);
-            setAdminMultiplex(selectedMultiplex);
-        }
+        onSelectMultiplex(selectedMultiplex);
     };
 
     useEffect(() => {

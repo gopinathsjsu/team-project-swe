@@ -21,18 +21,14 @@ class ShowtimesService {
   }
 
   async updateShowtime(movieId, editedShowtime) {
-    const {showDatetime, theaterId, multiplexId} = editedShowtime;
-    return await axios.put(SHOWTIMES_BASE_URL + 'update', {
-        parameters: {
-            movieId,
-            showDatetime,
-            theaterId,
-            multiplexId
-        }
-      } 
+    console.log("MOVIEID:", movieId);
+    const { showDateTime } = editedShowtime; // Fix here
+    const response = await axios.put(
+        `${SHOWTIMES_BASE_URL}/update?movieId=${movieId}&showDateTime=${showDateTime}`
+    );
     // TODO: add auth header
     // { headers: authHeader() });
-    );
+    return response;
   }
 
 

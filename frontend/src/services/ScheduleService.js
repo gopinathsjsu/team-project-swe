@@ -8,10 +8,17 @@ class ScheduleService {
     // TODO: add auth header
     async removeMovieFromSchedule(movieId, scheduleId) {
         return await axios.delete(SCHEDULE_BASE_URL + 
-            `removeMovie/${movieId}/${scheduleId}`,
+            `${scheduleId}/movies/${movieId}`,
         )
     }
 
+    async getMovieByMultiplexId(multiplexId) {
+        return await axios.get(SCHEDULE_BASE_URL + `multiplex/${multiplexId}`);
+    }
+
+    async addMovieToSchedule(movieId, scheduleId) {
+        return await axios.post(SCHEDULE_BASE_URL + `${scheduleId}/addMovie/${movieId}`);
+    }
 }
 
 export default new ScheduleService();

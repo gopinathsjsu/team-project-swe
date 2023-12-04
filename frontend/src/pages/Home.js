@@ -2,10 +2,10 @@ import React from 'react';
 import HomeContainer from '../containers/HomeContainer';
 
 
-const Home = () => {
+const Home = ({ isAdmin }) => {
   return (
    <div>
-    <HomeContainer/>
+    <HomeContainer isAdmin={isAdmin} />
    </div>
   );
 }
