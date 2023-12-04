@@ -1,18 +1,35 @@
 import { Button } from "@mui/material";
 import React, { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
+import api from "../services/backend-api/api";
+
 
 const Seats = () => {
   const navigate = useNavigate();
   const { id, seats } = useParams();
   const [seatDetails, setSeatDetails] = useState(generateInitialSeatDetails());
   const [selectedSeatsCount, setSelectedSeatsCount] = useState(0);
+  const [loading, setLoading] = useState(false);
+  const [tickets, setTicketInfo] = useState([]);
 
-  useEffect(() => {
-    if (!seats) {
-      clearSelectedSeats();
-    }
-  }, [seats]);
+  // useEffect(() => {
+  //   console.log("USERID" + id);
+  //   const fetchData = async () => {
+  //     setLoading(true);
+  //     const ticketRes = await api.get(`api/tickets//book/{userId}")id=${id}`);
+  //   };
+
+  //   try {
+  //     fetchData();
+  //   } catch (error) {
+  //     console.log(error);
+  //     setLoading(false);
+  //   }
+
+  //   if (!seats) {
+  //     clearSelectedSeats();
+  //   }
+  // }, [id, seats]);
 
   function generateInitialSeatDetails() {
     const screenConfig = { rows: 8, cols: 10 };
@@ -24,6 +41,7 @@ const Seats = () => {
     return initialSeatDetails;
   }
 
+  // TODO: make sure you're accessing SEAT DETAILS rather than selected seats
   const clearSelectedSeats = () => {
     setSeatDetails((prevSeatDetails) => {
       const newSeatDetails = { ...prevSeatDetails };
@@ -115,46 +133,90 @@ const Seats = () => {
     return <div className="ml-n30">{seatArray}</div>;
   };
 
-  const handlePay = () => {
-    navigate("/payment", { state: { purchaseTicket: true } });
-  };
+  const handlePay = async () => {
+    // Collect information about selected seats
+    const tickets = []; // includes tickets with their ticketId, price, etc.
+    let totalCost = 0;
+    // Create tickets on the backend
 
-  const RenderPaymentButton = () => {
-    const selectedSeats = [];
-    for (let key in seatDetails) {
-      seatDetails[key].forEach((seatValue, colIndex) => {
-        if (seatValue === 2) {
-          selectedSeats.push(`${key}${colIndex + 1}`);
+
+    try {
+      // map over the selected seats { row1: [ booked_seat1, booked_seat2], row2: [ booked_seat1, booked_seat2]}}}
+      // for each row in map: map[row][seat]
+      // for each seat in the row
+      // create the seat_assingment string: row + seat
+      // create a ticket with the seat_assignment string (api.post)
+      for (let row = 0; row < seatDetails.length; row++) {
+        for (let seat = 0; seat < seatDetails[row].length; seat++) { // seatDetails[row] is giving us a list of seat numbers that are booked in that row
+          const seatAssignment = row + seat.toString();
+
+          // TODO: figure out how to get this info
+          // create the ticket for the current seat
+          const ticketRes = await api.post(`api/tickets/book/${id}`, {
+            seatAssignment: seatAssignment,
+            // showDateTime: _,
+            // assignedMovieName: _,
+            // theaterId: _,
+            // multiplexName: _,
+          });
+
+          tickets.push(ticketRes.data);
+          console.log("TRYING TO PRINT TICKET PRICE:", ticketRes.data.price);
+          totalCost += ticketRes.data.price; // confirm this;
         }
-      });
-    }
-    if (selectedSeats.length) {
-      return (
-        <div className="sticky bottom-10">
-          <Button
-            variant="contained"
-            className="bg-pink-500 !important"
-            onClick={handlePay}
-          >
-            Pay
-          </Button>
+      };
+
+        // const totalCost = selectedSeats.length *
+
+          navigate("/paymentPage", {
+            state: {
+              purchaseTicket: true,
+              numTickets: selectedSeats.length,
+              tickets: tickets, // maybe don't need this to be passed
+              totalCost: totalCost,
+            },
+          });
+      } catch (error) {
+        console.error("Error creating tickets:", error);
+      }
+    };
+
+    const RenderPaymentButton = () => {
+      const selectedSeats = [];
+      for (let key in seatDetails) {
+        seatDetails[key].forEach((seatValue, colIndex) => {
+          if (seatValue === 2) {
+            selectedSeats.push(`${key}${colIndex + 1}`);
+          }
+        });
+      }
+      if (selectedSeats.length) {
+        return (
+          <div className="sticky bottom-10">
+            <Button
+              variant="contained"
+              className="bg-pink-500 !important"
+              onClick={handlePay}
+            >
+              Pay
+            </Button>
+          </div>
+        );
+      } else {
+        return <></>;
+      }
+    };
+
+    return (
+      <>
+        <div className="text-center">
+          <h3>please select the desired seats</h3>
+          <br></br> <br></br> <br></br>
+          {RenderSeats()}
+          {RenderPaymentButton()}
         </div>
-      );
-    } else {
-      return <></>;
-    }
+      </>
+    );
   };
 
-  return (
-    <>
-      <div className="text-center">
-        <h3>please select the desired seats</h3>
-        <br></br> <br></br> <br></br>
-        {RenderSeats()}
-        {RenderPaymentButton()}
-      </div>
-    </>
-  );
-};
-
-export default Seats;
+  export default Seats;
