@@ -15,6 +15,7 @@ const MembershipPage = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [tickets, setTicketInfo] = useState([]);
+  const [showUpgradePopup, setShowUpgradePopup] = useState(false);
 
 
   const { id } = AuthService.getCurrentUser();
@@ -66,78 +67,141 @@ const MembershipPage = () => {
       console.log(error);
       setLoading(false);  
     } 
-
+ 
    
   }, [id]);
 
 
-return (
-  <div className="container mx-auto mt-8 p-6 bg-white rounded-lg shadow-md">
-    {loading && <p className="text-center">Loading...</p>}
-    {error && <p className="text-center text-red-500">Error: {error}</p>}
-    {!loading && !error && (
-      <div>
-        <h1 className="text-3xl font-bold mb-4">View Members Page</h1>
+  const handleMembershipChange = () => {
+    // Show the upgrade popup
+    setShowUpgradePopup(true);
+  };
 
-        {/* Display Membership Information */}
-        <div className="mb-8">
-          <h2 className="text-2xl font-bold mb-2">Membership Information</h2>
-           <strong>Name:</strong> {userInfo.firstName} {userInfo.lastName} 
+  const handleUpgradeConfirm = () => {
+    // Add logic for actual upgrade (e.g., API calls, state updates)
+    // For now, just close the popup
+    setShowUpgradePopup(false);
+    alert("Congrats! You are now a Premium Member.");
+  };
+
+  const handleDowngradeConfirm = () => {
+    // Add logic for downgrade (e.g., API calls, state updates)
+    // For now, just close the popup
+    setShowUpgradePopup(false);
+    alert("Thank you. Membership is still valid until the end of the month. You are now a Regular Member");
+  };
+
+  const handleCancel = () => {
+    // Close the popup
+    setShowUpgradePopup(false);
+  };
+
+
+  return (
+    <div className="container mx-auto mt-8 p-6 bg-white rounded-lg shadow-md">
+      {loading && <p className="text-center">Loading...</p>}
+      {error && <p className="text-center text-red-500">Error: {error}</p>}
+      {!loading && !error && (
+        <div>
+          <h1 className="text-3xl font-bold mb-4">View Members Page</h1>
+
+          {/* Display Membership Information */}
+          <div className="mb-8">
+            <h2 className="text-2xl font-bold mb-2">Membership Information</h2>
+            <strong>Name:</strong> {userInfo.firstName} {userInfo.lastName}
             <p>
               <strong>Username:</strong> {userInfo.username}
             </p>
             <p>
-              <strong>Date of Birth:</strong> {userInfo.dob}
+              <strong>Date of Birth:</strong> {userInfo.dateOfBirth}
             </p>
             <p>
               <strong>Email:</strong> {userInfo.email}
             </p>
             <p>
-              <strong>Phone:</strong> {userInfo.phone? userInfo.phone : "N/A"}
+              <strong>Phone:</strong> {userInfo.phone ? userInfo.phone : "N/A"}
             </p>
-            {/* <p>
-              <strong>Membership Type:</strong> {userInfo.phone? userInfo.phone : "N/A"}
-            </p> */}
+            <p>
+              <strong>Membership Type:</strong> {membershipInfo.getMembershipType}
+              <button
+                className="bg-blue-500 text-white px-4 py-2 rounded-md mt-2"
+                onClick={handleMembershipChange}
+              >
+                Change Membership
+              </button>
+            </p>
+
+            {/* Upgrade/Downgrade Popup */}
+            {showUpgradePopup && (
+              <div className="fixed top-0 left-0 w-full h-full flex items-center justify-center">
+                <div className="bg-white p-6 rounded-md shadow-md">
+                  <p>
+                    To Upgrade Membership, it will be an additional $15 per month.
+                  </p>
+                  <p>
+                    To Downgrade Membership, membership change will be made at the end of each month, and all purchases will have an added $1.5 service fee.
+                  </p>
+                  <div className="flex justify-between mt-4">
+                    <button
+                      className="bg-green-500 text-white px-4 py-2 rounded-md"
+                      onClick={handleUpgradeConfirm}
+                    >
+                      Upgrade Membership
+                    </button>
+                    <button
+                      className="bg-yellow-500 text-white px-4 py-2 rounded-md"
+                      onClick={handleDowngradeConfirm}
+                    >
+                      Downgrade Membership
+                    </button>
+                    <button
+                      className="bg-red-500 text-white px-4 py-2 rounded-md"
+                      onClick={handleCancel}
+                    >
+                      Cancel
+                    </button>
+                  </div>
+                </div>
+              </div>
+            )}
+          </div>
+
+          {/* Display Reward Points */}
+          <div className="mb-8">
+            <h2 className="text-2xl font-bold mb-2">Reward Points</h2>
+            <p>
+              <strong>Reward Points:</strong> {rewardPoints !== null ? rewardPoints : 'Loading...'}
+            </p>
+          </div>
+
+          {/* Display Movies Watched */}
+          <div className="mb-8">
+            <h2 className="text-2xl font-bold mb-2">Movies Watched</h2>
+            {moviesWatched.length > 0 ? (
+              <ul>
+                {moviesWatched.map((movie) => (
+                  <li key={movie.id}>
+                    <p>
+                      <strong>Title:</strong> {movie.title}
+                    </p>
+                    <p>
+                      <strong>Genre:</strong> {movie.genre}
+                    </p>
+                    {/* Add more movie information as needed */}
+                  </li>
+                ))}
+              </ul>
+            ) : (
+              'No movies watched.'
+            )}
+          </div>
         </div>
-
-        {/* Display Reward Points */}
-        <div className="mb-8">
-          <h2 className="text-2xl font-bold mb-2">Reward Points</h2>
-          <p>
-            <strong>Reward Points:</strong> {rewardPoints !== null ? rewardPoints : 'Loading...'}
-          </p>
-        </div>
-
-        {/* Display Movies Watched */}
-        <div className="mb-8">
-        <h2 className="text-2xl font-bold mb-2">Movies Watched</h2>
-        {moviesWatched.length > 0 ? (
-          <ul>
-            {moviesWatched.map((movie) => (
-              <li key={movie.id}>
-                <p>
-                  <strong>Title:</strong> {movie.title}
-                </p>
-                <p>
-                  <strong>Genre:</strong> {movie.genre}
-                </p>
-                {/* Add more movie information as needed */}
-              </li>
-            ))}
-          </ul>
-        ) : (
-          'No movies watched.'
-        )}
-      </div>
-
-        {/* Other sections specific to MembershipPage */}
-      </div>
-    )} 
-  </div> 
-);
+      )}
+    </div>
+  );
 };
 
-export default MembershipPage; 
+export default MembershipPage;
 
 
 

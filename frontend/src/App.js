@@ -8,12 +8,11 @@ import MemberDashboard from "./pages/MemberDashboard";
 import MemberSelection from "./pages/MemberSelection";
 import MovieBooking from "./pages/MovieBooking";
 import NewReleasesPage from "./pages/NewReleasesPage";
-import Payment from "./pages/PaymentPage";
+import PaymentPage from "./pages/PaymentPage";
 import PaymentResult from "./pages/PaymentResult";
 import Register from "./pages/Register";
 import SeatSelect from "./pages/SeatSelect";
 import MembershipPage from "./pages/MembershipPage"
-
 import TicketInformation from "./pages/TicketInformation";
 import UpcomingMoviesPage from "./pages/UpcomingMoviesPage";
 import AdminDashboard from "./pages/admin/AdminDashboard";
@@ -27,7 +26,7 @@ const App = () => {
     <BrowserRouter>
       <Routes>
         <Route path="/" exact element={<Home />} />
-        <Route path="/payment" exact element={<Payment />} />
+        <Route path="/payment" exact element={<PaymentPage />} />
         {/* isAdmin is false by default */}
         <Route path="/login" exact element={<Login />} />
         <Route path="/payment/result" exact element={<PaymentResult />} />
