@@ -39,7 +39,7 @@ const Seats = () => {
 
   const onSeatClick = (rowIndex, colIndex) => {
     if (
-      selectedSeatsCount >= 8 ||
+      selectedSeatsCount > 1 ||
       seatDetails[`Row ${String.fromCharCode(65 + rowIndex)}`][colIndex] === 1
     ) {
       // Ignore click if already booked or reached the maximum limit
@@ -148,8 +148,7 @@ const Seats = () => {
   return (
     <>
       <div className="text-center">
-        <h3>please select the desired seats</h3>
-        <br></br> <br></br> <br></br>
+        <h1>Movie Title</h1>
         {RenderSeats()}
         {RenderPaymentButton()}
       </div>
