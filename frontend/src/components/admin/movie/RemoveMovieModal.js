@@ -1,28 +1,23 @@
 import React from 'react';
-import Modal from '@mui/material/Modal';
-import Box from '@mui/material/Box';
-import Typography from '@mui/material/Typography';
-import Button from '@mui/material/Button';
+import { Modal, Button } from '@mui/material';
 
-const RemoveMovieModal = ({ isOpen, onClose, onConfirm, movieTitle }) => {
+const RemoveMovieModal = ({ open, onClose, onConfirmRemove, movie }) => {
   return (
-    <Modal open={isOpen} onClose={onClose}>
-      <Box sx={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)', width: 400, bgcolor: 'background.paper', boxShadow: 24, p: 4 }}>
-        <Typography variant="h6" component="div" gutterBottom>
-          Remove Movie
-        </Typography>
-        <Typography variant="body2" color="text.secondary" paragraph>
-          Are you sure you want to remove the movie "{movieTitle}"?
-        </Typography>
-        <Box sx={{ display: 'flex', justifyContent: 'space-between', mt: 2 }}>
-          <Button variant="outlined" color="primary" onClick={onClose}>
+    <Modal open={open} onClose={onClose}>
+      <div className="p-4 bg-white rounded shadow-md max-w-sm mx-auto mt-10">
+        <h2 className="text-2xl font-bold mb-4">Remove Movie</h2>
+        
+        <p>Are you sure you want to remove the movie "{movie.title}" from the schedule?</p>
+
+        <div className="flex justify-between mt-4">
+          <Button className="bg-red-500 text-white hover:bg-red-700" onClick={onConfirmRemove}>
+            Confirm Removal
+          </Button>
+          <Button className="bg-gray-400 text-white hover:bg-gray-600" onClick={onClose}>
             Cancel
           </Button>
-          <Button variant="contained" color="error" onClick={onConfirm}>
-            Remove
-          </Button>
-        </Box>
-      </Box>
+        </div>
+      </div>
     </Modal>
   );
 };

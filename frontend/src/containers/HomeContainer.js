@@ -8,12 +8,13 @@ import NewReleasesService from '../services/NewReleasesService';
 import UpcomingMoviesService from '../services/UpcomingMoviesService';
 import MoviesByMultiplexService from '../services/MoviesByMultiplexService';
 
-const HomeContainer = () => {
+const HomeContainer = ({ isAdmin }) => {
   const [moviesData, SetMoviesData] = useState([]);
   const [NewReleasesData, SetNewReleasesData] = useState([]);
-  const [multiplexId, SetMultiplexId] = useState(null);
-  const [locationDataId, SetLocationDataId] = useState(null);
+  const [multiplex, setMultiplex] = useState({});
+  const [location, setLocation] = useState('');
   const [multiplexMovies, SetmultiplexMovies] = useState([]);
+  
   const fetchNewReleases = async () => {
     try {
       const NewReleasesData = await NewReleasesService.getAllNewReleases();
@@ -22,19 +23,23 @@ const HomeContainer = () => {
       console.error('Error fetching new releases:', error);
     }
   };
+
   const fetchMoviesByMultiplex = async (multiplexId) => {
     try {
       const MoviesByMultiplex = await MoviesByMultiplexService.getMoviesByMultiplex(multiplexId);
+      console.log(MoviesByMultiplex);
       SetmultiplexMovies(MoviesByMultiplex);
     } catch (error) {
       console.error('Error fetching all movies:', error);
     }
   };
-  const today = new Date();
+  
   useEffect(() => {
+    const today = new Date();
     SetMoviesData(multiplexMovies.filter(movie => new Date(movie.releaseDate) > today))
     SetNewReleasesData(multiplexMovies.filter(movie => new Date(movie.releaseDate) <= today))
-  }, [multiplexMovies])
+  }, [multiplexMovies]);
+
   const fetchUpcomingMovies = async () => {
     try {
       const UpcomingMoviesData = await UpcomingMoviesService.getAllUpcomingMovies();
@@ -43,30 +48,32 @@ const HomeContainer = () => {
       console.error('Error fetching upcoming movies:', error);
     }
   };
+
   useEffect(() => {
     fetchNewReleases();
     fetchUpcomingMovies();
   }, [])
+
   useEffect(() => {
-    fetchMoviesByMultiplex(multiplexId)
-  }, [multiplexId])
+    if (multiplex.multiplexId) {
+      fetchMoviesByMultiplex(multiplex.multiplexId)
+    }
+  }, [multiplex.multiplexId])
   console.log(multiplexMovies)
-  const locationMultiplexId = (multiplexId) => {
-    SetMultiplexId(multiplexId.multiplexId)
+
+  const handleSetMultiplex = (multiplex) => {
+    setMultiplex(multiplex);
   }
-  const locationId = (locationId) => {
-    SetLocationDataId(locationId)
+
+  const handleSetLocation = (location) => {
+    setLocation(location);
   }
 
   return (
     <div>
-<<<<<<< Updated upstream
-      <NavBar />
-=======
       {/* <NavBar isAdmin={isAdmin} /> */}
->>>>>>> Stashed changes
       <CarouselComponent />
-      <LocationMultiplexDropdown multiplexIdFunction={locationMultiplexId} isHome={true} locationIdFunction={locationId} isAdmin={false} />
+      <LocationMultiplexDropdown onSelectLocation={handleSetLocation} onSelectMultiplex={handleSetMultiplex} />
       <NewReleases moviesData={NewReleasesData} seeAll={true} />
       <UpcomingMovies moviesData={moviesData} seeAll={true} />
     </div>

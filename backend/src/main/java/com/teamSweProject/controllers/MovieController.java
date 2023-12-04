@@ -33,6 +33,13 @@ public class MovieController {
         }
     }
 
+    @PreAuthorize("hasRole('USER') or hasRole('MEMBER') or hasRole('ADMIN')")
+    @GetMapping("/getAllMovies")
+    public ResponseEntity<List<Movie>> getAllMovies() {
+        List<Movie> movies = movieService.getAllMovies();
+        return ResponseEntity.ok(movies);
+    }
+
 
     @PreAuthorize("hasRole('USER') or hasRole('MEMBER') or hasRole('ADMIN')")
     @GetMapping("/getAllMovieIds")
@@ -60,6 +67,18 @@ public class MovieController {
         }
         return ResponseEntity.ok(showTimes);
     }
+
+    @PreAuthorize("hasRole('ADMIN')")
+    @DeleteMapping("/{movieId}/deleteShowTime")
+    public ResponseEntity<String> deleteShowtime(@PathVariable Long movieId, @RequestParam Long showTimeId) {
+        boolean success = movieService.deleteShowtime(movieId, showTimeId);
+        if (success) {
+            return ResponseEntity.ok("Showtime deleted successfully.");
+        } else {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Showtime not found or could not be deleted.");
+        }
+    }
+
 
     @PreAuthorize("hasRole('USER') or hasRole('MEMBER') or hasRole('ADMIN')")
     @GetMapping("/getNewReleases")
