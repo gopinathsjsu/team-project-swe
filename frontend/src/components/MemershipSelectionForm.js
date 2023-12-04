@@ -8,7 +8,7 @@ function MembershipSelection() {
 
   const handlePremiumMembershipClick = () => {
     setSelectedMembership('PREMIUM_MEMBER');
-    navigate('/payment', { state: { editMembership: true } } );
+    navigate('/paymentPage', { state: { editMembership: true } } );
   };
 
   return (

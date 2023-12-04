@@ -33,7 +33,7 @@ const LoginForm = () => {
         if (userRole === 'ROLE_ADMIN') {
           navigate('/admin', { replace: true });
         } else {
-          navigate('/member', { replace: true });
+          navigate('/membershipPage', { replace: true });
         }
         window.location.reload();
       })
