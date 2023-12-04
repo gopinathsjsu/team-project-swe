@@ -71,7 +71,7 @@ const HomeContainer = ({ isAdmin }) => {
 
   return (
     <div>
-      <NavBar isAdmin={isAdmin} />
+      {/* <NavBar isAdmin={isAdmin} /> */}
       <CarouselComponent />
       <LocationMultiplexDropdown onSelectLocation={handleSetLocation} onSelectMultiplex={handleSetMultiplex} />
       <NewReleases moviesData={NewReleasesData} seeAll={true} />

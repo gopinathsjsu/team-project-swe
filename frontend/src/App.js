@@ -18,6 +18,8 @@ import AdminDashboard from "./pages/admin/AdminDashboard";
 import AnalyticsDashboard from "./pages/admin/AnalyticsDashboard";
 import MovieSelection from "./pages/movieSelection";
 import AuthService from "./services/auth/auth.service";
+import NavBar from "./components/NavBar";
+
 const App = () => {
   const currentUser = AuthService.getCurrentUser();
   let isAdmin = false;
@@ -29,6 +31,7 @@ const App = () => {
 
   return (
     <BrowserRouter>
+      <NavBar isAdmin={isAdmin} />
       <Routes>
         <Route path="/" exact element={<Home isAdmin={isAdmin}/>} />
         <Route path="/payment" exact element={<Payment />} />
