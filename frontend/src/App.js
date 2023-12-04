@@ -25,7 +25,7 @@ const App = () => {
   const currentUser = AuthService.getCurrentUser();
   let isAdmin = false;
   if (currentUser) {
-    if (currentUser.role.includes("ROLE_ADMIN")) {
+    if (currentUser.role?.includes("ROLE_ADMIN")) {
       isAdmin = true;
     }
   }

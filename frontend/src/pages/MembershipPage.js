@@ -1,6 +1,5 @@
 import React, { useState, useEffect, useReducer } from 'react';
 import { useNavigate } from 'react-router-dom';
-import MembershipAccountInfo from '../components/MembershipAccountInfo';
 import TicketInfoPage from '../components/TicketInfo';
 import AuthService from '../services/auth/auth.service';
 import api from '../services/backend-api/api';
