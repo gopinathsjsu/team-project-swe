@@ -1,16 +1,14 @@
-import React, { useState } from 'react';
+import React from 'react';
 import Card from '@mui/material/Card';
 import CardContent from '@mui/material/CardContent';
 import Typography from '@mui/material/Typography';
-import Button from '@mui/material/Button';
 import MovieSchedule from '../schedule/MovieSchedule';
 
-const AdminScheduleCard = ({ multiplexId, 
+const AdminScheduleCard = ({ 
+    multiplexId, 
+    movieSchedule,
     onEditMovie, 
     onRemoveMovie,
-    onEditTheater,
-    onEditShowtime,
-    onDeleteShowtime
 
 }) => {
 
@@ -21,12 +19,10 @@ const AdminScheduleCard = ({ multiplexId,
                 {multiplexId && (
                     <MovieSchedule
                         multiplexId={multiplexId}
-                        isAdmin={true} 
+                        movieSchedule={movieSchedule}
                         onEditMovie={onEditMovie}
                         onRemoveMovie={onRemoveMovie}
-                        onEditTheater={onEditTheater}
-                        onEditShowtime={onEditShowtime}
-                        onDeleteShowtime={onDeleteShowtime}
+                        isAdmin={true}
                     />
                 )}
             </CardContent>

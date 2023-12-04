@@ -1,39 +1,18 @@
-import React, {useState, useEffect} from "react";
-import { Stack, Box, Card } from "@mui/material";
+import React from "react";
+import { Stack, Box, Card, Button } from "@mui/material";
 
 import ScheduleCard from "./ScheduleCard";
 
-import axios from "axios";
-
-const MovieSchedule = ({multiplexId, 
+const MovieSchedule = ({
+    multiplexId, 
+    movieSchedule,
     isAdmin, 
     onEditMovie, 
     onRemoveMovie,
-    onEditTheater,
-    onEditShowtime,
-    onDeleteShowtime
 }) => {
 
-    const [movieSchedule, setMovieSchedule] = useState([]);
-
-    useEffect(() => {
-        const fetchMovieSchedule = async () => {
-            try {
-                const response = await axios.get(`/api/schedules/multiplex/${multiplexId}`);
-                setMovieSchedule(response.data);
-            } catch (error) {
-                console.error('Error fetching movie schedules:', error);
-            }
-        };
-
-        // Fetch movie schedules only if multiplexId is available
-        if (multiplexId !== undefined) {
-            fetchMovieSchedule();
-        }
-    }, [multiplexId]);
-
     const displaySchedule = () => {
-        if (movieSchedule.length > 0) {
+        if (movieSchedule && movieSchedule.length > 0) {
             const movies = movieSchedule[0].movies;
             if (movies != null) {
                 return (
@@ -48,15 +27,16 @@ const MovieSchedule = ({multiplexId,
                         {movies.map((movie) => (
                           <Card key={movie.movieId} sx={{ minWidth: 300, maxWidth: 400 }}>
                             <ScheduleCard
-                              movie={movie}
-                              multiplexId={multiplexId}
-                              isAdmin={isAdmin}
-                              onEditMovie={onEditMovie}
-                              onRemoveMovie={onRemoveMovie}
-                              onEditTheater={onEditTheater}
-                              onEditShowtime={onEditShowtime}
-                              onDeleteShowtime={onDeleteShowtime}
+                                movie={movie}
+                                multiplexId={multiplexId}
+                                onEditMovie={onEditMovie}
+                                onRemoveMovie={onRemoveMovie}
                             />
+                            {multiplexId && isAdmin && (
+                                <Button variant="outlined" color="secondary" onClick={() => onRemoveMovie(movie)}>
+                                    Remove Movie
+                                </Button>
+                            )}
                           </Card>
                         ))}
                       </Stack>

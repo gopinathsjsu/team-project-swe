@@ -32,6 +32,10 @@ public class MovieService {
         return ids;
     }
 
+    public List<Movie> getAllMovies() {
+        return movieRepository.findAll();
+    }
+
     // get movies playing at specific multiplex
     public List<Movie> getMoviesByMultiplexId(Long multiplexId) {
         return movieRepository.findByMultiplexId(multiplexId);
@@ -53,6 +57,25 @@ public class MovieService {
         return movieRepository.findShowtimesByMovieId(movieId);
     }
 
+    public boolean deleteShowtime(Long movieId, Long showtimeId) {
+        Movie movie = movieRepository.findById(movieId).orElse(null);
+        if (movie == null) {
+            logger.error("Failed to delete showtime, movie not found");
+            return false;
+        }
+
+        List<Showtime> showtimes = movie.getShowtimes();
+        for (Showtime showtime: showtimes) {
+            if (showtime.getShowtimeId().equals(showtimeId)) {
+                showtimes.remove(showtime);
+                movie.setShowtimes(showtimes);
+                movieRepository.save(movie);
+                return true;
+            }
+        }
+        logger.error("Failed to delete showtime, showtime not found");
+        return false;
+    }
 
     // get Upcoming Movies
     public List<Movie> getUpcomingMovies() {

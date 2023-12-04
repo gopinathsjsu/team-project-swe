@@ -2,20 +2,34 @@ import axios from 'axios';
 import authHeader from './auth/auth-header';
 
 const MOVIES_BASE_URL = 'http://localhost:8080/api/movies';
+const genreConversions = {
+  'Action': 'ACTION',
+  'Adventure': 'ADVENTURE',
+  'Comedy': 'COMEDY',
+  'Drama': 'DRAMA',
+  'Horror': 'HORROR',
+  'Romance': 'ROMANCE',
+  'Science Fiction': 'SCIENCE_FICTION',
+  'Fantasy': 'FANTASY',
+  'Historical': 'HISTORICAL',
+  'Crime': 'CRIME',
+  'Mystery': 'MYSTERY',
+  'Other': 'OTHER'
+};
 
 class MoviesService {
 
-  async addMovie(newMovie) { // TODO: add auth header
-    const {title, description, duration, rating, genre, posterUrl} = newMovie;
-    return await axios.post(MOVIES_BASE_URL + '/create', {
-        parameters: {
-            title,
-            description,
-            duration,
-            rating,
-            genre,
-            posterUrl
-        }
+  async createMovie(newMovie) { // TODO: add auth header
+    // const { title, description, releaseDate, duration, rating, genre } = newMovie;
+    return await axios.post(MOVIES_BASE_URL + '/create', 
+      {
+        title: newMovie.title,
+        description: newMovie.description,
+        duration: newMovie.duration,
+        rating: newMovie.rating,
+        releaseDate: newMovie.releaseDate,
+        genre: genreConversions[newMovie.genre],
+        posterUrl: ''
       }
     );
   }
@@ -53,6 +67,20 @@ class MoviesService {
       return [];
     }
   };
+
+  async fetchAllMovies() {
+    try {
+      const res = await axios.get(`${MOVIES_BASE_URL}/getAllMovies`);
+      return res.data;
+    } catch (e) {
+      console.log('Error fetching all movies', e);
+      return [];
+    }
+  }
+
+  async removeShowtimeFromMovie(movieId, showtimeId) {
+    return await axios.delete(`${MOVIES_BASE_URL}/${movieId}/deleteShowtime?showTimeId=${showtimeId}`);
+  }
 
 }
 

@@ -33,6 +33,17 @@ public class TheaterController {
     }
 
     @PreAuthorize("hasRole('USER') or hasRole('MEMBER') or hasRole('ADMIN')")
+    @GetMapping("/getTheatersByMultiplexId/{multiplexId}")
+    public ResponseEntity<List<Theater>> getTheatersByMultiplexId(@PathVariable Long multiplexId) {
+        try {
+            List<Theater> theaters = theaterService.getTheatersByMultiplexId(multiplexId);
+            return ResponseEntity.ok(theaters);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+    }
+
+    @PreAuthorize("hasRole('USER') or hasRole('MEMBER') or hasRole('ADMIN')")
     @GetMapping("/getTheaterByMovieIdAndMultiplexId/{movieId}/{multiplexId}")
     public ResponseEntity<Theater> getTheaterByMovieIdAndMultiplexId(@PathVariable Long movieId, @PathVariable Long multiplexId) {
         try {

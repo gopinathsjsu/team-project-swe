@@ -44,7 +44,7 @@ public class ShowtimeService {
         return showtimeRepository.save(showtime);
     }
 
-    public Showtime updateShowtime(Long showtimeId, LocalDateTime startDateTime, Theater theater, Multiplex multiplex) {
+    public Showtime updateShowtime(Long showtimeId, LocalDateTime startDateTime) {
         Showtime showtime = showtimeRepository.findById(showtimeId).orElse(null);
         if (showtime == null) {
             System.out.println("Showtime does not exist, show time not updated");
@@ -53,8 +53,6 @@ public class ShowtimeService {
 
         showtime.setTime(startDateTime.toLocalTime());
         showtime.setDate(startDateTime.toLocalDate());
-        showtime.setTheater(theater);
-        showtime.setMultiplex(multiplex);
         return showtimeRepository.save(showtime);
     }
 
