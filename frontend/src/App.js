@@ -17,12 +17,15 @@ import UpcomingMoviesPage from "./pages/UpcomingMoviesPage";
 import AdminDashboard from "./pages/admin/AdminDashboard";
 import MovieSelection from "./pages/movieSelection";
 import AuthService from "./services/auth/auth.service";
+import NavBar from "./components/NavBar";
+
 const App = () => {
   const currentUser = AuthService.getCurrentUser();
   const isAdmin = currentUser && currentUser.role === "ROLE_ADMIN";
 
   return (
     <BrowserRouter>
+      <NavBar isAdmin={isAdmin} />
       <Routes>
         <Route path="/" exact element={<Home />} />
         <Route path="/payment" exact element={<Payment />} />
