@@ -1,0 +1,207 @@
+import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
+import MembershipAccountInfo from '../components/MembershipAccountInfo';
+import TicketInfoPage from '../components/TicketInfo';
+import AuthService from '../services/auth/auth.service';
+import axios from 'axios';
+
+const MembershipPage = () => {
+  const navigate = useNavigate();
+
+  const [membershipInfo, setMembershipInfo] = useState([]);
+  const [moviesWatched, setMoviesWatched] = useState([]);
+  const [rewardPoints, setRewardPoints] = useState(null);
+  const [userInfo, setUserInfo] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
+  const [tickets, setTicketInfo] = useState([]);
+  const [showUpgradePopup, setShowUpgradePopup] = useState(false);
+
+
+  const { id } = AuthService.getCurrentUser();
+  console.log("USERID: " + id); // Add this line to log the id
+
+  useEffect(() => {
+    // redirect to login if no id is provided
+    if (!id) {
+      navigate('/login', { replace: true });
+    }
+
+    console.log("USERID" + id);
+    const fetchData = async () => {
+      setLoading(true);
+      const userRes = await axios.get(`http://localhost:8080/api/users/getUser?id=${id}`);
+      console.log("USER INFO:", userRes.data);
+      setUserInfo(userRes.data);
+      console.log("Updated userInfo:", userInfo); 
+      // setLoading(false);
+
+      // setLoading(true);
+      const membershipRes = await axios.get(`http://localhost:8080/api/memberships/getMembership/user?userId=${id}`);
+      console.log("MEMBERSHIP INFO:", membershipRes.data);
+      setMembershipInfo(membershipRes.data);
+      // setLoading(false);
+
+      // setLoading(true);
+      const ticketRes = await axios.get(`http://localhost:8080/api/tickets/user/${id}`);
+      console.log("TICKET INFO:", ticketRes.data);
+      setTicketInfo(ticketRes.data);
+      // setLoading(false);
+
+      // setLoading(true);
+      const moviesWatchedRes = await axios.get(`http://localhost:8080/api/tickets/watched/${id}`);
+      console.log("MOVIES WATCHED - 30 DAYS :", moviesWatchedRes.data);
+      setMoviesWatched(moviesWatchedRes.data);
+      setLoading(false);
+
+      // setLoading(true);
+      const rewardPointsRes = await axios.get(`http://localhost:8080/api/users/${id}/getRewardPoints`);
+      console.log("REWARD POINT INFO :", rewardPointsRes.data);
+      setRewardPoints(rewardPointsRes.data);
+      setLoading(false);
+    };
+
+    try{
+      fetchData();
+    } catch (error) {
+      console.log(error);
+      setLoading(false);  
+    } 
+ 
+   
+  }, [id]);
+
+
+  const handleMembershipChange = () => {
+    // Show the upgrade popup
+    setShowUpgradePopup(true);
+  };
+
+  const handleUpgradeConfirm = () => {
+    // Add logic for actual upgrade (e.g., API calls, state updates)
+    // For now, just close the popup
+    setShowUpgradePopup(false);
+    alert("Congrats! You are now a Premium Member.");
+  };
+
+  const handleDowngradeConfirm = () => {
+    // Add logic for downgrade (e.g., API calls, state updates)
+    // For now, just close the popup
+    setShowUpgradePopup(false);
+    alert("Thank you. Membership is still valid until the end of the month. You are now a Regular Member");
+  };
+
+  const handleCancel = () => {
+    // Close the popup
+    setShowUpgradePopup(false);
+  };
+
+
+  return (
+    <div className="container mx-auto mt-8 p-6 bg-white rounded-lg shadow-md">
+      {loading && <p className="text-center">Loading...</p>}
+      {error && <p className="text-center text-red-500">Error: {error}</p>}
+      {!loading && !error && (
+        <div>
+          <h1 className="text-3xl font-bold mb-4">View Members Page</h1>
+
+          {/* Display Membership Information */}
+          <div className="mb-8">
+            <h2 className="text-2xl font-bold mb-2">Membership Information</h2>
+            <strong>Name:</strong> {userInfo.firstName} {userInfo.lastName}
+            <p>
+              <strong>Username:</strong> {userInfo.username}
+            </p>
+            <p>
+              <strong>Date of Birth:</strong> {userInfo.dateOfBirth}
+            </p>
+            <p>
+              <strong>Email:</strong> {userInfo.email}
+            </p>
+            <p>
+              <strong>Phone:</strong> {userInfo.phone ? userInfo.phone : "N/A"}
+            </p>
+            <p>
+              <strong>Membership Type:</strong> {membershipInfo.getMembershipType}
+              <button
+                className="bg-blue-500 text-white px-4 py-2 rounded-md mt-2"
+                onClick={handleMembershipChange}
+              >
+                Change Membership
+              </button>
+            </p>
+
+            {/* Upgrade/Downgrade Popup */}
+            {showUpgradePopup && (
+              <div className="fixed top-0 left-0 w-full h-full flex items-center justify-center">
+                <div className="bg-white p-6 rounded-md shadow-md">
+                  <p>
+                    To Upgrade Membership, it will be an additional $15 per month.
+                  </p>
+                  <p>
+                    To Downgrade Membership, membership change will be made at the end of each month, and all purchases will have an added $1.5 service fee.
+                  </p>
+                  <div className="flex justify-between mt-4">
+                    <button
+                      className="bg-green-500 text-white px-4 py-2 rounded-md"
+                      onClick={handleUpgradeConfirm}
+                    >
+                      Upgrade Membership
+                    </button>
+                    <button
+                      className="bg-yellow-500 text-white px-4 py-2 rounded-md"
+                      onClick={handleDowngradeConfirm}
+                    >
+                      Downgrade Membership
+                    </button>
+                    <button
+                      className="bg-red-500 text-white px-4 py-2 rounded-md"
+                      onClick={handleCancel}
+                    >
+                      Cancel
+                    </button>
+                  </div>
+                </div>
+              </div>
+            )}
+          </div>
+
+          {/* Display Reward Points */}
+          <div className="mb-8">
+            <h2 className="text-2xl font-bold mb-2">Reward Points</h2>
+            <p>
+              <strong>Reward Points:</strong> {rewardPoints !== null ? rewardPoints : 'Loading...'}
+            </p>
+          </div>
+
+          {/* Display Movies Watched */}
+          <div className="mb-8">
+            <h2 className="text-2xl font-bold mb-2">Movies Watched</h2>
+            {moviesWatched.length > 0 ? (
+              <ul>
+                {moviesWatched.map((movie) => (
+                  <li key={movie.id}>
+                    <p>
+                      <strong>Title:</strong> {movie.title}
+                    </p>
+                    <p>
+                      <strong>Genre:</strong> {movie.genre}
+                    </p>
+                    {/* Add more movie information as needed */}
+                  </li>
+                ))}
+              </ul>
+            ) : (
+              'No movies watched.'
+            )}
+          </div>
+        </div>
+      )}
+    </div>
+  );
+};
+
+export default MembershipPage;
+
+
+

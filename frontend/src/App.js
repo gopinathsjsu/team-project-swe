@@ -8,10 +8,11 @@ import MemberDashboard from "./pages/MemberDashboard";
 import MemberSelection from "./pages/MemberSelection";
 import MovieBooking from "./pages/MovieBooking";
 import NewReleasesPage from "./pages/NewReleasesPage";
-import Payment from "./pages/PaymentPage";
+import PaymentPage from "./pages/PaymentPage";
 import PaymentResult from "./pages/PaymentResult";
 import Register from "./pages/Register";
 import SeatSelect from "./pages/SeatSelect";
+import MembershipPage from "./pages/MembershipPage"
 import TicketInformation from "./pages/TicketInformation";
 import UpcomingMoviesPage from "./pages/UpcomingMoviesPage";
 import AdminDashboard from "./pages/admin/AdminDashboard";
@@ -34,7 +35,8 @@ const App = () => {
       <NavBar isAdmin={isAdmin} />
       <Routes>
         <Route path="/" exact element={<Home isAdmin={isAdmin}/>} />
-        <Route path="/payment" exact element={<Payment />} />
+        <Route path="/payment" exact element={<PaymentPage />} />
+
         {/* isAdmin is false by default */}
         <Route path="/login" exact element={<Login />} />
         <Route path="/payment/result" exact element={<PaymentResult />} />
@@ -52,8 +54,10 @@ const App = () => {
         <Route path="/newreleases" exact element={<NewReleasesPage />} />
         <Route path="/upcomingmovies" exact element={<UpcomingMoviesPage />} />
         <Route path="/seatselect" exact element={<SeatSelect />} />
+        <Route path="/membershipPage" exact element={<MembershipPage />} />
         <Route path="/TicketInfo" exact element={<TicketInformation />} />
         <Route path="/movieSelection" exact element={<MovieSelection />} />
+        
       </Routes>
     </BrowserRouter>
   );
