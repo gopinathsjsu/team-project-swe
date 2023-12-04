@@ -1,17 +1,17 @@
-import axios from 'axios';
+import api from './backend-api/api';
 import authHeader from '../services/auth/auth-header';
 
-const THEATER_BASE_URL = 'http://localhost:8080/api/theaters/';
+const THEATER_BASE_URL = '/api/theaters/';
 
 class TheaterService { 
 
     async getTheaterByMovieIdAndMultiplexId(movieId, multiplexId) {
-        return await axios.get(THEATER_BASE_URL + 
+        return await api.get(THEATER_BASE_URL + 
             `getTheaterByMovieIdAndMultiplexId/${movieId}/${multiplexId}`);
     }
 
     async assignTheaterToMovie(theaterId, movieId) {
-        return await axios.post(THEATER_BASE_URL + 
+        return await api.post(THEATER_BASE_URL + 
             `${theaterId}/assignMovie/${movieId}`,
                 // TODO: add auth header
                 // { headers: authHeader() }
@@ -19,7 +19,7 @@ class TheaterService {
     }
 
     async updateTheaterCapacity(theaterId, capacity) {
-        return await axios.put(THEATER_BASE_URL + 
+        return await api.put(THEATER_BASE_URL + 
             `${theaterId}/updateCapacity/${capacity}`,
             // TODO: add auth header
             // { headers: authHeader() }

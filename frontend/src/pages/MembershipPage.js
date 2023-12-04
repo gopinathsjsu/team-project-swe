@@ -3,7 +3,10 @@ import { useNavigate } from 'react-router-dom';
 import MembershipAccountInfo from '../components/MembershipAccountInfo';
 import TicketInfoPage from '../components/TicketInfo';
 import AuthService from '../services/auth/auth.service';
-import axios from 'axios';
+
+
+import api from '../services/backend-api/api';
+
 
 const MembershipPage = () => {
   const navigate = useNavigate();
@@ -30,32 +33,45 @@ const MembershipPage = () => {
     console.log("USERID" + id);
     const fetchData = async () => {
       setLoading(true);
-      const userRes = await axios.get(`http://localhost:8080/api/users/getUser?id=${id}`);
+      const userRes = await api.get(`/users/getUser?id=${id}`);
       console.log("USER INFO:", userRes.data);
       setUserInfo(userRes.data);
       console.log("Updated userInfo:", userInfo); 
       // setLoading(false);
 
       // setLoading(true);
-      const membershipRes = await axios.get(`http://localhost:8080/api/memberships/getMembership/user?userId=${id}`);
+      const membershipRes = await api.get(`/memberships/getMembership/user`, {
+        params: {
+          userId: id
+        }
+      });
       console.log("MEMBERSHIP INFO:", membershipRes.data);
       setMembershipInfo(membershipRes.data);
       // setLoading(false);
 
       // setLoading(true);
-      const ticketRes = await axios.get(`http://localhost:8080/api/tickets/user/${id}`);
+      const ticketRes = await api.get(`/api/tickets/user/`, {
+        params: {
+          userId: id
+        }
+      });
       console.log("TICKET INFO:", ticketRes.data);
       setTicketInfo(ticketRes.data);
       // setLoading(false);
 
       // setLoading(true);
-      const moviesWatchedRes = await axios.get(`http://localhost:8080/api/tickets/watched/${id}`);
+      const moviesWatchedRes = await api.get(`/api/tickets/watched/`, {
+        params: {
+          userId: id
+        }
+        
+      });
       console.log("MOVIES WATCHED - 30 DAYS :", moviesWatchedRes.data);
       setMoviesWatched(moviesWatchedRes.data);
       setLoading(false);
 
       // setLoading(true);
-      const rewardPointsRes = await axios.get(`http://localhost:8080/api/users/${id}/getRewardPoints`);
+      const rewardPointsRes = await api.get(`api/users/${id}/getRewardPoints`);
       console.log("REWARD POINT INFO :", rewardPointsRes.data);
       setRewardPoints(rewardPointsRes.data);
       setLoading(false);

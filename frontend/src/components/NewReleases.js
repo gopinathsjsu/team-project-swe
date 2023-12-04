@@ -17,12 +17,14 @@ const NewReleases = ({moviesData,seeAll}) => {
             {seeAll && <Button onClick={handleSeeAll} variant="outlined" size="medium">See All</Button>}
         </div>
         <div className='grid grid-cols-5 gap-[10px] px-[50px] '>
-            {moviesData.slice(0,seeAll?10:undefined).map((data) =>
+          {/* {JSON.stringify(moviesData)} */}
+          {console.log("MOVIES DATA:" , moviesData)}
+            {/* {moviesData.slice(0,seeAll?10:undefined).map((data) =>
                 <Link to={{pathname:'/movie/'+"getNewReleases"+"/"+data.movieId}}>
                 <MovieCard key={data.movieId}
                     movieData={data}
                 />
-            </Link>)}
+            </Link>)} */}
         </div>
     </div>
   )

@@ -1,23 +1,23 @@
 import axios from 'axios';
+import api from './backend-api/api';
 
-
-const SCHEDULE_BASE_URL = 'http://localhost:8080/api/schedules/';
+const SCHEDULE_BASE_URL = '/api/schedules/';
 
 class ScheduleService { 
 
     // TODO: add auth header
     async removeMovieFromSchedule(movieId, scheduleId) {
-        return await axios.delete(SCHEDULE_BASE_URL + 
+        return await api.delete(SCHEDULE_BASE_URL + 
             `${scheduleId}/movies/${movieId}`,
         )
     }
 
     async getMovieByMultiplexId(multiplexId) {
-        return await axios.get(SCHEDULE_BASE_URL + `multiplex/${multiplexId}`);
+        return await api.get(SCHEDULE_BASE_URL + `multiplex/${multiplexId}`);
     }
 
     async addMovieToSchedule(movieId, scheduleId) {
-        return await axios.post(SCHEDULE_BASE_URL + `${scheduleId}/addMovie/${movieId}`);
+        return await api.post(SCHEDULE_BASE_URL + `${scheduleId}/addMovie/${movieId}`);
     }
 }
 

@@ -6,6 +6,7 @@ import { useNavigate } from 'react-router-dom';
 
 const UpcomingMovies = ({ moviesData, seeAll }) => {
   const navigate = useNavigate()
+
   const handleSeeAll = () => {
     navigate("/upcomingmovies")
   }
@@ -16,12 +17,11 @@ const UpcomingMovies = ({ moviesData, seeAll }) => {
         {seeAll && <Button onClick={handleSeeAll} variant="outlined" size="medium">See All</Button>}
       </div>
       <div className='grid  grid-cols-5 gap-[10px] px-[50px]'>
-        {moviesData.slice(0, seeAll ? 10 : undefined).map((data) =>
-          <Link to={{ pathname: '/movie/' + "getUpcomingMovies" + "/" + data.movieId }}>
-            <MovieCard key={data.movieId}
-              movieData={data}
-            />
-          </Link>)}
+        {/* {JSON.stringify(moviesData)} */}
+        {/* {moviesData.slice(0, seeAll ? 10 : undefined).map((data) =>
+
+          <Link to="movie" params={{movieId: data.movieId}}/>
+        )} */}
       </div>
     </div>
   )

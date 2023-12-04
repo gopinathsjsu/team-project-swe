@@ -1,11 +1,11 @@
-import axios from 'axios';
+import api from '../services/backend-api/api';
 
-const BASE_URL = 'http://localhost:8080/api/users';
+const BASE_URL = 'api/users';
 
 const MembershipAccountInfo = {
   getUser: async (id) => {
     try {
-      const response = await axios.get(`${BASE_URL}/getUser`, {
+      const response = await api.get(`${BASE_URL}/getUser`, {
         params: {
           userId: id,
         },
@@ -20,7 +20,7 @@ const MembershipAccountInfo = {
 
     getMembership: async (userId) => {
       try {
-        const response = await axios.get(`http://localhost:8080/api/memberships/getMembership/user`, {
+        const response = await api.get(`api/memberships/getMembership/user`, {
           params: {
             userId: userId,
           },
@@ -34,7 +34,7 @@ const MembershipAccountInfo = {
 
   getTicketData: async (ticketId) => {
     try {
-      const response = await axios.get(`http://localhost:8080/api/tickets/getTicket`, {
+      const response = await api.get(`api/tickets/getTicket`, {
         params: {
           ticketId:ticketId,
         },
@@ -47,7 +47,7 @@ const MembershipAccountInfo = {
   
   getMoviesWatched: async (userId) => {
     try {
-      const response = await axios.get(`http://localhost:8080/api/tickets/watched/${userId}`); 
+      const response = await api.get(`/api/tickets/watched/${userId}`); 
       return response.data;
     } catch (error) {
       console.error("Error fetching movie data:", error);
@@ -56,7 +56,7 @@ const MembershipAccountInfo = {
 
   getRewardPoints: async (userId) => {
     try {
-      const response = await axios.get(`http://localhost:8080/api/users/${userId}/getRewardPoints`);  
+      const response = await api.get(`api/users/${userId}/getRewardPoints`);  
         return response.data;
       } catch (error) {
         console.error('Error fetching reward points:', error);

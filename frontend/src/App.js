@@ -25,7 +25,7 @@ const App = () => {
   const currentUser = AuthService.getCurrentUser();
   let isAdmin = false;
   if (currentUser) {
-    if (currentUser.role.includes("ROLE_ADMIN")) {
+    if (currentUser.role?.includes("ROLE_ADMIN")) {
       isAdmin = true;
     }
   }
@@ -57,6 +57,7 @@ const App = () => {
         <Route path="/membershipPage" exact element={<MembershipPage />} />
         <Route path="/TicketInfo" exact element={<TicketInformation />} />
         <Route path="/movieSelection" exact element={<MovieSelection />} />
+        {/* <Route name="movie" path="/:movieId"/> */}
         
       </Routes>
     </BrowserRouter>

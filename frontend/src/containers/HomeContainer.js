@@ -1,12 +1,13 @@
 import React, { useEffect, useState } from 'react'
-import NavBar from '../components/NavBar'
 import CarouselComponent from '../components/Carousel'
 import UpcomingMovies from '../components/UpcomingMovies'
 import NewReleases from '../components/NewReleases';
 import LocationMultiplexDropdown from '../components/LocationMultiplexDropdown/LocationMultiplexDropdown';
-import NewReleasesService from '../services/NewReleasesService';
-import UpcomingMoviesService from '../services/UpcomingMoviesService';
-import MoviesByMultiplexService from '../services/MoviesByMultiplexService';
+// import NewReleasesService from '../services/NewReleasesService';
+// import UpcomingMoviesService from '../services/UpcomingMoviesService';
+// import MoviesByMultiplexService from '../services/MoviesByMultiplexService';
+
+import api from '../services/backend-api/api';
 
 const HomeContainer = ({ isAdmin }) => {
   const [moviesData, SetMoviesData] = useState([]);
@@ -17,8 +18,9 @@ const HomeContainer = ({ isAdmin }) => {
   
   const fetchNewReleases = async () => {
     try {
-      const NewReleasesData = await NewReleasesService.getAllNewReleases();
-      SetNewReleasesData(NewReleasesData);
+      // const NewReleasesData = await NewReleasesService.getAllNewReleases();
+      const NewReleasesData = await api.get(`api/movies/getNewReleases`);
+      SetNewReleasesData(NewReleasesData.data);
     } catch (error) {
       console.error('Error fetching new releases:', error);
     }
@@ -26,9 +28,10 @@ const HomeContainer = ({ isAdmin }) => {
 
   const fetchMoviesByMultiplex = async (multiplexId) => {
     try {
-      const MoviesByMultiplex = await MoviesByMultiplexService.getMoviesByMultiplex(multiplexId);
+      // const MoviesByMultiplex = await MoviesByMultiplexService.getMoviesByMultiplex(multiplexId);
+      const MoviesByMultiplex = await api.get(`api/movies/multiplex/${multiplexId}`);
       console.log(MoviesByMultiplex);
-      SetmultiplexMovies(MoviesByMultiplex);
+      SetmultiplexMovies(MoviesByMultiplex.data);
     } catch (error) {
       console.error('Error fetching all movies:', error);
     }
@@ -42,8 +45,10 @@ const HomeContainer = ({ isAdmin }) => {
 
   const fetchUpcomingMovies = async () => {
     try {
-      const UpcomingMoviesData = await UpcomingMoviesService.getAllUpcomingMovies();
-      SetMoviesData(UpcomingMoviesData);
+      // const UpcomingMoviesData = await UpcomingMoviesService.getAllUpcomingMovies();
+      const UpcomingMoviesData = await api.get(`api/movies/getUpcomingMovies`);
+      // console.log(UpcomingMoviesData);
+      SetMoviesData(UpcomingMoviesData.data);
     } catch (error) {
       console.error('Error fetching upcoming movies:', error);
     }

@@ -1,34 +1,36 @@
 import axios from 'axios';
 import authHeader from '../services/auth/auth-header';
 
-const USERS_BASE_URL = 'http://localhost:8080/api/users';
+import api from './backend-api/api';
+
+const USERS_BASE_URL = '/api/users/';
 
 class UserService {
 
     getPublicContent() {
-        return axios.get(USERS_BASE_URL + 'all');
+        return api.get(USERS_BASE_URL + 'all');
     }
 
     getUserBoard() {
-        return axios.get(USERS_BASE_URL + 'user', { headers: authHeader() });
+        return api.get(USERS_BASE_URL + 'user', { headers: authHeader() });
     }
 
     getMemberBoard() { 
-        return axios.get(USERS_BASE_URL + 'member', { headers: authHeader() });
+        return api.get(USERS_BASE_URL + 'member', { headers: authHeader() });
     }
 
     getAdminBoard() {
-        return axios.get(USERS_BASE_URL + 'admin', { headers: authHeader() });
+        return api.get(USERS_BASE_URL + 'admin', { headers: authHeader() });
     }
 
     async getAllUsers() {
-        return await axios.get(USERS_BASE_URL + '/getUsers').catch(function (error) {
+        return await api.get(USERS_BASE_URL + '/getUsers').catch(function (error) {
             console.log(error);
         });
     }
 
     async getUser(id) {
-        const res = await axios.get(USERS_BASE_URL + '/getUser', {
+        const res = await api.get(USERS_BASE_URL + '/getUser', {
             params: {
                 userId: id
             }
@@ -38,7 +40,7 @@ class UserService {
     }
 
     async getUserByUsername(username) {
-        const res = await axios.get(USERS_BASE_URL + '/getUserByUsername', {
+        const res = await api.get(USERS_BASE_URL + '/getUserByUsername', {
             params: {
                 username: username
             }
@@ -58,7 +60,7 @@ class UserService {
             password
         } = userData;
 
-        const res = await axios.put(USERS_BASE_URL + '/update', 
+        const res = await api.put(USERS_BASE_URL + '/update', 
         {
             firstName: firstName,
             lastName: lastName,
@@ -94,7 +96,7 @@ class UserService {
             password
         } = userData;
 
-        const res = await axios.post(USERS_BASE_URL + '/create', {
+        const res = await api.post(USERS_BASE_URL + '/create', {
             firstName: firstName,
             lastName: lastName,
             email: email,
