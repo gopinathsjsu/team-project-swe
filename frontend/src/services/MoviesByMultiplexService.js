@@ -1,12 +1,12 @@
-import axios from 'axios';
+import api from './backend-api/api';
 
-const NEW_RELEASES_BASE_URL = 'http://localhost:8080/api/movies/multiplex/';
+const NEW_RELEASES_BASE_URL = 'api/movies/multiplex/';
 
 class MoviesByMultiplexService {
 
     async getMoviesByMultiplex(multiplexId) {
         try {
-            const response = await axios.get(`${NEW_RELEASES_BASE_URL}${multiplexId}`);
+            const response = await api.get(`${NEW_RELEASES_BASE_URL}${multiplexId}`);
             return response.data;
         } catch (error) {
             console.error('Error fetching all movies:', error);

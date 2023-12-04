@@ -1,12 +1,12 @@
-import axios from 'axios';
+import api from './backend-api/api';
 
-const NEW_RELEASES_BASE_URL = 'http://localhost:8080/api/movies/getNewReleases';
+const NEW_RELEASES_BASE_URL = 'api/movies/getNewReleases';
 
 class NewReleasesService {
 
     async getAllNewReleases() {
         try {
-            const response = await axios.get(`${NEW_RELEASES_BASE_URL}`);
+            const response = await api.get(`${NEW_RELEASES_BASE_URL}`);
             return response.data;
         } catch (error) {
             console.error('Error fetching all new releases:', error);

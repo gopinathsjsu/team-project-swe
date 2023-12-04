@@ -1,7 +1,7 @@
-import axios from 'axios';
+import api from './backend-api/api';
 import authHeader from './auth/auth-header';
 
-const MOVIES_BASE_URL = 'http://localhost:8080/api/movies';
+const MOVIES_BASE_URL = 'api/movies';
 const genreConversions = {
   'Action': 'ACTION',
   'Adventure': 'ADVENTURE',
@@ -21,7 +21,7 @@ class MoviesService {
 
   async createMovie(newMovie) { // TODO: add auth header
     // const { title, description, releaseDate, duration, rating, genre } = newMovie;
-    return await axios.post(MOVIES_BASE_URL + '/create', 
+    return await api.post(MOVIES_BASE_URL + '/create', 
       {
         title: newMovie.title,
         description: newMovie.description,
@@ -38,13 +38,13 @@ class MoviesService {
     const {movieId, title, description, duration, rating, genre} = updatedMovie;
 
     // get the fields that are not updated in the editMovieForm
-    const originalMovie = await axios.get(`${MOVIES_BASE_URL}/getMovieById`, {
+    const originalMovie = await api.get(`${MOVIES_BASE_URL}/getMovieById`, {
       params: {
         movieId: movieId
       }
     });
     const {releaseDate, poster, showtimes} = originalMovie;
-    return await axios.put(MOVIES_BASE_URL + '/update', {
+    return await api.put(MOVIES_BASE_URL + '/update', {
       movieId: movieId,
       title: title,
       rating: rating,
@@ -60,7 +60,7 @@ class MoviesService {
 
   async fetchShowtimesByMovieId(movieId) {
     try {
-      const response = await axios.get(`${MOVIES_BASE_URL}/getShowTimes?movieId=${movieId}`);
+      const response = await api.get(`${MOVIES_BASE_URL}/getShowTimes?movieId=${movieId}`);
       return response.data;
     } catch (error) {
       console.error('Error fetching showtimes:', error);
@@ -70,7 +70,7 @@ class MoviesService {
 
   async fetchAllMovies() {
     try {
-      const res = await axios.get(`${MOVIES_BASE_URL}/getAllMovies`);
+      const res = await api.get(`${MOVIES_BASE_URL}/getAllMovies`);
       return res.data;
     } catch (e) {
       console.log('Error fetching all movies', e);
@@ -79,7 +79,7 @@ class MoviesService {
   }
 
   async removeShowtimeFromMovie(movieId, showtimeId) {
-    return await axios.delete(`${MOVIES_BASE_URL}/${movieId}/deleteShowtime?showTimeId=${showtimeId}`);
+    return await api.delete(`${MOVIES_BASE_URL}/${movieId}/deleteShowtime?showTimeId=${showtimeId}`);
   }
 
 }

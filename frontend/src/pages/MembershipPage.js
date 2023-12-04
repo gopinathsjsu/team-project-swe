@@ -1,12 +1,30 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useReducer } from 'react';
 import { useNavigate } from 'react-router-dom';
 import MembershipAccountInfo from '../components/MembershipAccountInfo';
 import TicketInfoPage from '../components/TicketInfo';
 import AuthService from '../services/auth/auth.service';
-import axios from 'axios';
+import api from '../services/backend-api/api';
+
+const initialState = {
+  currentUser: AuthService.getCurrentUser(),
+  membership: {},
+  error: null,
+};
+
+const reducer = (state, action) => {
+  switch (action.type) {
+    case "SET_MEMBERSHIP":
+      return { ...state, membership: action.payload, error: null };
+    case "SET_ERROR":
+      return { ...state, error: action.payload };
+    default:
+      return state;
+  }
+};
 
 const MembershipPage = () => {
   const navigate = useNavigate();
+  const [state, dispatch] = useReducer(reducer, initialState);
 
   const [membershipInfo, setMembershipInfo] = useState([]);
   const [moviesWatched, setMoviesWatched] = useState([]);
@@ -18,8 +36,7 @@ const MembershipPage = () => {
   const [showUpgradePopup, setShowUpgradePopup] = useState(false);
 
 
-  const { id } = AuthService.getCurrentUser();
-  console.log("USERID: " + id); // Add this line to log the id
+  const id = state.currentUser?.id;
 
   useEffect(() => {
     // redirect to login if no id is provided
@@ -30,32 +47,32 @@ const MembershipPage = () => {
     console.log("USERID" + id);
     const fetchData = async () => {
       setLoading(true);
-      const userRes = await axios.get(`http://localhost:8080/api/users/getUser?id=${id}`);
+      const userRes = await api.get(`api/users/getUser?id=${id}`);
       console.log("USER INFO:", userRes.data);
       setUserInfo(userRes.data);
       console.log("Updated userInfo:", userInfo); 
       // setLoading(false);
 
       // setLoading(true);
-      const membershipRes = await axios.get(`http://localhost:8080/api/memberships/getMembership/user?userId=${id}`);
+      const membershipRes = await api.get(`api/memberships/getMembership/user?userId=${id}`);
       console.log("MEMBERSHIP INFO:", membershipRes.data);
       setMembershipInfo(membershipRes.data);
       // setLoading(false);
 
       // setLoading(true);
-      const ticketRes = await axios.get(`http://localhost:8080/api/tickets/user/${id}`);
+      const ticketRes = await api.get(`api/tickets/user/${id}`);
       console.log("TICKET INFO:", ticketRes.data);
       setTicketInfo(ticketRes.data);
       // setLoading(false);
 
       // setLoading(true);
-      const moviesWatchedRes = await axios.get(`http://localhost:8080/api/tickets/watched/${id}`);
+      const moviesWatchedRes = await api.get(`api/tickets/watched/${id}`);
       console.log("MOVIES WATCHED - 30 DAYS :", moviesWatchedRes.data);
       setMoviesWatched(moviesWatchedRes.data);
       setLoading(false);
 
       // setLoading(true);
-      const rewardPointsRes = await axios.get(`http://localhost:8080/api/users/${id}/getRewardPoints`);
+      const rewardPointsRes = await api.get(`api/users/${id}/getRewardPoints`);
       console.log("REWARD POINT INFO :", rewardPointsRes.data);
       setRewardPoints(rewardPointsRes.data);
       setLoading(false);

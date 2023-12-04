@@ -6,7 +6,7 @@
 // set discount prices for shows before 6pm and for Tuesday shows
 
 import React, { useCallback, useEffect, useState } from 'react';
-import axios from 'axios';
+import api from '../../services/backend-api/api';
 import { useNavigate } from 'react-router-dom';
 import {
     Button,
@@ -74,7 +74,7 @@ const AdminDashboard = () => {
                 const movies = schedule.movies || [];
 
                 const moviePromises = movies.map(async (movie) => {
-                    const theaterResponse = await axios.get(`http://localhost:8080/api/theaters/getTheaterByMovieIdAndMultiplexId/${parseInt(movie.movieId)}/${selectedMultiplex.multiplexId}`);
+                    const theaterResponse = await api.get(`api/theaters/getTheaterByMovieIdAndMultiplexId/${parseInt(movie.movieId)}/${selectedMultiplex.multiplexId}`);
                     return {
                         movieId: movie.movieId,
                         theaterInfo: theaterResponse.data,
@@ -107,7 +107,7 @@ const AdminDashboard = () => {
         try {
             setLoading(true);
 
-            const movieScheduleResponse = await axios.get(`http://localhost:8080/api/schedules/multiplex/${selectedMultiplex.multiplexId}`);
+            const movieScheduleResponse = await api.get(`api/schedules/multiplex/${selectedMultiplex.multiplexId}`);
             setMovieSchedule(movieScheduleResponse.data);
 
             console.log('Movie Schedule:', movieScheduleResponse.data);
@@ -218,7 +218,7 @@ const AdminDashboard = () => {
             const res = await MovieService.updateMovie(newMovie);
             console.log(res.data);
 
-            const updatedResponse = await axios.get(`http://localhost:8080/api/schedules/multiplex/${selectedScheduleId}`);
+            const updatedResponse = await api.get(`api/schedules/multiplex/${selectedScheduleId}`);
             setMovieSchedule(updatedResponse.data);
 
             setIsEditMovieOpen(false);
@@ -238,7 +238,7 @@ const AdminDashboard = () => {
             const response = await ScheduleService.addMovieToSchedule(selectedMovieId, selectedScheduleId);
             console.log(response.data);
 
-            const updatedResponse = await axios.get(`http://localhost:8080/api/schedules/multiplex/${selectedMultiplex.multiplexId}`);
+            const updatedResponse = await api.get(`api/schedules/multiplex/${selectedMultiplex.multiplexId}`);
             setMovieSchedule(updatedResponse.data);
 
             setIsAddMovieOpen(false);
@@ -278,7 +278,7 @@ const AdminDashboard = () => {
             const res = await ScheduleService.removeMovieFromSchedule(selectedRemoveMovie.movieId, selectedScheduleId);
             console.log(res.data);
 
-            const updatedResponse = await axios.get(`http://localhost:8080/api/schedules/multiplex/${selectedMultiplex.multiplexId}`);
+            const updatedResponse = await api.get(`api/schedules/multiplex/${selectedMultiplex.multiplexId}`);
             setMovieSchedule(updatedResponse.data);
 
             setIsRemoveMovieOpen(false);

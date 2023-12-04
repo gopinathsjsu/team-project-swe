@@ -3,7 +3,7 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import MembershipPaymentForm from '../components/MembershipPaymentForm';
 import TicketPaymentForm from '../components/TicketPaymentForm';
 import AuthService from '../services/auth/auth.service';
-import axios from 'axios';
+import api from '../services/backend-api/api';
 
 const PaymentPage = () => {
     const location = useLocation();
@@ -29,13 +29,13 @@ const PaymentPage = () => {
         const fetchData = async () => {
             setLoading(true);
             try {
-                const userRes = await axios.get(`http://localhost:8080/api/users/getUser?id=${id}`);
+                const userRes = await api.get(`api/users/getUser?id=${id}`);
                 setUserInfo(userRes.data);
 
-                const rewardPointsRes = await axios.get(`http://localhost:8080/api/users/${id}/getRewardPoints`);
+                const rewardPointsRes = await api.get(`api/users/${id}/getRewardPoints`);
                 setRewardPoints(rewardPointsRes.data);
 
-                const ticketRes = await axios.get(`http://localhost:8080/api/tickets/getTicket`);
+                const ticketRes = await api.get(`api/tickets/getTicket`);
                 setUserInfo(ticketRes.data);
 
                 // Assuming `paymentTotal` is coming from your ticket information

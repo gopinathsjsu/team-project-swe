@@ -1,7 +1,7 @@
-import axios from 'axios';
+import api from './backend-api/api';
 import authHeader from './auth/auth-header';
 
-const MEMBERSHIP_BASE_URL = 'http://localhost:8080/api/memberships';
+const MEMBERSHIP_BASE_URL = 'api/memberships';
 
 class MembershipService {
 
@@ -11,7 +11,7 @@ class MembershipService {
             membershipType
         } = membershipData;
 
-        const res = await axios.post(MEMBERSHIP_BASE_URL + '/create', {
+        const res = await api.post(MEMBERSHIP_BASE_URL + '/create', {
             params: {
                 userId: userId
             }
@@ -28,7 +28,7 @@ class MembershipService {
 
     async getMembership(id) {
         try {
-          const response = await axios.get(MEMBERSHIP_BASE_URL + '/getMembership/user', {
+          const response = await api.get(MEMBERSHIP_BASE_URL + '/getMembership/user', {
             params: {
               userId: id
             }
@@ -47,7 +47,7 @@ class MembershipService {
             membershipType
         } = membershipData;
 
-        const res = await axios.put(`${MEMBERSHIP_BASE_URL}/update`,
+        const res = await api.put(`${MEMBERSHIP_BASE_URL}/update`,
           {
               expirationDate: expirationDate,
               membershipType: membershipType

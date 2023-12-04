@@ -1,4 +1,4 @@
-import axios from "axios";
+import api from "../services/backend-api/api";
 import React, { useEffect, useState } from "react";
 
 const TicketInfoPage = () => {
@@ -7,8 +7,8 @@ const TicketInfoPage = () => {
   useEffect(() => {
     const fetchTicketData = async () => {
       try {
-        const response = await axios.get(
-          "http://localhost:8080/api/tickets/getTicket",
+        const response = await api.get(
+          "api/tickets/getTicket",
           {
             params: {
               ticketId: 6,

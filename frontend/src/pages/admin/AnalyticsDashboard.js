@@ -3,7 +3,7 @@
 
 import React from 'react';
 import { useState, useEffect } from 'react';
-import axios from 'axios';
+import api from '../../services/backend-api/api';
 import {
   Button,
   ButtonGroup,
@@ -38,19 +38,19 @@ const AnalyticsDashboard = () => {
         let selectedId;
 
         if (groupBy === 'location' && selectedTheater.theaterId) {
-          endpoint = `/api/theaters/${selectedTheater.theaterId}/occupancyByLocation`;
+          endpoint = `api/theaters/${selectedTheater.theaterId}/occupancyByLocation`;
           selectedId = selectedTheater.theaterId;
         } else if (groupBy === 'movie' && selectedMovie.movieId) {
-          endpoint = `/api/theaters/occupancyByMovie`;
+          endpoint = `api/theaters/occupancyByMovie`;
           selectedId = selectedMovie.movieId;
         }
 
         let response;
         if (endpoint && selectedId) {
           if (groupBy === 'location') {
-            response = await axios.get(`http://localhost:8080${endpoint}?days=${parseInt(selectedTimePeriod)}`);
+            response = await api.get(`${endpoint}?days=${parseInt(selectedTimePeriod)}`);
           } else {
-            response = await axios.get(`http://localhost:8080${endpoint}?days=${parseInt(selectedTimePeriod)}&movieId=${selectedId}`);
+            response = await api.get(`${endpoint}?days=${parseInt(selectedTimePeriod)}&movieId=${selectedId}`);
           }
           setOccupancyData(response.data);
         }
@@ -102,7 +102,7 @@ const AnalyticsDashboard = () => {
     const getTheatersByMultiplexId = async () => {
       try {
         setSelectedTheater(null);
-        const response = await axios.get(`http://localhost:8080/api/theaters/getTheatersByMultiplexId/${selectedMultiplex.multiplexId}`);
+        const response = await api.get(`api/theaters/getTheatersByMultiplexId/${selectedMultiplex.multiplexId}`);
         setTheaterOptions(response.data);
       } catch (error) {
         console.error('Error fetching theaters by multiplex ID:', error);
@@ -112,7 +112,7 @@ const AnalyticsDashboard = () => {
     const getMoviesByLocationId = async () => {
       try {
         setSelectedMovie(null);
-        const response = await axios.get(`http://localhost:8080/api/movies/multiplex/${selectedMultiplex.multiplexId}`);
+        const response = await api.get(`api/movies/multiplex/${selectedMultiplex.multiplexId}`);
         setMovieOptions(response.data);
       } catch (error) {
         console.error('Error fetching movies by location ID:', error);
@@ -226,47 +226,3 @@ const AnalyticsDashboard = () => {
 };
 
 export default AnalyticsDashboard;
-
-
-
-  // useEffect(() => {
-  //   const getTheaterOccupancyByLocation = async () => {
-  //     try {
-  //       const response = await axios.get(`http://localhost:8080/api/theaters/${selectedTheater.theaterId}/occupancyByLocation`, {
-  //         params: {
-  //           days: parseInt(selectedTimePeriod),
-  //         },
-  //       });
-  //       console.log('PRINTING OCCUPANCY:', response.data);
-  //       setTheaterOccupancy(response.data);
-  //     } catch (error) {
-  //       console.error('Error fetching theater occupancy by location:', error);
-  //     }
-  //   };
-
-  //   if (selectedTheater.theaterId && selectedTimePeriod) {
-  //     console.log("REACHED HERE");
-  //     getTheaterOccupancyByLocation();
-  //   }
-  // }, [selectedTheater, selectedTimePeriod]);
-
-  // useEffect(() => {
-  //   const getTheaterOccupancyByMovie = async () => {
-  //     try {
-  //       const response = await axios.get(`http://localhost:8080/api/theaters/occupancyByMovie`, {
-  //         params: {
-  //           movieId: selectedMovie.movieId,
-  //           days: parseInt(selectedTimePeriod),
-  //         },
-  //       });
-  //       console.log('PRINTING OCCUPANCY:', response.data);
-  //       setTheaterOccupancy(response.data);
-  //     } catch (error) {
-  //       console.error('Error fetching theater occupancy by movie:', error);
-  //     }
-  //   };
-
-  //   if (selectedMovie.movieId && selectedTimePeriod) {
-  //     getTheaterOccupancyByMovie();
-  //   }
-  // }, [selectedMovie, selectedTimePeriod]);

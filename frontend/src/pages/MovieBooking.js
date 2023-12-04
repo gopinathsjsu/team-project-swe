@@ -4,7 +4,7 @@ import NavBar from '../components/NavBar'
 import Rating from '@mui/material/Rating';
 import ConfirmationNumberRoundedIcon from '@mui/icons-material/ConfirmationNumberRounded';
 import ScheduleCard from "../components/schedule/ScheduleCard";
-import axios from 'axios';
+import api from '../services/backend-api/api';
 import { Button, ButtonGroup, Container, Typography } from '@mui/material';
 import Chip from '@mui/material/Chip';
 import Box from '@mui/material/Box';
@@ -21,7 +21,7 @@ const MovieBooking = ({ movieId }) => {
   const [showtimes, Setshowtimes] = useState([]);
   const [releaseDate, SetReleaseDate] = useState("");
   useEffect(() => {
-    axios.get(`http://localhost:8080/api/movies/${type}`).then(res => SetMoviesData(res.data)).catch(er => console.log(er))
+    api.get(`api/movies/${type}`).then(res => SetMoviesData(res.data)).catch(er => console.log(er))
     fetchShowtimesByMovieId();
   }, [])
 

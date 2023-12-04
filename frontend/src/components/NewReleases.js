@@ -9,6 +9,8 @@ const NewReleases = ({moviesData,seeAll}) => {
   const handleSeeAll =()=>{
     navigate('/newreleases')
   }
+
+  const generateLinkPath = (movieId) => `/movie/getNewReleases/${movieId}`;
     
   return (
     <div className='bg-[#0F0F0F]'>
@@ -18,11 +20,10 @@ const NewReleases = ({moviesData,seeAll}) => {
         </div>
         <div className='grid grid-cols-5 gap-[10px] px-[50px] '>
             {moviesData.slice(0,seeAll?10:undefined).map((data) =>
-                <Link to={{pathname:'/movie/'+"getNewReleases"+"/"+data.movieId}}>
-                <MovieCard key={data.movieId}
-                    movieData={data}
-                />
-            </Link>)}
+                <Link key={data.movieId} to={generateLinkPath(data.movieId)}>
+                <MovieCard movieData={data} />
+              </Link>
+            )}
         </div>
     </div>
   )
