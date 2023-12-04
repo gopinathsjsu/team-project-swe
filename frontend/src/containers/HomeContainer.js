@@ -60,7 +60,11 @@ const HomeContainer = () => {
 
   return (
     <div>
+<<<<<<< Updated upstream
       <NavBar />
+=======
+      {/* <NavBar isAdmin={isAdmin} /> */}
+>>>>>>> Stashed changes
       <CarouselComponent />
       <LocationMultiplexDropdown multiplexIdFunction={locationMultiplexId} isHome={true} locationIdFunction={locationId} isAdmin={false} />
       <NewReleases moviesData={NewReleasesData} seeAll={true} />
