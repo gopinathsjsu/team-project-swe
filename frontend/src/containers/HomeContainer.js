@@ -18,6 +18,7 @@ const HomeContainer = ({ isAdmin }) => {
   const fetchNewReleases = async () => {
     try {
       const NewReleasesData = await NewReleasesService.getAllNewReleases();
+      console.log("New Release Data: ", NewReleasesData);
       SetNewReleasesData(NewReleasesData);
     } catch (error) {
       console.error('Error fetching new releases:', error);
@@ -26,18 +27,23 @@ const HomeContainer = ({ isAdmin }) => {
 
   const fetchMoviesByMultiplex = async (multiplexId) => {
     try {
-      const MoviesByMultiplex = await MoviesByMultiplexService.getMoviesByMultiplex(multiplexId);
-      console.log(MoviesByMultiplex);
-      SetmultiplexMovies(MoviesByMultiplex);
+      const moviesByMultiplex = await MoviesByMultiplexService.getMoviesByMultiplex(multiplexId);
+      if (moviesByMultiplex && Array.isArray(moviesByMultiplex)) {
+        console.log("Movies by Multiplex: ", moviesByMultiplex);
+        SetmultiplexMovies(moviesByMultiplex);
+      } else {
+        console.error('Invalid or empty data returned by MoviesByMultiplexService');
+      }
     } catch (error) {
-      console.error('Error fetching all movies:', error);
+      console.error('Error fetching movies by multiplex:', error);
     }
   };
   
   useEffect(() => {
     const today = new Date();
-    SetMoviesData(multiplexMovies.filter(movie => new Date(movie.releaseDate) > today))
-    SetNewReleasesData(multiplexMovies.filter(movie => new Date(movie.releaseDate) <= today))
+    const upcomingMovies = multiplexMovies.filter(movie => new Date(movie.releaseDate) > today);
+    SetMoviesData(upcomingMovies);
+    SetNewReleasesData(multiplexMovies.filter(movie => new Date(movie.releaseDate) <= today));
   }, [multiplexMovies]);
 
   const fetchUpcomingMovies = async () => {
