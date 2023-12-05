@@ -35,12 +35,12 @@ const App = () => {
       <NavBar isAdmin={isAdmin} />
       <Routes>
         <Route path="/" exact element={<Home isAdmin={isAdmin}/>} />
-        <Route path="/payment" exact element={<PaymentPage />} />
+        <Route path="/paymentPage" exact element={<PaymentPage />} />
 
         {/* isAdmin is false by default */}
         <Route path="/login" exact element={<Login />} />
-        <Route path="/payment/result" exact element={<PaymentResult />} />
-        <Route path="/member" exact element={<MemberDashboard />} />
+        <Route path="/paymentPage/result" exact element={<PaymentResult />} />
+        {/* <Route path="/member" exact element={<MemberDashboard />} /> */}
         <Route path="/register" exact element={<Register />} />
         <Route path="/memberSelection" exact element={<MemberSelection />} />
         <Route path="/movie/:id" exact element={<MovieBooking />} />

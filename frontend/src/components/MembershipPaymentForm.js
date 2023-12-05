@@ -19,7 +19,6 @@ const MembershipPaymentForm = () => {
         return validator.isCreditCard(creditCardNumber);
     };
 
-
     const handleSubmit = async (e) => {
         e.preventDefault();
 
@@ -43,7 +42,7 @@ const MembershipPaymentForm = () => {
 
             setTimeout(() => {
                 setShowPopup(false);
-                navigate('/member');
+                navigate('/membershipPage');
             }, 3000); 
         } catch (e) {
             console.log(e.message);

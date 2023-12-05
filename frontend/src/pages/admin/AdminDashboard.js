@@ -16,6 +16,8 @@ import {
     Card,
     Snackbar,
     Alert,
+    Modal,
+    Checkbox,
 } from '@mui/material';
 
 import LocationMultiplexDropdown from '../../components/LocationMultiplexDropdown/LocationMultiplexDropdown';
@@ -59,49 +61,31 @@ const AdminDashboard = () => {
 
     const [showtimes, setShowtimes] = useState([]);
 
-    const [theaters, setTheaters] = useState([]);
+    const [theaters, setTheaters] = useState([]); // all theaters for selected multiplex
+    const [isEditTheaterAssignmentOpen, setIsEditTheaterAssignmentOpen] = useState(false);
+    const [availableTheaters, setAvailableTheaters] = useState([]);
+    const [selectedTheaterForAssignment, setSelectedTheaterForAssignment] = useState(null);
+
 
     // fetch movie schedule for selected multiplex
     // then fetch showtimes for each movie in schedule
     // then fetch theaters 
 
-    const fetchTheaterData = useCallback(async () => {
+    const fetchAllTheaters = async () => {
         try {
             setLoading(true);
 
-            console.log('Movie Schedule:', movieSchedule);
-            const theaterPromises = movieSchedule.map(async (schedule) => {
-                const movies = schedule.movies || [];
-
-                const moviePromises = movies.map(async (movie) => {
-                    const theaterResponse = await api.get(`api/theaters/getTheaterByMovieIdAndMultiplexId/${parseInt(movie.movieId)}/${selectedMultiplex.multiplexId}`);
-                    return {
-                        movieId: movie.movieId,
-                        theaterInfo: theaterResponse.data,
-                    };
-                });
-
-                return Promise.all(moviePromises);
-            });
-
-            const theaterData = await Promise.all(theaterPromises);
-
-            const theaters = theaterData.flat();
+            const theaterResponse = await api.get(`api/theaters/getTheatersByMultiplexId/${selectedMultiplex.multiplexId}`);
+            const theaters = theaterResponse.data || [];
 
             setTheaters(theaters);
 
             setLoading(false);
         } catch (error) {
-            console.error('Error fetching theater data:', error);
+            console.error('Error fetching theaters:', error);
             setLoading(false);
         }
-    }, [movieSchedule]);
-
-    useEffect(() => {
-        if (movieSchedule.length > 0) {
-            fetchTheaterData();
-        }
-    }, [fetchTheaterData, movieSchedule]);
+    };
 
     const fetchMovieData = useCallback(async () => {
         try {
@@ -110,7 +94,7 @@ const AdminDashboard = () => {
             const movieScheduleResponse = await api.get(`api/schedules/multiplex/${selectedMultiplex.multiplexId}`);
             setMovieSchedule(movieScheduleResponse.data);
 
-            console.log('Movie Schedule:', movieScheduleResponse.data);
+            // console.log('Movie Schedule:', movieScheduleResponse.data);
 
             const movieDetailsPromises = movieScheduleResponse.data[0].movies.map(async (movie) => {
                 const showtimeResponse = await MovieService.fetchShowtimesByMovieId(movie.movieId);
@@ -133,11 +117,80 @@ const AdminDashboard = () => {
         }
     }, [selectedMultiplex]);
 
+    // useEffect to fetch theaters when selectedMultiplex changes
+    useEffect(() => {
+        if (selectedMultiplex && Object.keys(selectedMultiplex).length > 0) {
+            fetchAllTheaters();
+        }
+    }, [selectedMultiplex]);
+
+    // useEffect to fetch movie data when selectedMultiplex changes
     useEffect(() => {
         if (selectedMultiplex && Object.keys(selectedMultiplex).length > 0) {
             fetchMovieData();
         }
-    }, [fetchMovieData, selectedMultiplex]);
+    }, [selectedMultiplex, fetchMovieData]);
+
+    // useEffect to set available theaters when selectedMovie changes
+    useEffect(() => {
+        if (selectedMovie) {
+            const unassignedTheaters = theaters.filter((theater) => !theater.assignedMovie && theater.movieId !== selectedMovie.movieId);
+            setAvailableTheaters(unassignedTheaters);
+            setSelectedTheaterForAssignment(null);
+        }
+    }, [theaters, selectedMovie]);
+
+    const [isSavingTheaterAssignment, setIsSavingTheaterAssignment] = useState(false);
+
+    useEffect(() => {
+        const saveTheaterAssignment = async () => {
+            try {
+                console.log('Saving theater assignment...');
+                setLoading(true);
+        
+                const movieId = selectedMovie?.movieId;
+        
+                if (selectedTheaterForAssignment) {
+                    const res = await api.post(`api/theaters/${selectedTheaterForAssignment.theaterId}/assignMovie/${movieId}`);
+                    console.log(res.data);
+        
+                    // Refresh the movie schedule
+                    const updatedResponse = await api.get(`api/schedules/multiplex/${selectedMultiplex.multiplexId}`);
+                    setMovieSchedule(updatedResponse.data);
+                }
+        
+                setIsSavingTheaterAssignment(false); // Update the state to allow modal to close
+                setLoading(false);
+                console.log('Theater assignment saved successfully.');
+            } catch (error) {
+                console.error('Error updating theater assignment:', error);
+                setLoading(false);
+            }
+        };
+
+        if (isSavingTheaterAssignment) {
+            saveTheaterAssignment();
+        }
+    }, [isSavingTheaterAssignment, selectedMultiplex, selectedMovie, selectedTheaterForAssignment, movieSchedule]);
+
+    const handleSaveTheaterAssignment = async () => {
+        try {
+            setLoading(true);
+
+            setIsSavingTheaterAssignment(true); // Set the state to initiate the saving process
+
+            // No need to manually close the modal here
+            // setIsEditTheaterAssignmentOpen(false);
+
+            // The actual closing will happen after the assignment is successfully updated
+        } catch (error) {
+            console.error('Error initiating theater assignment save:', error);
+            setLoading(false);
+        }
+    };
+
+
+    //   CALLBACKS
 
     // callback to set multiplex and location from dropdown
     const handleMultiplexSelect = (multiplex) => {
@@ -301,7 +354,7 @@ const AdminDashboard = () => {
         try {
             setLoading(true);
             const response = await ShowtimeService.updateShowtime(selectedMovie.movieId, updatedShowtime);
-            console.log(response.data);
+            // console.log(response.data);
 
             setShowtimes((prevMovieShowtimes) => {
                 const movieIndex = prevMovieShowtimes.findIndex((data) => data.movieId === selectedMovie.movieId);
@@ -330,7 +383,7 @@ const AdminDashboard = () => {
             setLoading(true);
 
             const response = await MovieService.removeShowtimeFromMovie(selectedMovie.movieId, showtime.showtimeId);
-            console.log(response.data);
+            // console.log(response.data);
 
             setShowtimes((prevMovieShowtimes) => {
                 const movieIndex = prevMovieShowtimes.findIndex((data) => data.movieId === selectedMovie.movieId);
@@ -354,6 +407,24 @@ const AdminDashboard = () => {
         }
     };
 
+    const handleEditTheaterAssignment = (movie) => {
+        // get all theaters that are not assigned to a movie
+        // will create as options for admin to use to assign to movie
+
+        setSelectedMovie(movie);
+        // console.log("THEATERS:", theaters);
+        const unassignedTheaters = theaters.filter((theater) => !theater.assignedMovie && theater.movieId !== movie.movieId);
+        // console.log("Unassigned Theaters:", unassignedTheaters);
+        setAvailableTheaters(unassignedTheaters);
+        setSelectedTheaterForAssignment(null);
+
+        setIsEditTheaterAssignmentOpen(true);
+    };
+
+    const handleTheaterSelection = (theater) => {
+        // setSelectedMovie(movie);
+        setSelectedTheaterForAssignment(theater);
+    };
 
 
     return (
@@ -372,8 +443,8 @@ const AdminDashboard = () => {
                         onGetMultiplexes={handleGetMultiplexes}
                     />
                 </Card>
-                
-                <Box style={{maxHeight: '75vh', overflow: 'auto'}} m={2} maxWidth={'50vw'}>
+
+                <Box style={{ maxHeight: '75vh', overflow: 'auto' }} m={2} maxWidth={'50vw'}>
                     <Typography variant="h5">Movie Schedule for {selectedMultiplex.locationName}</Typography>
 
                     {loading ? <CircularProgress /> : null}
@@ -387,7 +458,9 @@ const AdminDashboard = () => {
                                 <Typography variant='body1'>Genre: {movie.genre}</Typography>
                                 <Typography variant='body1'>Duration: {movie.duration}</Typography>
                                 <Typography variant='body1' style={{ color: 'gray' }}>Description: {movie.description}</Typography>
-
+                                <Button variant='outlined' color='primary' onClick={() => handleEditTheaterAssignment(movie)}>
+                                    Edit Theater Assignment
+                                </Button>
 
                                 <p>Showtimes:</p>
                                 {Array.isArray(showtimes) && showtimes.length > 0 ? (
@@ -408,11 +481,13 @@ const AdminDashboard = () => {
                                 )}
 
                                 {theaters.map((theater) => {
-                                    if (theater.movieId === movie.movieId) {
+                                    // console.log("Theater:", theater);
+                                    // console.log("Movie:", movie);
+                                    if (theater.assignedMovie?.movieId === movie.movieId) {
                                         return (
-                                            <div key={theater.theaterInfo.theaterId}>
-                                                <p>Theater: {theater.theaterInfo.theaterName}</p>
-                                                <p>Theater Capacity: {theater.theaterInfo.capacity}</p>
+                                            <div key={theater.theaterId}>
+                                                <p>Theater Assignment: {theater.theaterName}</p>
+                                                <p>Theater Capacity: {theater.capacity}</p>
                                             </div>
                                         );
                                     }
@@ -487,6 +562,35 @@ const AdminDashboard = () => {
                         </Alert>
                     </Snackbar>
                 )}
+
+
+                <Modal open={isEditTheaterAssignmentOpen} onClose={() => setIsEditTheaterAssignmentOpen(false)}>
+                    <Box p={3} maxWidth={400} mx="auto" className="bg-white p-4 rounded-md">
+                        <Typography variant="h5" className="mb-2">
+                            Edit Theater Assignment
+                        </Typography>
+                        <Typography>Select a theater for assignment:</Typography>
+
+                        {availableTheaters.map((theater) => (
+                            <div key={theater.theaterId} className="flex items-center mb-2">
+                                <Checkbox
+                                    checked={selectedTheaterForAssignment === theater}
+                                    onChange={() => handleTheaterSelection(
+                                        selectedTheaterForAssignment === theater ? null : theater
+                                    )}
+                                    color="primary"
+                                    className="mr-2"
+                                />
+                                <span>{theater.theaterName}</span>
+                            </div>
+                        ))}
+
+                        <Button variant="contained" color="primary" onClick={handleSaveTheaterAssignment} className="mt-2">
+                            Save
+                        </Button>
+                    </Box>
+                </Modal>
+
             </div>
         </div>
     );
