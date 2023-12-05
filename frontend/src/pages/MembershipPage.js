@@ -19,10 +19,9 @@ const MembershipPage = () => {
 
 
   const { id } = AuthService.getCurrentUser();
-  console.log("USERID: " + id); // Add this line to log the id
+  console.log("USERID: " + id); 
 
   useEffect(() => {
-    // redirect to login if no id is provided
     if (!id) {
       navigate('/login', { replace: true });
     }
@@ -73,20 +72,16 @@ const MembershipPage = () => {
 
 
   const handleMembershipChange = () => {
-    // Show the upgrade popup
     setShowUpgradePopup(true);
+    navigate("/memberSelection")
   };
 
   const handleUpgradeConfirm = () => {
-    // Add logic for actual upgrade (e.g., API calls, state updates)
-    // For now, just close the popup
     setShowUpgradePopup(false);
     alert("Congrats! You are now a Premium Member.");
   };
 
   const handleDowngradeConfirm = () => {
-    // Add logic for downgrade (e.g., API calls, state updates)
-    // For now, just close the popup
     setShowUpgradePopup(false);
     alert("Thank you. Membership is still valid until the end of the month. You are now a Regular Member");
   };
@@ -128,10 +123,12 @@ const MembershipPage = () => {
                 onClick={handleMembershipChange}
               >
                 Change Membership
+
+
               </button>
             </p>
 
-            {/* Upgrade/Downgrade Popup */}
+            Upgrade/Downgrade Popup
             {showUpgradePopup && (
               <div className="fixed top-0 left-0 w-full h-full flex items-center justify-center">
                 <div className="bg-white p-6 rounded-md shadow-md">
