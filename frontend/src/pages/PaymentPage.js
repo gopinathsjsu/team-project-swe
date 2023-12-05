@@ -6,137 +6,109 @@ import AuthService from '../services/auth/auth.service';
 import api from '../services/backend-api/api';
 
 const PaymentPage = () => {
-    const location = useLocation();
-    const navigate = useNavigate();
+  const location = useLocation();
+  const navigate = useNavigate();
 
-    const [userInfo, setUserInfo] = useState([]);
-    const [rewardPoints, setRewardPoints] = useState(null);
-    const [loading, setLoading] = useState(false);
-    
-    const [pointsToUse, setPointsToUse] = useState(0);
-    const [paymentTotal, setPaymentTotal] = useState("0.00");
-    const [newTotal, setNewTotal] = useState("0.00");
+  const [userInfo, setUserInfo] = useState([]);
+  const [ticketInfo, setTicketInfo] = useState([]);
+  const [rewardPoints, setRewardPoints] = useState(0);
+  const [loading, setLoading] = useState(false);
 
-    const { id } = AuthService.getCurrentUser();
-    const editMembership = location.state?.editMembership;
-    const purchaseTicket = location.state?.purchaseTicket;
+  const [paymentTotal, setPaymentTotal] = useState("0.00");
+  const [newTotal, setNewTotal] = useState("0.00");
 
-    useEffect(() => {
-        if (!id) {
-            navigate('/login', { replace: true });
-        }
+  const { id } = AuthService.getCurrentUser();
 
-        const fetchData = async () => {
-            setLoading(true);
-            try {
-                const userRes = await api.get(`api/users/getUser?id=${id}`);
-                setUserInfo(userRes.data);
 
-                const rewardPointsRes = await api.get(`api/users/${id}/getRewardPoints`);
-                setRewardPoints(rewardPointsRes.data);
+  // TODO: grab ticket info that was passed from seat selection page 
+  const purchaseTicket = location.state?.purchaseTicket; // first item done for you, tells payment page to render the TicketPaymentForm
+  setTicketInfo(location.state?.tickets); // getting the tickets from the seat selection page
+  
+  const editMembership = location.state?.editMembership; // tells MembershipPaymentForm to render
 
-                const ticketRes = await api.get(`api/tickets/getTicket`);
-                setUserInfo(ticketRes.data);
+  useEffect(() => {
+    if (!id) {
+      navigate('/login', { replace: true });
+    }
 
-                // Assuming `paymentTotal` is coming from your ticket information
-                setPaymentTotal(ticketRes.data.price.toString());
-            } catch (error) {
-                console.log(error);
-            } finally {
-                setLoading(false);
-            }
-        };
+    const fetchData = async () => {
+      setLoading(true);
+      try {
+        const userRes = await api.get(`api/users/getUser?id=${id}`);
+        setUserInfo(userRes.data);
 
-        fetchData();
-    }, [id, navigate]);
+        const rewardPointsRes = await api.get(`api/users/${id}/getRewardPoints`);
+        setRewardPoints(rewardPointsRes.data);
 
-    useEffect(() => {
-        // Update newTotal whenever pointsToUse or paymentTotal changes
-        const newTotalValue = (parseFloat(paymentTotal) - pointsToUse).toFixed(2);
-        setNewTotal(newTotalValue);
-    }, [pointsToUse, paymentTotal]);
+        // const setPointsRes = await api.get(`api/users/${id}/incrementRewardPoints?rewardPoints=${updatePoints}`);
+        // setUpdateRewardPoints(setPointsRes.data);
 
-    const handlePayment = () => {
-        console.log('Processing payment...');
-        // Add logic to handle payment
+
+        // TODO: remove this req
+        // bc we are getting the list of ticket objects from seat select
+        // const ticketRes = await api.get(`api/tickets/getTicket?ticketId=5`); // already got ticketId from parent
+        // setTicketInfo(ticketRes.data);
+
+        // Assuming `paymentTotal` is coming from your ticket information
+        setPaymentTotal(ticketRes.data.price.toString());
+      } catch (error) {
+        console.log(error);
+      } finally {
+        setLoading(false);
+      }
     };
 
-    const handleUseRewardPoints = () => {
-        const usePoints = prompt("How many points would you like to use?");
-        const parsedPoints = parseInt(usePoints, 10) || 0;
-        setPointsToUse(parsedPoints);
-    };
+    fetchData();
+  }, [id, navigate]);
 
-    return (
-        <div style={{ textAlign: 'center', marginTop: '20px' }}>
-            <h2>Pay Here!</h2>
+  // TODO: fix this
+  const handlePayment = () => {
+    console.log('Processing payment...');
+    // Add logic to handle payment
+    navigate('/membershipPage', { replace: true });
+  };
 
-            {/* Reward Points Section */}
-            <div style={{ marginBottom: '15px', float: 'right', textAlign: 'right' }}>
-                <p>Reward Points: {rewardPoints || 0}</p>
-                <button
-                    style={{ backgroundColor: '#4285f4', color: 'white', padding: '8px', borderRadius: '4px', cursor: 'pointer' }}
-                    onClick={handleUseRewardPoints}
-                >
-                    Use Reward Points
-                </button>
-            </div>
+  const handleUpdatePaymentTotal = (newTotal) => {
+    console.log('Updating payment total...');
+    setPaymentTotal(newTotal);
+  };
 
-            {/* Total Summary */}
-            <div style={{ marginBottom: '20px', textAlign: 'left' }}>
-                <p>Tickets (2 tickets) = ${paymentTotal} x 2 = ${paymentTotal * 2}</p>
-                <p>Total = ${paymentTotal}</p>
-                <p>Points to Use = {pointsToUse}</p>
-                <p>New Total = ${newTotal}</p>
-            </div>
+  const handleSpendRewardPoints = (pointsSpent) => {
+    console.log('Spending reward points...');
+    setRewardPoints(rewardPoints - pointsSpent);
+  }
 
-            {/* Payment Forms */}
-            {editMembership && (
-                <MembershipPaymentForm key={Date.now()} userInfo={userInfo} rewardPoints={rewardPoints} />
-            )}
-            {purchaseTicket && (
-                <TicketPaymentForm key={Date.now()} ticketId={purchaseTicket} rewardPoints={rewardPoints} />
-            )}
+  // const handleUseRewardPoints = () => {
+  //     let usePoints =  prompt("How many points would you like to use?");
+  //     while (usePoints > rewardPoints) {  
+  //         usePoints =  prompt("How many points would you like to use?");
+  //     }
+  //     const parsedPoints = parseInt(usePoints, 10) || 0;
+  //     setPointsToUse(parsedPoints); 
+  // };
 
-            {/* Card Information */}
-            <div style={{ marginBottom: '15px', textAlign: 'center', border: '1px solid #ccc', borderRadius: '4px', padding: '5px' }}>
-                <div style={{ marginBottom: '15px', textAlign: 'center', border: '1px solid #ccc', borderRadius: '4px', padding: '5px' }}>
-                    <label htmlFor="cardNumber">Card Number:</label>
-                    <br />
-                    <input type="text" id="cardNumber" name="cardNumber" style={{ width: '300px', padding: '8px', borderRadius: '4px', marginTop: '5px', border: '1px solid #ccc' }} />
-                </div>
+  return (
+    <div style={{ textAlign: 'center', marginTop: '20px' }}>
+      <h2>Pay Here!</h2>
 
-                <div style={{ marginBottom: '15px', textAlign: 'center', border: '1px solid #ccc', borderRadius: '4px', padding: '5px' }}>
-                    <label htmlFor="fullName">Full Name:</label>
-                    <br />
-                    <input type="text" id="fullName" name="fullName" style={{ width: '300px', padding: '8px', borderRadius: '4px', marginTop: '5px', border: '1px solid #ccc' }} />
-                </div>
+      <div className="mb-4 text-xl font-bold">You owe ${paymentTotal}</div>
 
-                <div style={{ marginBottom: '15px', textAlign: 'center', border: '1px solid #ccc', borderRadius: '4px', padding: '5px' }}>
-                    <label htmlFor="expirationDate">Expiration Date:</label>
-                    <br />
-                    <input type="text" id="expirationDate" name="expirationDate" placeholder="MM/YYYY" style={{ width: '100px', padding: '8px', borderRadius: '4px', marginTop: '5px', border: '1px solid #ccc' }} />
-                </div>
+     
 
-                <div style={{ marginBottom: '15px', textAlign: 'center', border: '1px solid #ccc', borderRadius: '4px', padding: '5px' }}>
-                    <label htmlFor="cvv">CVV:</label>
-                    <br />
-                    <input type="text" id="cvv" name="cvv" style={{ width: '80px', padding: '8px', borderRadius: '4px', marginTop: '5px', border: '1px solid #ccc' }} />
-                </div>
+      {/* Payment Forms */}
+      {editMembership && <MembershipPaymentForm key={Date.now()} userInfo={userInfo} rewardPoints={rewardPoints} />}
+      {purchaseTicket && <TicketPaymentForm 
+        key={Date.now()} 
+        tickets={ticketInfo} 
+        rewardPoints={rewardPoints} 
+        onSpendRewardPoints={handleSpendRewardPoints}
+        onUpdatePaymentTotal={handleUpdatePaymentTotal}   
+        paymentTotal={paymentTotal}  
+    />}
 
-                <div style={{ marginBottom: '15px', textAlign: 'center', border: '1px solid #ccc', borderRadius: '4px', padding: '5px' }}>
-                    <label htmlFor="zipCode">ZIP Code:</label>
-                    <br />
-                    <input type="text" id="zipCode" name="zipCode" style={{ width: '120px', padding: '8px', borderRadius: '4px', marginTop: '5px', border: '1px solid #ccc' }} />
-                </div>
-            </div>
-
-            <button style={{ marginTop: '20px', backgroundColor: '#4CAF50', color: 'white', padding: '10px', borderRadius: '4px', cursor: 'pointer' }} onClick={handlePayment}>
-                Pay
-            </button>
-        </div>
-    );
+      
+    </div>
+  );
 };
 
 export default PaymentPage;
-

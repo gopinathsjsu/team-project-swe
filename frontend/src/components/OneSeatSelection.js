@@ -116,7 +116,7 @@ const Seats = () => {
   };
 
   const handlePay = () => {
-    navigate("/payment", { state: { purchaseTicket: true } });
+    navigate("/paymentPage", { state: { purchaseTicket: true } });
   };
 
   const RenderPaymentButton = () => {
