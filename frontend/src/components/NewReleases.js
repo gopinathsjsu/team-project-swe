@@ -18,13 +18,14 @@ const NewReleases = ({moviesData,seeAll}) => {
             <h1 className='text-white text-xl font-semibold'>New Releases</h1>
             {seeAll && <Button onClick={handleSeeAll} variant="outlined" size="medium">See All</Button>}
         </div>
+        {moviesData && 
         <div className='grid grid-cols-5 gap-[10px] px-[50px] '>
-            {moviesData.slice(0,seeAll?10:undefined).map((data) =>
-                <Link key={data.movieId} to={generateLinkPath(data.movieId)}>
-                <MovieCard movieData={data} />
-              </Link>
-            )}
-        </div>
+        {moviesData.slice(0,seeAll?10:undefined).map((data) =>
+            <Link key={data.movieId} to={generateLinkPath(data.movieId)}>
+            <MovieCard movieData={data} />
+          </Link>
+        )}
+    </div>}
     </div>
   )
 }
