@@ -1,7 +1,7 @@
 import api from './backend-api/api';
 import authHeader from './auth/auth-header';
 
-const MOVIES_BASE_URL = 'api/movies';
+const MOVIES_BASE_URL = 'http://localhost:8080/api/movies';
 const genreConversions = {
   'Action': 'ACTION',
   'Adventure': 'ADVENTURE',

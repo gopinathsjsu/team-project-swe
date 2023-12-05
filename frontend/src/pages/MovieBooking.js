@@ -11,6 +11,7 @@ import Box from '@mui/material/Box';
 import MovieService from '../services/MovieService';
 import { useNavigate } from "react-router-dom";
 import Grid from '@mui/material/Grid';
+import axios from 'axios';
 
 
 const MovieBooking = ({ movieId }) => {
@@ -20,8 +21,9 @@ const MovieBooking = ({ movieId }) => {
   const [movieInformation, SetMovieInformation] = useState({});
   const [showtimes, Setshowtimes] = useState([]);
   const [releaseDate, SetReleaseDate] = useState("");
+  
   useEffect(() => {
-    api.get(`api/movies/${type}`).then(res => SetMoviesData(res.data)).catch(er => console.log(er))
+    axios.get(`http://localhost:8080/api/movies/${type}`).then(res => SetMoviesData(res.data)).catch(er => console.log(er))
     fetchShowtimesByMovieId();
   }, [])
 
@@ -30,7 +32,9 @@ const MovieBooking = ({ movieId }) => {
   }, [moviesData])
   const fetchShowtimesByMovieId = async () => {
     try {
+      console.log(id)
       const showTimes = await MovieService.fetchShowtimesByMovieId(id);
+      console.log(showTimes)
       Setshowtimes(showTimes);
     } catch (error) {
       console.error('Error fetching show times:', error);
