@@ -38,6 +38,10 @@ const MembershipPage = () => {
   const id = state.currentUser?.id;
 
   useEffect(() => {
+    console.log("Memebership page mounted");
+  }, []);
+
+  useEffect(() => {
     // redirect to login if no id is provided
     if (!id) {
       navigate('/login', { replace: true });

@@ -1,7 +1,7 @@
 import api from './backend-api/api';
 import authHeader from './auth/auth-header';
 
-const UPCOMING_MOVIES_BASE_URL = 'api/movies/getUpcomingMovies';
+const UPCOMING_MOVIES_BASE_URL = 'api';
 
 class UpcomingMoviesService {
 

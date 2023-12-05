@@ -3,6 +3,7 @@ import FormControl from '@mui/material/FormControl';
 import NativeSelect from '@mui/material/NativeSelect';
 import MultiplexService from '../../services/MultiplexService';
 import LocationService from '../../services/LocationService';
+import api from '../../services/backend-api/api';
 
 
 const LocationMultiplexDropdown = ({ onSelectLocation, onSelectMultiplex, onGetMultiplexes }) => {
@@ -13,8 +14,9 @@ const LocationMultiplexDropdown = ({ onSelectLocation, onSelectMultiplex, onGetM
 
     const fetchLocationOptions = async () => {
         try {
-            const locationData = await LocationService.getAllLocations();
-            const options = locationData.map((locationObj) => ({
+            const locationData = await api.get('/api/locations/getAll');
+            console.log("Location Data: ", locationData.data);
+            const options = locationData.data.map((locationObj) => ({
                 locationId: locationObj.locationId,
                 location: locationObj.location,
             }));

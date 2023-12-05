@@ -1,11 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import * as validator from 'validator';
+import { Button, Input } from '@mui/material';
 
 import AuthService from '../services/auth/auth.service';
 import TicketService from '../services/TicketService';
 
-const TicketPaymentForm = ({ ticketId }) => {
+const TicketPaymentForm = ({ tickets, rewardPoints, onSpendRewardPoints, onUpdatePaymentTotal, paymentTotal }) => {
     const navigate = useNavigate();
 
     const [creditCardError, setCreditCardError] = useState(null);
@@ -13,36 +14,21 @@ const TicketPaymentForm = ({ ticketId }) => {
     const [formattedCreditCard, setFormattedCreditCard] = useState('');
     const [expirationMonth, setExpirationMonth] = useState('');
     const [expirationYear, setExpirationYear] = useState('');
-    const [useRewardPoints, setUseRewardPoints] = useState(false);
+    const [useRewardPoints, setUseRewardPoints] = useState(false); // do we want to use reward points?
+    const [pointsToUse, setPointsToUse] = useState(0); // how many points do we want to use?
+    const [newTotalValue, setNewTotalValue] = useState(paymentTotal); // price after applying points
 
-    const [paymentTotal, setPaymentTotal] = useState("0.00");
 
-    useEffect(() => {
-        async function getTicket() {
-            try {
-                const ticket = await TicketService.getTicket(ticketId); // TODO: get ticketId from URL params
-                const {
-                    price,
-                    seatAssignment,
-                    assignedMovie,
-                    bookingDate,
-                    showtime,
-                    theaterAssignment,
-                    multiplex
-                } = ticket;
-
-                setPaymentTotal(price.toString());
-            } catch (e) {
-                console.log(e.message);
-            }
-        };
-
-        getTicket();
-    }, [ticketId]);
+    const [updatePoints, setUpdateRewardPoints] = useState(0); // this is for updating the points after payment
 
     const validateCreditCard = (creditCardNumber) => {
         return validator.isCreditCard(creditCardNumber);
     };
+
+    const handleCalculateUpdatePoints = () => {
+        // based on the ticket price -- round down to number of points to add for user
+        // setUpdateRewardPoints(pointsToAdd);
+    }
 
     const handleSubmitTicketPayment = async (e) => {
         e.preventDefault();
@@ -60,12 +46,22 @@ const TicketPaymentForm = ({ ticketId }) => {
 
             setTimeout(() => {
                 setShowPopup(false);
-                navigate('/member');
+                navigate('/membershipPage');
             }, 3000);
         } catch (e) {
             console.log(e.message);
         }
     };
+
+    const handlePointsChange = (e) => {
+        const parsedPoints = parseInt(e.target.value) || 0;
+        setPointsToUse(parsedPoints);
+    };
+
+    const handleUpdatePaymentTotal = () => {
+        onUpdatePaymentTotal((parseFloat(paymentTotal) - pointsToUse).toFixed(2));
+        onSpendRewardPoints(pointsToUse);
+    }
 
     return (
         <div>
@@ -73,8 +69,32 @@ const TicketPaymentForm = ({ ticketId }) => {
                 className="max-w-sm mx-auto mt-8 p-6 bg-white rounded-lg shadow-md"
                 onSubmit={handleSubmitTicketPayment}
             >
-                <div className="mb-4 text-xl font-bold">You owe ${paymentTotal}</div>
+                {/* Total Summary */}
+                <div style={{ marginBottom: '20px', textAlign: 'left' }}>
+                    {/* <p>Tickets (2 tickets) = ${paymentTotal} x 2 = ${paymentTotal * 2}</p> */}
+                    <p>Total = ${paymentTotal}</p>
+                    <p>New Total = ${newTotalValue}</p>
+                </div>
+                <div style={{ marginBottom: '15px', float: 'right', textAlign: 'right' }}>
+                    <p>Your available Reward Points: {rewardPoints || 0} </p>
+                    <div style={{ display: 'flex', alignItems: 'center' }}>
+                        <label htmlFor='pointsToUse'>Points to Use:</label>
+                        <Input
+                            type="number"
+                            name="pointsToUse"
+                            value={pointsToUse}
+                            onChange={handlePointsChange}
+                            style={{ outline: 'border', margin: '10%' }}
+                        />
+                        <Button
+                            id="useRewardPoints"
+                            name="useRewardPoints"
+                            onClick={handleUpdatePaymentTotal}
+                            className="mt-1 p-2 border rounded-md"
+                        >Use {pointsToUse} points </Button>
+                    </div>
 
+                </div>
                 <div className="mb-4">
                     <label htmlFor="name" className="block text-sm font-medium text-gray-600">
                         Name:
@@ -151,21 +171,6 @@ const TicketPaymentForm = ({ ticketId }) => {
                         className="mt-1 p-2 border rounded-md w-full"
                     />
                 </div>
-
-                <div className="mb-6">
-                    <label htmlFor="useRewardPoints" className="block text-sm font-medium text-gray-600">
-                        Use Reward Points:
-                    </label>
-                    <input
-                        type="checkbox"
-                        id="useRewardPoints"
-                        name="useRewardPoints"
-                        checked={useRewardPoints}
-                        onChange={() => setUseRewardPoints(!useRewardPoints)}
-                        className="mt-1 p-2 border rounded-md"
-                    />
-                </div>
-
                 <button
                     type="submit"
                     className="bg-blue-500 text-white py-2 px-4 rounded-md hover:bg-blue-600 focus:outline-none focus:shadow-outline-blue active:bg-blue-800"

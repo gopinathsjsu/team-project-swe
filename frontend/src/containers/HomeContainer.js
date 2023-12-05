@@ -1,5 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import NavBar from '../components/NavBar'
+import api from '../services/backend-api/api';
+import axios from 'axios';
 import CarouselComponent from '../components/Carousel'
 import UpcomingMovies from '../components/UpcomingMovies'
 import NewReleases from '../components/NewReleases';
@@ -17,8 +19,10 @@ const HomeContainer = ({ isAdmin }) => {
   
   const fetchNewReleases = async () => {
     try {
-      const NewReleasesData = await NewReleasesService.getAllNewReleases();
-      SetNewReleasesData(NewReleasesData);
+      // const NewReleasesData = await api.get('/api/movies/getNewReleases');
+      const NewReleasesData = await axios.get('https://54.176.16.148:8080/api/movies/getNewReleases');
+      console.log("New Release Data: ", NewReleasesData.data);
+      SetNewReleasesData(NewReleasesData.data);
     } catch (error) {
       console.error('Error fetching new releases:', error);
     }
@@ -26,24 +30,29 @@ const HomeContainer = ({ isAdmin }) => {
 
   const fetchMoviesByMultiplex = async (multiplexId) => {
     try {
-      const MoviesByMultiplex = await MoviesByMultiplexService.getMoviesByMultiplex(multiplexId);
-      console.log(MoviesByMultiplex);
-      SetmultiplexMovies(MoviesByMultiplex);
+      const moviesByMultiplex = await MoviesByMultiplexService.getMoviesByMultiplex(multiplexId);
+      if (moviesByMultiplex && Array.isArray(moviesByMultiplex)) {
+        console.log("Movies by Multiplex: ", moviesByMultiplex);
+        SetmultiplexMovies(moviesByMultiplex);
+      } else {
+        console.error('Invalid or empty data returned by MoviesByMultiplexService');
+      }
     } catch (error) {
-      console.error('Error fetching all movies:', error);
+      console.error('Error fetching movies by multiplex:', error);
     }
   };
   
   useEffect(() => {
     const today = new Date();
-    SetMoviesData(multiplexMovies.filter(movie => new Date(movie.releaseDate) > today))
-    SetNewReleasesData(multiplexMovies.filter(movie => new Date(movie.releaseDate) <= today))
+    const upcomingMovies = multiplexMovies.filter(movie => new Date(movie.releaseDate) > today);
+    SetMoviesData(upcomingMovies);
+    SetNewReleasesData(multiplexMovies.filter(movie => new Date(movie.releaseDate) <= today));
   }, [multiplexMovies]);
 
   const fetchUpcomingMovies = async () => {
     try {
-      const UpcomingMoviesData = await UpcomingMoviesService.getAllUpcomingMovies();
-      SetMoviesData(UpcomingMoviesData);
+      const UpcomingMoviesData = await axios.get('https://54.176.16.148:8080/api/movies/getUpcomingMovies');
+      SetMoviesData(UpcomingMoviesData.data);
     } catch (error) {
       console.error('Error fetching upcoming movies:', error);
     }

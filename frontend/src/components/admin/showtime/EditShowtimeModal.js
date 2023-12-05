@@ -10,7 +10,7 @@ const EditShowtimeModal = ({ open, onClose, onSave, onRemove, showtime }) => {
         time: showtime.time,
     });
 
-    console.log('Showtime start time:', showtime);
+    // console.log('Showtime start time:', showtime);
   
     const handleSave = () => {
       onSave(updatedShowtime);
