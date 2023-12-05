@@ -20,7 +20,7 @@ const HomeContainer = ({ isAdmin }) => {
   const fetchNewReleases = async () => {
     try {
       // const NewReleasesData = await api.get('/api/movies/getNewReleases');
-      const NewReleasesData = await axios.get('http://54.176.16.148:8080/api/movies/getNewReleases');
+      const NewReleasesData = await axios.get('https://54.176.16.148:8080/api/movies/getNewReleases');
       console.log("New Release Data: ", NewReleasesData.data);
       SetNewReleasesData(NewReleasesData.data);
     } catch (error) {
@@ -51,7 +51,7 @@ const HomeContainer = ({ isAdmin }) => {
 
   const fetchUpcomingMovies = async () => {
     try {
-      const UpcomingMoviesData = await axios.get('http://54.176.16.148:8080/api/movies/getUpcomingMovies');
+      const UpcomingMoviesData = await axios.get('https://54.176.16.148:8080/api/movies/getUpcomingMovies');
       SetMoviesData(UpcomingMoviesData.data);
     } catch (error) {
       console.error('Error fetching upcoming movies:', error);
