@@ -1,9 +1,13 @@
 # Team SWE
-## Team Members
+## Team Members and Contributions
 * Vani
 * Nitya
 * Tanupa
 * Rashmi
+  * Backend API Implementation (all endpoints)
+  * Database Schema, creation, and management
+  * Admin Dashboard
+  * Admin Analytics Dashboard
 
 #### [Project repo](https://github.com/gopinathsjsu/team-project-swe/tree/master)
 #### [Project backlog](https://docs.google.com/spreadsheets/d/1Vp7y_yNG8E_2IXD0PCCNqV-gu_kiEn4KwN2t2rp0cNc/edit?usp=drive_link)
