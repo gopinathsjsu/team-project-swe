@@ -1,6 +1,6 @@
 import api from './backend-api/api';
 
-const NEW_RELEASES_BASE_URL = 'api';
+const NEW_RELEASES_BASE_URL = 'api/movies/getNewReleases';
 
 class NewReleasesService {
 
