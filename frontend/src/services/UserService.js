@@ -1,16 +1,17 @@
 import api from './backend-api/api';
 import authHeader from '../services/auth/auth-header';
+import axios from 'axios';
 
-const USERS_BASE_URL = 'api/users';
+const USERS_BASE_URL = 'http://localhost:8080/api/users';
 
 class UserService {
 
     getPublicContent() {
-        return api.get(USERS_BASE_URL + 'all');
+        return axios.get(USERS_BASE_URL + 'all');
     }
 
     getUserBoard() {
-        return api.get(USERS_BASE_URL + 'user', { headers: authHeader() });
+        return axios.get(USERS_BASE_URL + 'user', { headers: authHeader() });
     }
 
     getMemberBoard() { 
@@ -30,7 +31,7 @@ class UserService {
     async getUser(id) {
         const res = await api.get(USERS_BASE_URL + '/getUser', {
             params: {
-                userId: idapi
+                userId: id
             }
         });
 

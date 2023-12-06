@@ -11,6 +11,9 @@ const NavBar = ({ isAdmin }) => {
   const handleLogin = () =>{
     navigate("/login")
   }
+  const handleAdmin = () =>{
+    navigate("/admin");
+  }
   return (
     <div className='bg-[#151515] flex justify-between py-[10px] sticky top-0'>
       <div className='text-[#E9DCC9] flex items-center gap-[5px] font-extrabold text-[26px] italic  bg-[#151515]'>
@@ -21,7 +24,7 @@ const NavBar = ({ isAdmin }) => {
             <Button onClick={handleRegister} color="warning">Register</Button>
             <Button onClick={handleLogin} color="warning">Login</Button>
             {isAdmin && (
-              <Button component={Link} to="/admin" color="warning">Admin Dashboard</Button>
+              <Button onClick={handleAdmin} color="warning">Admin Dashboard</Button>
             )}
         </div>
         <Outlet/>

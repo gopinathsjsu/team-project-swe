@@ -3,6 +3,7 @@ import FormControl from '@mui/material/FormControl';
 import NativeSelect from '@mui/material/NativeSelect';
 import MultiplexService from '../../services/MultiplexService';
 import LocationService from '../../services/LocationService';
+import axios from 'axios';
 
 
 const LocationMultiplexDropdown = ({ onSelectLocation, onSelectMultiplex, onGetMultiplexes }) => {
@@ -26,11 +27,12 @@ const LocationMultiplexDropdown = ({ onSelectLocation, onSelectMultiplex, onGetM
 
     const fetchMultiplexOptions = async (locationName) => {
         try {
-            const locationNameData = await LocationService.getLocationByName(locationName);
-            const locationId = locationNameData.locationId;
+            const locationNameData = await axios.get(`http://localhost:8080/api/locations/getByName/${locationName}`);
+            console.log(locationNameData);
+            const locationId = locationNameData.data.locationId;
             // locationIdFunction(locationId);
-            const multiplexData = await MultiplexService.getMultiplexesByLocationId(locationId);
-            const options = multiplexData.map((multiplex) => ({
+            const multiplexData = await axios.get(`http://localhost:8080/api/multiplexes/get/${locationId}`);
+            const options = multiplexData.data.map((multiplex) => ({
                 multiplexId: multiplex.multiplexId,
                 location: locationNameData.location,
                 locationName: multiplex.multiplexName,

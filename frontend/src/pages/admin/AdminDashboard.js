@@ -363,7 +363,7 @@ const AdminDashboard = () => {
                     <Typography variant="h4" className="mb-4">
                         Admin Dashboard
                     </Typography>
-                    <Button variant='outlined' onClick={() => navigate('/admin/analytics')}>Analytics Dashboard</Button>
+                    <Button variant='outlined' onClick={() => navigate('analytics')}>Analytics Dashboard</Button>
                 </div>
                 <Card maxWidth={'50vw'}>
                     <LocationMultiplexDropdown

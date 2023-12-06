@@ -1,7 +1,7 @@
 import api from './backend-api/api';
 import authHeader from './auth/auth-header';
 
-const MEMBERSHIP_BASE_URL = 'api/memberships';
+const MEMBERSHIP_BASE_URL = 'http://localhost:8080/api/memberships';
 
 class MembershipService {
 

@@ -18,6 +18,7 @@ import {
 } from '@mui/material';
 
 import LocationMultiplexDropdown from "../../components/LocationMultiplexDropdown/LocationMultiplexDropdown";
+import axios from 'axios';
 
 const AnalyticsDashboard = () => {
   const [selectedLocation, setSelectedLocation] = useState('');
@@ -38,19 +39,19 @@ const AnalyticsDashboard = () => {
         let selectedId;
 
         if (groupBy === 'location' && selectedTheater.theaterId) {
-          endpoint = `api/theaters/${selectedTheater.theaterId}/occupancyByLocation`;
+          endpoint = `http://localhost:8080/api/theaters/${selectedTheater.theaterId}/occupancyByLocation`;
           selectedId = selectedTheater.theaterId;
         } else if (groupBy === 'movie' && selectedMovie.movieId) {
-          endpoint = `api/theaters/occupancyByMovie`;
+          endpoint = `http://localhost:8080/api/theaters/occupancyByMovie`;
           selectedId = selectedMovie.movieId;
         }
 
         let response;
         if (endpoint && selectedId) {
           if (groupBy === 'location') {
-            response = await api.get(`${endpoint}?days=${parseInt(selectedTimePeriod)}`);
+            response = await axios.get(`${endpoint}?days=${parseInt(selectedTimePeriod)}`);
           } else {
-            response = await api.get(`${endpoint}?days=${parseInt(selectedTimePeriod)}&movieId=${selectedId}`);
+            response = await axios.get(`${endpoint}?days=${parseInt(selectedTimePeriod)}&movieId=${selectedId}`);
           }
           setOccupancyData(response.data);
         }
@@ -102,7 +103,8 @@ const AnalyticsDashboard = () => {
     const getTheatersByMultiplexId = async () => {
       try {
         setSelectedTheater(null);
-        const response = await api.get(`api/theaters/getTheatersByMultiplexId/${selectedMultiplex.multiplexId}`);
+        // const response = await api.get(`api/theaters/getTheatersByMultiplexId/${selectedMultiplex.multiplexId}`);
+        const response = await axios.get('http://localhost:8080/api/theaters/getTheatersByMultiplexId/' + selectedMultiplex.multiplexId);
         setTheaterOptions(response.data);
       } catch (error) {
         console.error('Error fetching theaters by multiplex ID:', error);
@@ -112,7 +114,7 @@ const AnalyticsDashboard = () => {
     const getMoviesByLocationId = async () => {
       try {
         setSelectedMovie(null);
-        const response = await api.get(`api/movies/multiplex/${selectedMultiplex.multiplexId}`);
+        const response = await axios.get(`http://localhost:8080/api/movies/multiplex/${selectedMultiplex.multiplexId}`);
         setMovieOptions(response.data);
       } catch (error) {
         console.error('Error fetching movies by location ID:', error);

@@ -1,7 +1,8 @@
 import api from './backend-api/api';
 import authHeader from './auth/auth-header';
+import axios from 'axios';
 
-const SHOWTIMES_BASE_URL = 'api/showtimes/';
+const SHOWTIMES_BASE_URL = 'http://localhost:8080/api/showtimes/';
 
 class ShowtimesService {
 
@@ -9,7 +10,7 @@ class ShowtimesService {
   // TODO: add auth header
   async addShowtime(movieId, newShowtime) {
     const {showDatetime, theaterId, multiplexId} = newShowtime;
-    return await api.post(SHOWTIMES_BASE_URL + 'create', {
+    return await axios.post(SHOWTIMES_BASE_URL + 'create', {
         parameters: {
             movieId,
             showDatetime,
@@ -23,7 +24,7 @@ class ShowtimesService {
   async updateShowtime(movieId, editedShowtime) {
     console.log("MOVIEID:", movieId);
     const { showDateTime } = editedShowtime; // Fix here
-    const response = await api.put(
+    const response = await axios.put(
         `${SHOWTIMES_BASE_URL}/update?movieId=${movieId}&showDateTime=${showDateTime}`
     );
     // TODO: add auth header
@@ -34,7 +35,7 @@ class ShowtimesService {
 
   // TODO: add auth header
   async deleteShowtime(showtimeId) {
-    return await api.delete(SHOWTIMES_BASE_URL + `delete/${showtimeId}`);
+    return await axios.delete(SHOWTIMES_BASE_URL + `delete/${showtimeId}`);
   }
 
 }
