@@ -10,10 +10,8 @@ const NewReleases = ({moviesData,seeAll}) => {
     navigate('/newreleases')
   }
 
-  const generateLinkPath = (movieId) => {
-    return `/movie/getNewReleases/${movieId}`;
-  }
-
+  const generateLinkPath = (movieId) => `/movie/getNewReleases/${movieId}`;
+    
   return (
     <div className='bg-[#0F0F0F]'>
         <div className='flex px-[50px] justify-between py-[20px] items-center'>
