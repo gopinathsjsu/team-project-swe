@@ -11,7 +11,19 @@
 	* User data for various users,
 	* Component Diagram,
 	* Deployment Diagram.
+
 * Nitya
+	* Home page
+	* Components in Home Page include Navigation Bar, Carousel,New Releases,
+	  Upcoming Movies, See All buttons for both new releases and upcoming
+	  movies, location dropdown, multiplex dropdown, filtered movies based
+	  on location and multiplex selected.
+	* Movie Booking Page
+	* Components in Movie Booking Page include Movie Information and Movie Schedule
+	  buttons(Date and Showtimes)
+	* Connecting SeatSelectionPage to Movie Schedule buttons.
+	* Added Movie data for New Releases and Upcoming Movies to the db.
+
 * Tanupa
     * Connecting Seat Select Information to Payment Page 
     * Membership Dashboard - api calls 
