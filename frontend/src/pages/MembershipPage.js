@@ -1,8 +1,7 @@
-import React, { useState, useEffect, useReducer } from 'react';
-import { useNavigate } from 'react-router-dom';
-import TicketInfoPage from '../components/TicketInfo';
-import AuthService from '../services/auth/auth.service';
-import api from '../services/backend-api/api';
+import React, { useEffect, useReducer, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import AuthService from "../services/auth/auth.service";
+import api from "../services/backend-api/api";
 
 const initialState = {
   currentUser: AuthService.getCurrentUser(),
@@ -34,7 +33,6 @@ const MembershipPage = () => {
   const [tickets, setTicketInfo] = useState([]);
   const [showUpgradePopup, setShowUpgradePopup] = useState(false);
 
-
   const id = state.currentUser?.id;
 
   useEffect(() => {
@@ -44,7 +42,7 @@ const MembershipPage = () => {
   useEffect(() => {
     // redirect to login if no id is provided
     if (!id) {
-      navigate('/login', { replace: true });
+      navigate("/login", { replace: true });
     }
 
     console.log("USERID" + id);
@@ -53,11 +51,13 @@ const MembershipPage = () => {
       const userRes = await api.get(`api/users/getUser?id=${id}`);
       console.log("USER INFO:", userRes.data);
       setUserInfo(userRes.data);
-      console.log("Updated userInfo:", userInfo); 
+      console.log("Updated userInfo:", userInfo);
       // setLoading(false);
 
       // setLoading(true);
-      const membershipRes = await api.get(`api/memberships/getMembership/user?userId=${id}`);
+      const membershipRes = await api.get(
+        `api/memberships/getMembership/user?userId=${id}`
+      );
       console.log("MEMBERSHIP INFO:", membershipRes.data);
       setMembershipInfo(membershipRes.data);
       // setLoading(false);
@@ -81,16 +81,13 @@ const MembershipPage = () => {
       setLoading(false);
     };
 
-    try{
+    try {
       fetchData();
     } catch (error) {
       console.log(error);
-      setLoading(false);  
-    } 
- 
-   
+      setLoading(false);
+    }
   }, [id]);
-
 
   const handleMembershipChange = () => {
     // Show the upgrade popup
@@ -100,22 +97,25 @@ const MembershipPage = () => {
   const handleUpgradeConfirm = () => {
     // Add logic for actual upgrade (e.g., API calls, state updates)
     // For now, just close the popup
+
+    navigate("/UpgradeMembership");
     setShowUpgradePopup(false);
-    alert("Congrats! You are now a Premium Member.");
+    // alert("Congrats! You are now a Premium Member.");
   };
 
   const handleDowngradeConfirm = () => {
     // Add logic for downgrade (e.g., API calls, state updates)
     // For now, just close the popup
     setShowUpgradePopup(false);
-    alert("Thank you. Membership is still valid until the end of the month. You are now a Regular Member");
+    alert(
+      "Thank you. Membership is still valid until the end of the month. You are now a Regular Member"
+    );
   };
 
   const handleCancel = () => {
     // Close the popup
     setShowUpgradePopup(false);
   };
-
 
   return (
     <div className="container mx-auto mt-8 p-6 bg-white rounded-lg shadow-md">
@@ -142,7 +142,8 @@ const MembershipPage = () => {
               <strong>Phone:</strong> {userInfo.phone ? userInfo.phone : "N/A"}
             </p>
             <p>
-              <strong>Membership Type:</strong> {membershipInfo.getMembershipType}
+              <strong>Membership Type:</strong> {membershipInfo.membershipType}
+              <br></br>
               <button
                 className="bg-blue-500 text-white px-4 py-2 rounded-md mt-2"
                 onClick={handleMembershipChange}
@@ -150,16 +151,18 @@ const MembershipPage = () => {
                 Change Membership
               </button>
             </p>
-
             {/* Upgrade/Downgrade Popup */}
             {showUpgradePopup && (
               <div className="fixed top-0 left-0 w-full h-full flex items-center justify-center">
                 <div className="bg-white p-6 rounded-md shadow-md">
                   <p>
-                    To Upgrade Membership, it will be an additional $15 per month.
+                    To Upgrade Membership, it will be an additional $15 per
+                    month.
                   </p>
                   <p>
-                    To Downgrade Membership, membership change will be made at the end of each month, and all purchases will have an added $1.5 service fee.
+                    To Downgrade Membership, membership change will be made at
+                    the end of each month, and all purchases will have an added
+                    $1.5 service fee.
                   </p>
                   <div className="flex justify-between mt-4">
                     <button
@@ -190,7 +193,8 @@ const MembershipPage = () => {
           <div className="mb-8">
             <h2 className="text-2xl font-bold mb-2">Reward Points</h2>
             <p>
-              <strong>Reward Points:</strong> {rewardPoints !== null ? rewardPoints : 'Loading...'}
+              <strong>Reward Points:</strong>{" "}
+              {rewardPoints !== null ? rewardPoints : "Loading..."}
             </p>
           </div>
 
@@ -212,7 +216,7 @@ const MembershipPage = () => {
                 ))}
               </ul>
             ) : (
-              'No movies watched.'
+              "No movies watched."
             )}
           </div>
         </div>
@@ -222,6 +226,3 @@ const MembershipPage = () => {
 };
 
 export default MembershipPage;
-
-
-
