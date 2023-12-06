@@ -2,6 +2,13 @@
 ## Team Members
 * Vani
 * Nitya
+  - Created homepage for Book My Show Application.
+  - Components in Home Page - Navigation Bar, Carousel 
+    Component, New Releases, Upcoming Movies, See All buttons for both New Releases and Upcoming Movies, Location Dropdown and Multiplex Dropdown, Filtered movies based on location and 
+    multiplex.
+  - Created a MovieBooking page for displaying all details of the movie (Title, poster, genre, rating, showtimes, description, duration, releases date).
+  - Linked SeatSelection page to movie schedule buttons in movie booking page.
+  - Added Movies data into the db.
 * Tanupa
 * Rashmi
 
