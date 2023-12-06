@@ -1,6 +1,16 @@
 # Team SWE
 ## Team Members and Contributions
 * Vani
+	* Member Registration,
+	* Login of various memberships - admin and regular member,
+	* Upgrade membership, 
+	* seat selection page - check if max seats selected is 8.
+	* Payment page, 
+	* Ticket Information page post payment,
+	* Membership page,
+	* User data for various users,
+	* Component Diagram,
+	* Deployment Diagram.
 * Nitya
 * Tanupa
     * Connecting Seat Select Information to Payment Page 
