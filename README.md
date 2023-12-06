@@ -38,6 +38,8 @@
 * Courage
   * Many of us were new to the technologies and frameworks used in this project, but we continously followed the value of courage by stepping up and taking on features even if they initially seemed daunting or out of our scope of knowledge. Each of us took on new challenges in this project and this helped us all grow our skills and work better as a team.
 
+## Tracking and Planning Tools
+
 #### [Project repo](https://github.com/gopinathsjsu/team-project-swe/tree/master)
 #### [Project backlog](https://docs.google.com/spreadsheets/d/1Vp7y_yNG8E_2IXD0PCCNqV-gu_kiEn4KwN2t2rp0cNc/edit?usp=drive_link)
 #### [Project journal](https://drive.google.com/drive/folders/1UNs8ECa3x-ZLph5XEBL7MZQElcy2R4dY?usp=drive_link)
