@@ -1,7 +1,5 @@
 import React, { useEffect, useState } from 'react'
 import NavBar from '../components/NavBar'
-import api from '../services/backend-api/api';
-import axios from 'axios';
 import CarouselComponent from '../components/Carousel'
 import UpcomingMovies from '../components/UpcomingMovies'
 import NewReleases from '../components/NewReleases';
@@ -19,10 +17,9 @@ const HomeContainer = ({ isAdmin }) => {
   
   const fetchNewReleases = async () => {
     try {
-      // const NewReleasesData = await api.get('/api/movies/getNewReleases');
-      const NewReleasesData = await axios.get('https://54.176.16.148:8080/api/movies/getNewReleases');
-      console.log("New Release Data: ", NewReleasesData.data);
-      SetNewReleasesData(NewReleasesData.data);
+      const NewReleasesData = await NewReleasesService.getAllNewReleases();
+      console.log("New Release Data: ", NewReleasesData);
+      SetNewReleasesData(NewReleasesData);
     } catch (error) {
       console.error('Error fetching new releases:', error);
     }
@@ -51,8 +48,8 @@ const HomeContainer = ({ isAdmin }) => {
 
   const fetchUpcomingMovies = async () => {
     try {
-      const UpcomingMoviesData = await axios.get('https://54.176.16.148:8080/api/movies/getUpcomingMovies');
-      SetMoviesData(UpcomingMoviesData.data);
+      const UpcomingMoviesData = await UpcomingMoviesService.getAllUpcomingMovies();
+      SetMoviesData(UpcomingMoviesData);
     } catch (error) {
       console.error('Error fetching upcoming movies:', error);
     }
