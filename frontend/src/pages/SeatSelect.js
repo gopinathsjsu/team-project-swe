@@ -1,70 +1,194 @@
-// import { default as React, useEffect, useReducer, useState } from "react";
-// import { useNavigate } from "react-router-dom";
-// import OneSeatSelection from "../components/OneSeatSelection";
-// import SeatSelection from "../components/SeatSelection";
-// import AuthService from "../services/auth/auth.service";
+import { Button } from "@mui/material";
+import React, { useEffect, useState } from "react";
+import { useNavigate, useParams } from "react-router-dom";
+import api from "../services/backend-api/api";
+import AuthService from "../services/auth/auth.service";
 
-// const initialState = {
-//   currentUser: AuthService.getCurrentUser(),
-//   membership: {},
-//   error: null,
-// };
 
-// const SeatSelect = () => {
-//   const navigate = useNavigate();
-//   const [state] = useReducer(initialState);
+const Seats = () => {
+  const navigate = useNavigate();
+  const { userId, seats } = useParams();
+  const [seatDetails, setSeatDetails] = useState(generateInitialSeatDetails());
+  const [selectedSeatsCount, setSelectedSeatsCount] = useState(0);
+  const [loading, setLoading] = useState(false);
+  const [tickets, setTicketInfo] = useState([]);
 
-//   // useEffect(() => {
-//   //   if (!state.currentUser) {
-//   //     navigate("/oneSeatSelect");
-//   //   } else {
-//   //     navigate("/SeatSelect");
-//   //   }
-//   // }, [navigate]);
+  const { id } = AuthService.getCurrentUser();
 
-//   return (
-//     <>
-//       <div>Please select at max 8 seats if you are a registered user</div>
-//       <div>Non - Registered users can only book 1 seat</div>
-//       {/* <p>{state.currentUser?.email}</p> */}
-//       <div>{state.membership ? <SeatSelection /> : <OneSeatSelection />}</div>
-//       {/* <div>{isUserRegistered ? <SeatSelection /> : <OneSeatSelection />}</div> */}
-//     </>
-//   );
-// };
+  function generateInitialSeatDetails() {
+    const screenConfig = { rows: 8, cols: 10 };
+    const initialSeatDetails = {};
+    for (let i = 1; i <= screenConfig.rows; i++) {
+      const rowKey = `Row ${String.fromCharCode(65 + i - 1)}`;
+      initialSeatDetails[rowKey] = Array(screenConfig.cols).fill(0);
+    }
+    return initialSeatDetails;
+  }
 
-// export default SeatSelect;
+  const clearSelectedSeats = () => {
+    setSeatDetails((prevSeatDetails) => {
+      const newSeatDetails = { ...prevSeatDetails };
+      for (let key in newSeatDetails) {
+        newSeatDetails[key] = newSeatDetails[key].map((seatValue) =>
+          seatValue === 2 ? 0 : seatValue
+        );
+      }
+      return newSeatDetails;
+    });
+    setSelectedSeatsCount(0);
+  };
 
-import React from "react";
-import SeatSelection from "../components/SeatSelection";
+  const onSeatClick = (rowIndex, colIndex) => {
+    if (
+      selectedSeatsCount >= 8 ||
+      seatDetails[`Row ${String.fromCharCode(65 + rowIndex)}`][colIndex] === 1
+    ) {
+      return;
+    }
 
-const SeatSelect = () => {
+    if (
+      seatDetails[`Row ${String.fromCharCode(65 + rowIndex)}`][colIndex] === 2
+    ) {
+      setSeatDetails((prevSeatDetails) => {
+        const newSeatDetails = { ...prevSeatDetails };
+        newSeatDetails[`Row ${String.fromCharCode(65 + rowIndex)}`][
+          colIndex
+        ] = 0;
+        return newSeatDetails;
+      });
+      setSelectedSeatsCount((prevCount) => prevCount - 1);
+    } else {
+      setSeatDetails((prevSeatDetails) => {
+        const newSeatDetails = { ...prevSeatDetails };
+        newSeatDetails[`Row ${String.fromCharCode(65 + rowIndex)}`][
+          colIndex
+        ] = 2;
+        return newSeatDetails;
+      });
+      setSelectedSeatsCount((prevCount) => prevCount + 1);
+    }
+  };
+
+  const getClassNameForSeats = (seatValue) => {
+    let styleseats, dynamicClass;
+    styleseats =
+      "select-none cursor-pointer text-gray-700 text-sm font-bold px-3 py-2 rounded-md shadow-md";
+
+    if (seatValue === 0) {
+      dynamicClass = "bg-gray-200 cursor-default text-gray-800 shadow-none";
+    } else if (seatValue === 1) {
+      dynamicClass = "bg-gray-500 bg-opacity-40 cursor-default";
+    } else if (seatValue === 2) {
+      dynamicClass = "text-white bg-green-500";
+    } else {
+      dynamicClass = "cursor-default text-white shadow-none";
+    }
+
+    return `${styleseats} ${dynamicClass}`;
+  };
+
+  const RenderSeats = () => {
+    let seatArray = [];
+    for (let key in seatDetails) {
+      const rowIndex = key.charCodeAt(4) - 65;
+      let colValue = seatDetails[key].map((seatValue, colIndex) => (
+        <span key={`${key}.${colIndex}`} className="m-10">
+          {colIndex === 0 && (
+            <span className="text-gray-700 font-bold mr-2">{key}</span>
+          )}
+          <span
+            className={getClassNameForSeats(seatValue)}
+            onClick={() => onSeatClick(rowIndex, colIndex)}
+          >
+            {colIndex + 1}
+          </span>
+          {colIndex === seatDetails[key].length - 1 && (
+            <>
+              <br />
+              <br />
+            </>
+          )}
+        </span>
+      ));
+      seatArray.push(colValue);
+    }
+    return <div className="ml-n30">{seatArray}</div>;
+  };
+
+  const handlePay = async () => {
+    const tickets = [];
+    let totalCost = 0;
+
+    try {
+      for (let rowKey in seatDetails) {
+        const rowSeats = seatDetails[rowKey];
+
+        for (let colIndex = 0; colIndex < rowSeats.length; colIndex++) {
+          const seatValue = rowSeats[colIndex];
+
+          if (seatValue === 2) {
+            const seatAssignment = `${rowKey}${colIndex + 1}`;
+            const ticketRes = await api.post(`api/tickets/book/${id}`, {
+              seatAssignment: seatAssignment,
+              // Add other ticket information here (showDateTime, assignedMovieName, theaterId, multiplexName, etc.)
+            });
+
+            tickets.push(ticketRes.data);
+            totalCost += ticketRes.data.price;
+          }
+        }
+      }
+
+      navigate("/paymentPage", {
+        state: {
+          purchaseTicket: true,
+          numTickets: selectedSeatsCount,
+          tickets: tickets,
+          totalCost: totalCost,
+        },
+      });
+    } catch (error) {
+      console.error("Error creating tickets:", error);
+    }
+  };
+
+  const RenderPaymentButton = () => {
+    const selectedSeats = [];
+    for (let key in seatDetails) {
+      seatDetails[key].forEach((seatValue, colIndex) => {
+        if (seatValue === 2) {
+          selectedSeats.push(`${key}${colIndex + 1}`);
+        }
+      });
+    }
+
+    if (selectedSeats.length) {
+      return (
+        <div className="sticky bottom-10">
+          <Button
+            variant="contained"
+            style={{ backgroundColor: "#ff4081", color: "#ffffff" }}
+            onClick={handlePay}
+          >
+            Pay
+          </Button>
+        </div>
+      );
+    } else {
+      return <></>;
+    }
+  };
+
   return (
     <>
-      <div>
-        <h2 className=" bold text-center ">
-          Please select at max 8 seats if you are a registered user
-        </h2>
-        <br></br>
-      </div>
-      <div>
-        <h2 className=" bold text-center ">
-          Non - Registered users can only book 1 seat
-        </h2>
-        <br></br> <br></br>
-      </div>
-      <div></div>
-
-      <div>
-        <SeatSelection />
-      </div>
-
-      <div>
-        <br></br> <br></br>
-        <h1 className=" text-center ">Screen this way</h1>
+      <div className="text-center">
+        <h3>please select the desired seats</h3>
+        <br></br> <br></br> <br></br>
+        {RenderSeats()}
+        {RenderPaymentButton()}
       </div>
     </>
   );
 };
 
-export default SeatSelect;
+export default Seats;

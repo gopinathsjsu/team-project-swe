@@ -93,29 +93,24 @@ const MembershipPage = () => {
 
 
   const handleMembershipChange = () => {
-    // Show the upgrade popup
     setShowUpgradePopup(true);
   };
 
   const handleUpgradeConfirm = () => {
-    // Add logic for actual upgrade (e.g., API calls, state updates)
-    // For now, just close the popup
+      navigate('/paymentPage', { replace: true });
     setShowUpgradePopup(false);
-    alert("Congrats! You are now a Premium Member.");
+    //alert("Congrats! You are now a Premium Member.");
+    
   };
 
   const handleDowngradeConfirm = () => {
-    // Add logic for downgrade (e.g., API calls, state updates)
-    // For now, just close the popup
     setShowUpgradePopup(false);
     alert("Thank you. Membership is still valid until the end of the month. You are now a Regular Member");
   };
 
   const handleCancel = () => {
-    // Close the popup
     setShowUpgradePopup(false);
   };
-
 
   return (
     <div className="container mx-auto mt-8 p-6 bg-white rounded-lg shadow-md">
@@ -194,25 +189,39 @@ const MembershipPage = () => {
             </p>
           </div>
 
+          {/* Display Tickets in the Last 30 Days */}
+          <div className="mb-8">
+            <h2 className="text-2xl font-bold mb-4">Tickets in the Last 30 Days</h2>
+            {tickets.length > 0 ? (
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                {tickets.map((ticket) => (
+                  <div key={ticket.id} className="bg-white p-4 rounded-md shadow-md">
+                    <h3 className="text-xl font-semibold mb-2">Ticket #{ticket.id}</h3>
+                    <p className="text-gray-600">Date: {ticket.date}</p>
+                    {/* Add more ticket information as needed */}
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <p className="text-gray-500">No tickets in the last 30 days.</p>
+            )}
+          </div>
+
           {/* Display Movies Watched */}
           <div className="mb-8">
-            <h2 className="text-2xl font-bold mb-2">Movies Watched</h2>
+            <h2 className="text-2xl font-bold mb-4">Movies Watched in the Last 30 Days</h2>
             {moviesWatched.length > 0 ? (
-              <ul>
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                 {moviesWatched.map((movie) => (
-                  <li key={movie.id}>
-                    <p>
-                      <strong>Title:</strong> {movie.title}
-                    </p>
-                    <p>
-                      <strong>Genre:</strong> {movie.genre}
-                    </p>
+                  <div key={movie.id} className="bg-white p-4 rounded-md shadow-md">
+                    <h3 className="text-xl font-semibold mb-2">{movie.title}</h3>
+                    <p className="text-gray-600">{movie.genre}</p>
                     {/* Add more movie information as needed */}
-                  </li>
+                  </div>
                 ))}
-              </ul>
+              </div>
             ) : (
-              'No movies watched.'
+              <p className="text-gray-500">No movies watched in the last 30 days.</p>
             )}
           </div>
         </div>
@@ -222,6 +231,3 @@ const MembershipPage = () => {
 };
 
 export default MembershipPage;
-
-
-
