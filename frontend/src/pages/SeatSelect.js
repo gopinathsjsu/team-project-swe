@@ -42,16 +42,9 @@ const SeatSelect = () => {
   return (
     <>
       <div>
-        <h2 className=" bold text-center ">
-          Please select at max 8 seats if you are a registered user
-        </h2>
         <br></br>
-      </div>
-      <div>
-        <h2 className=" bold text-center ">
-          Non - Registered users can only book 1 seat
-        </h2>
-        <br></br> <br></br>
+        <h2 className=" bold text-center ">You can select at max 8 seats</h2>
+        <br></br>
       </div>
       <div></div>
 
