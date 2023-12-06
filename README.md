@@ -64,6 +64,9 @@
 <img width="1512" alt="backend_Deployment_Diagram" src="https://github.com/gopinathsjsu/team-project-swe/assets/144390769/4df696bd-a3a9-4901-8c60-b216ec763d10">
 
 
+<h2> UI WireFrames</h2>
+<img width="669" alt="UIWireframes" src="https://github.com/gopinathsjsu/team-project-swe/assets/144390769/4c20941e-7063-4f8a-a7bc-fee1cba4a21e">
+
 
 ## Tracking and Planning Tools
 
