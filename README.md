@@ -59,6 +59,11 @@
 ![frontend_component (1)](https://github.com/gopinathsjsu/team-project-swe/assets/144390769/65801980-27f5-4b20-b530-a8f9fa6f675f)
 
 
+<H2> Backend component Diagram</H2>
+
+<img width="1512" alt="backend_Deployment_Diagram" src="https://github.com/gopinathsjsu/team-project-swe/assets/144390769/4df696bd-a3a9-4901-8c60-b216ec763d10">
+
+
 
 ## Tracking and Planning Tools
 
