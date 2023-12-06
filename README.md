@@ -54,6 +54,10 @@
 <h2>Deployment Diagram</h2>
 
 <img width="1525" alt="_Team_SWE_Deployment_Diag" src="https://github.com/gopinathsjsu/team-project-swe/assets/144390769/b6ceef15-4500-463d-ab9d-a0807c7437ec">
+<H2> FRont End component Diagram</H2>
+
+![frontend_component (1)](https://github.com/gopinathsjsu/team-project-swe/assets/144390769/65801980-27f5-4b20-b530-a8f9fa6f675f)
+
 
 
 ## Tracking and Planning Tools
