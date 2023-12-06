@@ -3,18 +3,18 @@
 * Vani
 * Nitya
 * Tanupa
-*   Connecting Seat Select Information to Payment Page 
-    Membership Dashboard - api calls 
-	      List of Movies Watched in Previous 30 Days
-	      Retrieving Membership Information & Change Membership 
-	      Tickets In Past 30 Days 
-    Payment Page - 
-	    Updating Rewards
-	    Rewards & Paying with Rewards
-	    Updating Reward Info 
-	    Payment Failure/Accepted 
-Cancel Refund
-Request Refund 
+    * Connecting Seat Select Information to Payment Page 
+    * Membership Dashboard - api calls 
+	     *  List of Movies Watched in Previous 30 Days
+	     *  Retrieving Membership Information & Change Membership 
+	     *  Tickets In Past 30 Days 
+    * Payment Page - 
+	    * Updating Rewards
+	    * Rewards & Paying with Rewards
+	    * Updating Reward Info 
+	    * Payment Failure/Accepted 
+    * Cancel/Refund Refund
+ 
 
 * Rashmi
   * Backend API Implementation (all endpoints)
