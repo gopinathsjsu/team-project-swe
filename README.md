@@ -10,3 +10,4 @@
 #### [Project journal](https://drive.google.com/drive/folders/1UNs8ECa3x-ZLph5XEBL7MZQElcy2R4dY?usp=drive_link)
 #### [Sprint task sheet](https://docs.google.com/spreadsheets/d/1lffAHhdplSi4oc8NDlnvqoF-C-uH_2GBhyjHBrNt2MY/edit?usp=drive_link)
 # Movie-Theatre-Club-Application---SJSU
+# Movie-Theatre-Club-Application---SJSU
